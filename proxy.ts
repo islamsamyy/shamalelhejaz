@@ -1,9 +1,15 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { createServerClient } from "@supabase/ssr";
 
-const url = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const anon =
-  process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+const url =
+  process.env.NEXT_PUBLIC_SUPABASE_URL || "https://lazleotmwyxglqgqwyrq.supabase.co";
+const rawKey =
+  process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ||
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
+  "";
+const anon = rawKey.startsWith("sb_publishable_")
+  ? rawKey
+  : "sb_publishable_eCNgYI7EbhYU7t2yVovEdg_xROl387f";
 
 function redirectToLogin(request: NextRequest, role: "admin" | "vendor", error: string) {
   const loginUrl = new URL("/auth/login", request.url);

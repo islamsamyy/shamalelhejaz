@@ -1,16 +1,16 @@
 import { createBrowserClient } from "@supabase/ssr";
 import { Product, Category } from "./catalogData";
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabaseAnonKey =
+const supabaseUrl =
+  process.env.NEXT_PUBLIC_SUPABASE_URL || "https://lazleotmwyxglqgqwyrq.supabase.co";
+// Prefer the valid publishable key; fallback ensures Vercel works even if an older invalid NEXT_PUBLIC_SUPABASE_ANON_KEY is still set in Vercel Env Vars.
+const rawKey =
   process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ||
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-
-if (!supabaseUrl || !supabaseAnonKey) {
-  throw new Error(
-    "Missing NEXT_PUBLIC_SUPABASE_URL or NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY. Set them in .env.local (see .env.example)."
-  );
-}
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
+  "";
+const supabaseAnonKey = rawKey.startsWith("sb_publishable_")
+  ? rawKey
+  : "sb_publishable_eCNgYI7EbhYU7t2yVovEdg_xROl387f";
 
 // Cookie-based browser client so the server (proxy, route handlers) sees the same session.
 export const supabase = createBrowserClient(supabaseUrl, supabaseAnonKey);

@@ -72,7 +72,17 @@ export async function signInWithCredentials(
     password,
   });
   if (error) {
-    return { success: false, error: "بيانات الدخول غير صحيحة. تأكد من البريد الإلكتروني وكلمة المرور." };
+    const msg = error.message?.toLowerCase() || "";
+    if (msg.includes("invalid api key") || msg.includes("apikey")) {
+      return {
+        success: false,
+        error: "خطأ في مفتاح الاتصال بقاعدة البيانات (Supabase Publishable Key).",
+      };
+    }
+    return {
+      success: false,
+      error: "بيانات الدخول غير صحيحة. تأكد من البريد الإلكتروني وكلمة المرور.",
+    };
   }
   const user = await fetchClientUser();
   if (!user) return { success: false, error: "تعذر تحميل بيانات الحساب." };
