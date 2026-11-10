@@ -4,10 +4,32 @@ import React, { useState } from "react";
 import Link from "next/link";
 import VendorNav from "@/components/vendor/VendorNav";
 import VendorAuthGuard from "@/components/vendor/VendorAuthGuard";
+import {
+  AnimatedCard,
+  AnimatedCounter,
+  StaggerContainer,
+  StaggerItem,
+  FadeIn,
+} from "@/components/ui/motion-primitives";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { Slider } from "@/components/ui/slider";
+import { notify } from "@/lib/notify";
 import {
   Store,
   DollarSign,
@@ -16,12 +38,10 @@ import {
   FileCheck2,
   ShieldCheck,
   ArrowLeft,
-  ChevronLeft,
-  Users,
-  Clock,
-  Sparkles,
-  BarChart3,
-  Layers,
+  ChevronDown,
+  Truck,
+  Download,
+  CheckCircle2,
 } from "lucide-react";
 import { formatSAR } from "@/lib/utils";
 
@@ -48,6 +68,7 @@ export default function VendorHubPage() {
   ];
 
   return (
+    <TooltipProvider delayDuration={180}>
     <div className="min-h-screen bg-[#f8fafc] text-slate-900 flex flex-col font-sans">
       <VendorNav />
 
@@ -131,61 +152,141 @@ export default function VendorHubPage() {
                 </Button>
               </div>
 
-              <div className="flex items-center gap-2 text-xs font-bold text-emerald-800 bg-emerald-50 px-3 py-1.5 rounded-xl border border-emerald-200">
-                <span className="w-2 h-2 rounded-full bg-emerald-600 animate-pulse"></span>
-                <span>محفظة الضمان المالي في ساما: نشطة</span>
-              </div>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div className="flex items-center gap-2 text-xs font-bold text-emerald-800 bg-emerald-50 px-3 py-1.5 rounded-xl border border-emerald-200 cursor-help">
+                    <span className="w-2 h-2 rounded-full bg-emerald-600 animate-pulse"></span>
+                    <span>محفظة الضمان المالي في ساما: نشطة</span>
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent>
+                  جميع التسويات المالية محمية تحت إشراف البنك المركزي السعودي وتفرج تلقائياً بعد التسليم
+                </TooltipContent>
+              </Tooltip>
             </div>
 
-            {/* 4 KPIs Cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              <Card className="p-6 rounded-3xl border border-slate-200/80 bg-white">
-                <div className="flex items-center justify-between text-xs text-slate-500 mb-2">
-                  <span className="font-bold">إجمالي المبيعات (GMV)</span>
-                  <TrendingUp className="w-4 h-4 text-emerald-600" />
-                </div>
-                <span className="text-2xl font-black text-slate-900">{formatSAR(vendorStats.gmv)}</span>
-                <span className="text-[10px] text-emerald-700 block mt-1 font-bold">+١٨% مقارنة بالشهر السابق</span>
-              </Card>
+            {/* 4 KPIs Cards with Animated Counters */}
+            <StaggerContainer className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              <StaggerItem>
+                <AnimatedCard className="rounded-3xl">
+                  <Card className="p-6 rounded-3xl border border-slate-200/80 bg-white">
+                    <div className="flex items-center justify-between text-xs text-slate-500 mb-2">
+                      <span className="font-bold">إجمالي المبيعات (GMV)</span>
+                      <TrendingUp className="w-4 h-4 text-emerald-600" />
+                    </div>
+                    <span className="text-2xl font-black text-slate-900 block">
+                      <AnimatedCounter value={vendorStats.gmv} formatter={formatSAR} />
+                    </span>
+                    <span className="text-[10px] text-emerald-700 block mt-1 font-bold">+١٨% مقارنة بالشهر السابق</span>
+                  </Card>
+                </AnimatedCard>
+              </StaggerItem>
 
-              <Card className="p-6 rounded-3xl border border-slate-200/80 bg-white">
-                <div className="flex items-center justify-between text-xs text-slate-500 mb-2">
-                  <span className="font-bold">الرصيد المتاح للتحويل</span>
-                  <DollarSign className="w-4 h-4 text-[#006948]" />
-                </div>
-                <span className="text-2xl font-black text-[#006948]">{formatSAR(vendorStats.availableBalance)}</span>
-                <span className="text-[10px] text-slate-400 block mt-1">تحويل فوري عبر نظام سريع</span>
-              </Card>
+              <StaggerItem>
+                <AnimatedCard className="rounded-3xl">
+                  <Card className="p-6 rounded-3xl border border-slate-200/80 bg-white">
+                    <div className="flex items-center justify-between text-xs text-slate-500 mb-2">
+                      <span className="font-bold">الرصيد المتاح للتحويل</span>
+                      <DollarSign className="w-4 h-4 text-[#006948]" />
+                    </div>
+                    <span className="text-2xl font-black text-[#006948] block">
+                      <AnimatedCounter value={vendorStats.availableBalance} formatter={formatSAR} />
+                    </span>
+                    <span className="text-[10px] text-slate-400 block mt-1">تحويل فوري عبر نظام سريع</span>
+                  </Card>
+                </AnimatedCard>
+              </StaggerItem>
 
-              <Card className="p-6 rounded-3xl border border-slate-200/80 bg-white">
-                <div className="flex items-center justify-between text-xs text-slate-500 mb-2">
-                  <span className="font-bold">مبالغ الضمان المعلقة (Escrow)</span>
-                  <ShieldCheck className="w-4 h-4 text-amber-500" />
-                </div>
-                <span className="text-2xl font-black text-amber-600">{formatSAR(vendorStats.pendingEscrow)}</span>
-                <span className="text-[10px] text-slate-400 block mt-1">تُفرج تلقائياً بعد استلام المقتني</span>
-              </Card>
+              <StaggerItem>
+                <AnimatedCard className="rounded-3xl">
+                  <Card className="p-6 rounded-3xl border border-slate-200/80 bg-white">
+                    <div className="flex items-center justify-between text-xs text-slate-500 mb-2">
+                      <span className="font-bold">مبالغ الضمان المعلقة (Escrow)</span>
+                      <ShieldCheck className="w-4 h-4 text-amber-500" />
+                    </div>
+                    <span className="text-2xl font-black text-amber-600 block">
+                      <AnimatedCounter value={vendorStats.pendingEscrow} formatter={formatSAR} />
+                    </span>
+                    <span className="text-[10px] text-slate-400 block mt-1">تُفرج تلقائياً بعد استلام المقتني</span>
+                  </Card>
+                </AnimatedCard>
+              </StaggerItem>
 
-              <Card className="p-6 rounded-3xl border border-slate-200/80 bg-white">
-                <div className="flex items-center justify-between text-xs text-slate-500 mb-2">
-                  <span className="font-bold">المنتجات النشطة بالكتالوج</span>
-                  <Package className="w-4 h-4 text-emerald-600" />
-                </div>
-                <span className="text-2xl font-black text-slate-900">{vendorStats.activeListings} قطعة</span>
-                <span className="text-[10px] text-emerald-700 block mt-1 font-bold">جميعها موثقة في زاتكا</span>
-              </Card>
-            </div>
+              <StaggerItem>
+                <AnimatedCard className="rounded-3xl">
+                  <Card className="p-6 rounded-3xl border border-slate-200/80 bg-white">
+                    <div className="flex items-center justify-between text-xs text-slate-500 mb-2">
+                      <span className="font-bold">المنتجات النشطة بالكتالوج</span>
+                      <Package className="w-4 h-4 text-emerald-600" />
+                    </div>
+                    <span className="text-2xl font-black text-slate-900 block">
+                      <AnimatedCounter value={vendorStats.activeListings} suffix=" قطعة" />
+                    </span>
+                    <span className="text-[10px] text-emerald-700 block mt-1 font-bold">جميعها موثقة في زاتكا</span>
+                  </Card>
+                </AnimatedCard>
+              </StaggerItem>
+            </StaggerContainer>
 
             {/* Pending Orders Queue Table */}
-            <div className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200/80 shadow-md space-y-4">
-              <div className="flex items-center justify-between">
+            <FadeIn className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200/80 shadow-md space-y-4">
+              <div className="flex flex-wrap items-center justify-between gap-3">
                 <div>
                   <h3 className="text-base font-black text-slate-900">قائمة الطلبات الواردة بانتظار الشحن</h3>
                   <p className="text-xs text-slate-500">الطلبات المسددة عبر حساب الضمان ساما والجاهزة لإصدار البوالص.</p>
                 </div>
-                <Button asChild variant="outline" size="sm" className="font-bold">
-                  <Link href="/vendor/orders">عرض كافة الطلبات ({pendingOrders.length})</Link>
-                </Button>
+                <div className="flex items-center gap-2">
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="sovereign" size="sm" className="font-bold text-xs gap-1.5 cursor-pointer">
+                        <Truck className="w-3.5 h-3.5" />
+                        <span>إجراءات الشحن الجماعي</span>
+                        <ChevronDown className="w-3.5 h-3.5" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="w-60 text-start">
+                      <DropdownMenuLabel className="text-[11px]">عمليات لوجستية ومالية سريعة</DropdownMenuLabel>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem
+                        onClick={() =>
+                          notify.luxury(
+                            "تم إصدار ٣ بوالص شحن SPL / SMSA مجمعة",
+                            "جاهزة للطباعة وتسليم المندوب المعتمد."
+                          )
+                        }
+                        className="gap-2 cursor-pointer"
+                      >
+                        <Truck className="w-4 h-4 text-[#006948]" />
+                        <span>إصدار بوالص SPL & SMSA دفعة واحدة</span>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={() =>
+                          notify.zatca(
+                            "تم تصدير تقرير الفواتير والتسويات الضريبي",
+                            "الملف مطابق لمتطلبات المرحلة الثانية من ZATCA."
+                          )
+                        }
+                        className="gap-2 cursor-pointer"
+                      >
+                        <Download className="w-4 h-4 text-emerald-700" />
+                        <span>تصدير كشف التسويات المالية (CSV)</span>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={() =>
+                          notify.success("تم إرسال إشعارات التجهيز للمقتنين بنجاح")
+                        }
+                        className="gap-2 cursor-pointer"
+                      >
+                        <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                        <span>تحديث حالة كافة الطلبات إلى جاهز للشحن</span>
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+
+                  <Button asChild variant="outline" size="sm" className="font-bold">
+                    <Link href="/vendor/orders">عرض كافة الطلبات ({pendingOrders.length})</Link>
+                  </Button>
+                </div>
               </div>
 
               <div className="overflow-x-auto">
@@ -222,7 +323,7 @@ export default function VendorHubPage() {
                   </tbody>
                 </table>
               </div>
-            </div>
+            </FadeIn>
           </section>
         ) : (
           /* Vendor Onboarding & Revenue Calculator Landing */
@@ -311,5 +412,6 @@ export default function VendorHubPage() {
         </div>
       </footer>
     </div>
+    </TooltipProvider>
   );
 }

@@ -2,24 +2,46 @@
 
 import React from "react";
 import Link from "next/link";
+import { motion } from "framer-motion";
+import {
+  AnimatedCard,
+  AnimatedCounter,
+  StaggerContainer,
+  StaggerItem,
+  FadeIn,
+} from "@/components/ui/motion-primitives";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { notify } from "@/lib/notify";
 import {
   DollarSign,
   TrendingUp,
   Package,
-  Users,
-  CheckCircle2,
   AlertTriangle,
   ArrowRight,
   ShieldCheck,
   Building,
-  Truck,
   ArrowUpRight,
   FileCheck2,
   Scale,
   Sparkles,
+  ChevronDown,
+  Activity,
 } from "lucide-react";
 import { formatSAR } from "@/lib/utils";
 
@@ -27,7 +49,8 @@ export default function AdminExecutiveDashboardPage() {
   const kpiData = [
     {
       title: "إجمالي حجم التداول (GMV)",
-      value: formatSAR(48920400),
+      numericValue: 48920400,
+      formatter: formatSAR,
       change: "+18.4% مقارنة بالشهر السابق",
       isPositive: true,
       icon: DollarSign,
@@ -35,7 +58,8 @@ export default function AdminExecutiveDashboardPage() {
     },
     {
       title: "الطلبات المنفذة في المملكة",
-      value: "12,840 طلب",
+      numericValue: 12840,
+      suffix: " طلب",
       change: "+12.1% نمو أسبوعي",
       isPositive: true,
       icon: Package,
@@ -43,7 +67,8 @@ export default function AdminExecutiveDashboardPage() {
     },
     {
       title: "المنشآت والحرفيين المعتمدين",
-      value: "184 منشأة",
+      numericValue: 184,
+      suffix: " منشأة",
       change: "+9 منشآت هذا الأسبوع",
       isPositive: true,
       icon: Building,
@@ -51,7 +76,8 @@ export default function AdminExecutiveDashboardPage() {
     },
     {
       title: "ضريبة ZATCA المورّدة",
-      value: formatSAR(7338060),
+      numericValue: 7338060,
+      formatter: formatSAR,
       change: "مطابقة 100% لفواتير المرحلة 2",
       isPositive: true,
       icon: ShieldCheck,
@@ -94,9 +120,10 @@ export default function AdminExecutiveDashboardPage() {
   ];
 
   return (
+    <TooltipProvider delayDuration={180}>
     <div className="space-y-8">
       {/* Welcome Banner */}
-      <div className="bg-gradient-to-l from-slate-950 via-slate-900 to-[#004d34] text-white p-8 rounded-3xl border border-slate-800 shadow-xl relative overflow-hidden">
+      <FadeIn className="bg-gradient-to-l from-slate-950 via-slate-900 to-[#004d34] text-white p-8 rounded-3xl border border-slate-800 shadow-xl relative overflow-hidden">
         <div className="relative z-10 max-w-2xl">
           <Badge variant="outline" className="bg-emerald-500/20 text-emerald-300 border-emerald-500/30 text-xs mb-3">
             <Sparkles className="w-3.5 h-3.5 ms-1.5" />
@@ -110,41 +137,103 @@ export default function AdminExecutiveDashboardPage() {
           </p>
         </div>
 
-        <div className="absolute start-6 bottom-6 hidden sm:flex items-center gap-3">
-          <div className="bg-slate-800/80 backdrop-blur-md px-4 py-2.5 rounded-2xl border border-slate-700/60 text-start">
-            <span className="text-[10px] text-slate-400 block font-bold">زمن تشغيل المنظومة</span>
-            <span className="text-xs font-mono font-bold text-emerald-400">99.98% Uptime</span>
-          </div>
+        <div className="sm:absolute start-6 bottom-6 mt-5 sm:mt-0 flex flex-wrap items-center gap-3 relative z-10">
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <div className="bg-slate-800/80 backdrop-blur-md px-4 py-2.5 rounded-2xl border border-slate-700/60 text-start cursor-help">
+                <span className="text-[10px] text-slate-400 block font-bold">زمن تشغيل المنظومة</span>
+                <span className="text-xs font-mono font-bold text-emerald-400 flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
+                  99.98% Uptime
+                </span>
+              </div>
+            </TooltipTrigger>
+            <TooltipContent>مراقبة لحظية لجميع بوابات ساما وزاتكا والناقل الوطني</TooltipContent>
+          </Tooltip>
+
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="gold" size="sm" className="rounded-2xl font-bold text-xs gap-1.5 h-10 px-4 cursor-pointer">
+                <Activity className="w-4 h-4" />
+                <span>أوامر الرقابة السريعة</span>
+                <ChevronDown className="w-3.5 h-3.5" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-64 text-start">
+              <DropdownMenuLabel className="text-[11px]">إجراءات القيادة السيادية</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                onClick={() =>
+                  notify.zatca(
+                    "تم التحقق من مطابقة ١٠,٢٤٠ فاتورة ضريبية",
+                    "نسبة التوافق مع ZATCA Phase-2 تبلغ ١٠٠٪."
+                  )
+                }
+                className="cursor-pointer"
+              >
+                فحص مطابقة فواتير زاتكا الفوري
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() =>
+                  notify.luxury(
+                    "تم تحديث مصفوفة تسويات ساما Escrow",
+                    "جميع الأرصدة المحتجزة مطابقة للحساب البنكي الموحد."
+                  )
+                }
+                className="cursor-pointer"
+              >
+                تحديث تسويات الضمان البنكي SAMA
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() =>
+                  notify.info("تم إرسال تعميم الامتثال الأسبوعي لكافة التجار")
+                }
+                className="cursor-pointer"
+              >
+                إرسال تنبيه امتثال لجميع المنشآت
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
-      </div>
+      </FadeIn>
 
       {/* Top 4 KPI Metrics */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5">
+      <StaggerContainer className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5">
         {kpiData.map((kpi, idx) => {
           const Icon = kpi.icon;
           return (
-            <Card key={idx} className="p-6 rounded-3xl bg-white border border-slate-200/80 shadow-xs">
-              <div className="flex items-center justify-between mb-3">
-                <span className="text-xs font-bold text-slate-500">{kpi.title}</span>
-                <div className="w-9 h-9 rounded-xl bg-emerald-50 text-[#006948] flex items-center justify-center">
-                  <Icon className="w-4 h-4" />
-                </div>
-              </div>
+            <StaggerItem key={idx}>
+              <AnimatedCard className="h-full rounded-3xl">
+                <Card className="h-full p-6 rounded-3xl bg-white border border-slate-200/80 shadow-xs">
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="text-xs font-bold text-slate-500">{kpi.title}</span>
+                    <div className="w-9 h-9 rounded-xl bg-emerald-50 text-[#006948] flex items-center justify-center">
+                      <Icon className="w-4 h-4" />
+                    </div>
+                  </div>
 
-              <div className="text-2xl font-black text-slate-900 mb-1">{kpi.value}</div>
+                  <div className="text-2xl font-black text-slate-900 mb-1">
+                    <AnimatedCounter
+                      value={kpi.numericValue}
+                      formatter={kpi.formatter}
+                      suffix={kpi.suffix}
+                    />
+                  </div>
 
-              <div className="flex items-center gap-1.5 text-xs font-bold text-emerald-700 mb-2">
-                <TrendingUp className="w-3.5 h-3.5" />
-                <span>{kpi.change}</span>
-              </div>
+                  <div className="flex items-center gap-1.5 text-xs font-bold text-emerald-700 mb-2">
+                    <TrendingUp className="w-3.5 h-3.5" />
+                    <span>{kpi.change}</span>
+                  </div>
 
-              <span className="text-[10px] text-slate-400 block border-t border-slate-100 pt-2">
-                {kpi.subtext}
-              </span>
-            </Card>
+                  <span className="text-[10px] text-slate-400 block border-t border-slate-100 pt-2">
+                    {kpi.subtext}
+                  </span>
+                </Card>
+              </AnimatedCard>
+            </StaggerItem>
           );
         })}
-      </div>
+      </StaggerContainer>
 
       {/* Operational Alerts & Moderation Priority */}
       <div>
@@ -153,7 +242,10 @@ export default function AdminExecutiveDashboardPage() {
             <AlertTriangle className="w-4 h-4 text-amber-500" />
             التنبيهات التشغيلية والمهام الرقابية العاجلة
           </h3>
-          <span className="text-xs text-slate-500 font-medium">محدث تلقائياً</span>
+          <span className="text-xs text-emerald-700 font-bold flex items-center gap-1.5 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">
+            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+            مراقبة حية محدثة تلقائياً
+          </span>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
@@ -225,7 +317,12 @@ export default function AdminExecutiveDashboardPage() {
                   </div>
                 </div>
                 <div className="h-2.5 w-full bg-slate-100 rounded-full overflow-hidden">
-                  <div className={`h-full ${item.color} rounded-full`} style={{ width: item.share }}></div>
+                  <motion.div
+                    initial={{ width: 0 }}
+                    animate={{ width: item.share }}
+                    transition={{ duration: 0.8, delay: idx * 0.1, ease: "easeOut" }}
+                    className={`h-full ${item.color} rounded-full`}
+                  />
                 </div>
               </div>
             ))}
@@ -252,7 +349,7 @@ export default function AdminExecutiveDashboardPage() {
               ].map((gw, idx) => (
                 <div key={idx} className="flex items-center justify-between p-3 rounded-2xl bg-slate-50 border border-slate-100">
                   <div className="flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+                    <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
                     <span className="text-xs font-bold text-slate-800">{gw.name}</span>
                   </div>
                   <div className="flex items-center gap-2">
@@ -275,5 +372,6 @@ export default function AdminExecutiveDashboardPage() {
         </div>
       </div>
     </div>
+    </TooltipProvider>
   );
 }

@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import confetti from "canvas-confetti";
+import { motion } from "framer-motion";
 import StorefrontHeader from "@/components/StorefrontHeader";
 import StorefrontFooter from "@/components/StorefrontFooter";
 import { Button } from "@/components/ui/button";
@@ -26,6 +27,7 @@ import {
   Building,
 } from "lucide-react";
 import { formatSAR } from "@/lib/utils";
+import { notify } from "@/lib/notify";
 import { toast } from "sonner";
 import { createOrderInSupabase } from "@/lib/supabase";
 
@@ -114,7 +116,10 @@ export default function CheckoutPage() {
         colors: ["#006948", "#c5a059", "#10b981", "#ffffff"],
       });
 
-      toast.success("تم تأكيد دفع الطلب بنجاح وتوثيقه في قاعدة بيانات Supabase!");
+      notify.zatca(
+        "تم تأكيد الدفع السيادي بنجاح وإصدار فاتورة زاتكا!",
+        "تم توثيق الطلب وحجز المبلغ في حساب الضمان Escrow."
+      );
       clearCart();
       router.push("/orders/SQ-94281/confirmation");
     }, 1200);
@@ -133,8 +138,10 @@ export default function CheckoutPage() {
               <span>بوابة دفع سيادية مشفرة ومعتمدة من البنك المركزي السعودي (ساما)</span>
             </div>
             <div className="flex items-center gap-2 text-emerald-400 font-semibold">
-              <Lock className="w-3.5 h-3.5" />
-              <span>توثيق نفاذ الوطني الموحد نشط</span>
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-500/15 border border-emerald-400/30 animate-pulse">
+                <Lock className="w-3.5 h-3.5" />
+                <span>توثيق نفاذ الوطني الموحد وبوابة ساما نشطة</span>
+              </span>
             </div>
           </div>
         </section>
@@ -152,34 +159,47 @@ export default function CheckoutPage() {
             </h1>
           </div>
 
-          {/* Stepper Indicator */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-10">
-            {steps.map((st) => (
-              <div
-                key={st.number}
-                onClick={() => st.number < currentStep && setCurrentStep(st.number)}
-                className={`p-4 rounded-2xl border transition-all flex items-center gap-3 cursor-pointer ${
-                  currentStep === st.number
-                    ? "bg-[#006948] text-white border-[#006948] shadow-md shadow-[#006948]/20"
-                    : st.number < currentStep
-                    ? "bg-emerald-50 text-emerald-800 border-emerald-200"
-                    : "bg-white text-slate-400 border-slate-200"
-                }`}
-              >
-                <div
-                  className={`w-7 h-7 rounded-xl flex items-center justify-center font-bold text-xs ${
+          {/* Animated Multi-Step Progress Bar & Stepper */}
+          <div className="mb-8 space-y-4">
+            <div className="w-full h-2 rounded-full bg-slate-200 overflow-hidden">
+              <motion.div
+                className="h-full bg-gradient-to-l from-[#006948] via-emerald-500 to-[#c5a059] rounded-full"
+                initial={{ width: "25%" }}
+                animate={{ width: `${(currentStep / steps.length) * 100}%` }}
+                transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+              />
+            </div>
+
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+              {steps.map((st) => (
+                <motion.div
+                  key={st.number}
+                  whileHover={{ y: -2 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={() => st.number < currentStep && setCurrentStep(st.number)}
+                  className={`p-4 rounded-2xl border transition-colors flex items-center gap-3 cursor-pointer ${
                     currentStep === st.number
-                      ? "bg-white text-[#006948]"
+                      ? "bg-[#006948] text-white border-[#006948] shadow-md shadow-[#006948]/20"
                       : st.number < currentStep
-                      ? "bg-emerald-600 text-white"
-                      : "bg-slate-100 text-slate-400"
+                      ? "bg-emerald-50 text-emerald-800 border-emerald-200"
+                      : "bg-white text-slate-400 border-slate-200"
                   }`}
                 >
-                  {st.number < currentStep ? "✓" : st.number}
-                </div>
-                <span className="text-xs font-bold leading-tight">{st.title}</span>
-              </div>
-            ))}
+                  <div
+                    className={`w-7 h-7 rounded-xl flex items-center justify-center font-bold text-xs ${
+                      currentStep === st.number
+                        ? "bg-white text-[#006948]"
+                        : st.number < currentStep
+                        ? "bg-emerald-600 text-white"
+                        : "bg-slate-100 text-slate-400"
+                    }`}
+                  >
+                    {st.number < currentStep ? "✓" : st.number}
+                  </div>
+                  <span className="text-xs font-bold leading-tight">{st.title}</span>
+                </motion.div>
+              ))}
+            </div>
           </div>
 
           {/* 2-Column Checkout Layout */}

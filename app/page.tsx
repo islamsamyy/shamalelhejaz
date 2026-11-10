@@ -2,9 +2,15 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import StorefrontHeader from "@/components/StorefrontHeader";
 import StorefrontFooter from "@/components/StorefrontFooter";
+import ProductQuickViewModal from "@/components/ProductQuickViewModal";
+import {
+  StaggerContainer,
+  StaggerItem,
+  AnimatedCard,
+} from "@/components/ui/motion-primitives";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
@@ -297,20 +303,53 @@ export default function HomePage() {
                   </div>
                 </div>
 
-                {/* Countdown Timer */}
+                {/* Countdown Timer with Flip Physics */}
                 <div className="flex items-center justify-between gap-2 bg-slate-900 text-white p-3 rounded-2xl">
-                  <div className="flex-1 text-center">
-                    <span className="text-base font-black font-mono">{String(timeLeft.hours).padStart(2, "0")}</span>
+                  <div className="flex-1 text-center overflow-hidden">
+                    <AnimatePresence mode="popLayout">
+                      <motion.span
+                        key={timeLeft.hours}
+                        initial={{ y: -8, opacity: 0 }}
+                        animate={{ y: 0, opacity: 1 }}
+                        exit={{ y: 8, opacity: 0 }}
+                        transition={{ duration: 0.2 }}
+                        className="text-base font-black font-mono block"
+                      >
+                        {String(timeLeft.hours).padStart(2, "0")}
+                      </motion.span>
+                    </AnimatePresence>
                     <span className="text-[9px] block text-slate-400">ساعة</span>
                   </div>
                   <span className="font-bold text-emerald-400">:</span>
-                  <div className="flex-1 text-center">
-                    <span className="text-base font-black font-mono">{String(timeLeft.minutes).padStart(2, "0")}</span>
+                  <div className="flex-1 text-center overflow-hidden">
+                    <AnimatePresence mode="popLayout">
+                      <motion.span
+                        key={timeLeft.minutes}
+                        initial={{ y: -8, opacity: 0 }}
+                        animate={{ y: 0, opacity: 1 }}
+                        exit={{ y: 8, opacity: 0 }}
+                        transition={{ duration: 0.2 }}
+                        className="text-base font-black font-mono block"
+                      >
+                        {String(timeLeft.minutes).padStart(2, "0")}
+                      </motion.span>
+                    </AnimatePresence>
                     <span className="text-[9px] block text-slate-400">دقيقة</span>
                   </div>
                   <span className="font-bold text-emerald-400">:</span>
-                  <div className="flex-1 text-center">
-                    <span className="text-base font-black font-mono text-emerald-400">{String(timeLeft.seconds).padStart(2, "0")}</span>
+                  <div className="flex-1 text-center overflow-hidden">
+                    <AnimatePresence mode="popLayout">
+                      <motion.span
+                        key={timeLeft.seconds}
+                        initial={{ y: -8, opacity: 0 }}
+                        animate={{ y: 0, opacity: 1 }}
+                        exit={{ y: 8, opacity: 0 }}
+                        transition={{ duration: 0.2 }}
+                        className="text-base font-black font-mono text-emerald-400 block"
+                      >
+                        {String(timeLeft.seconds).padStart(2, "0")}
+                      </motion.span>
+                    </AnimatePresence>
                     <span className="text-[9px] block text-slate-400">ثانية</span>
                   </div>
                 </div>
@@ -480,13 +519,14 @@ export default function HomePage() {
           </div>
 
           {/* Product Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <StaggerContainer className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredProducts.map((product) => {
               const wishlisted = isWishlisted(product.id);
               return (
+                <StaggerItem key={product.id}>
+                <AnimatedCard className="h-full rounded-3xl">
                 <Card
-                  key={product.id}
-                  className="group rounded-3xl overflow-hidden border border-slate-200/80 hover:border-emerald-300 hover:shadow-xl transition-all duration-300 flex flex-col justify-between bg-white"
+                  className="group h-full rounded-3xl overflow-hidden border border-slate-200/80 hover:border-emerald-300 transition-all duration-300 flex flex-col justify-between bg-white"
                 >
                   <div>
                     {/* Image Area with Badges & Floating Actions */}
@@ -587,9 +627,11 @@ export default function HomePage() {
                     </Button>
                   </div>
                 </Card>
+                </AnimatedCard>
+                </StaggerItem>
               );
             })}
-          </div>
+          </StaggerContainer>
 
           <div className="flex justify-center mt-12">
             <Button asChild variant="outline" size="lg" className="rounded-2xl border-slate-300 font-bold text-xs h-12 px-8">
@@ -956,82 +998,12 @@ export default function HomePage() {
         </section>
       </main>
 
-      {/* Quick View Dialog */}
-      {quickViewProduct && (
-        <Dialog open={!!quickViewProduct} onOpenChange={(open) => !open && setQuickViewProduct(null)}>
-          <DialogContent className="max-w-2xl text-start">
-            <DialogHeader>
-              <div className="flex items-center gap-2 mb-1">
-                <Badge variant="sovereign">{quickViewProduct.badge}</Badge>
-                <span className="text-xs text-slate-400">{quickViewProduct.vendor}</span>
-              </div>
-              <DialogTitle className="text-lg font-bold text-slate-900">
-                {quickViewProduct.title}
-              </DialogTitle>
-            </DialogHeader>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 my-4">
-              <div className="rounded-2xl overflow-hidden bg-slate-100 aspect-square relative">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={quickViewProduct.image}
-                  alt={quickViewProduct.title}
-                  className="w-full h-full object-cover"
-                />
-              </div>
-
-              <div className="flex flex-col justify-between">
-                <div>
-                  <p className="text-xs text-slate-600 leading-relaxed">
-                    {quickViewProduct.description}
-                  </p>
-                  <div className="flex items-baseline gap-2 mt-4">
-                    <span className="text-2xl font-black text-[#006948]">
-                      {formatSAR(quickViewProduct.price)}
-                    </span>
-                    {quickViewProduct.originalPrice && (
-                      <span className="text-xs text-slate-400 line-through">
-                        {formatSAR(quickViewProduct.originalPrice)}
-                      </span>
-                    )}
-                  </div>
-                  <div className="p-3 rounded-xl bg-emerald-50 text-[11px] text-emerald-800 font-medium mt-4 space-y-1">
-                    <div className="flex items-center gap-1.5">
-                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-                      <span>ضريبة القيمة المضافة 15% مشمولة ومسجلة في زاتكا</span>
-                    </div>
-                    <div className="flex items-center gap-1.5">
-                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-                      <span>{quickViewProduct.deliveryLabel}</span>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-2 pt-6">
-                  <Button
-                    variant="sovereign"
-                    className="flex-1 font-bold"
-                    onClick={() => {
-                      addToCart(quickViewProduct);
-                      setQuickViewProduct(null);
-                    }}
-                  >
-                    <ShoppingBag className="w-4 h-4 ms-1.5" />
-                    إضافة إلى السلة
-                  </Button>
-                  <Button
-                    variant="outline"
-                    asChild
-                    onClick={() => setQuickViewProduct(null)}
-                  >
-                    <Link href={`/products/${quickViewProduct.id}`}>عرض التفاصيل كاملة</Link>
-                  </Button>
-                </div>
-              </div>
-            </div>
-          </DialogContent>
-        </Dialog>
-      )}
+      {/* Product Quick View Modal */}
+      <ProductQuickViewModal
+        product={quickViewProduct}
+        isOpen={!!quickViewProduct}
+        onClose={() => setQuickViewProduct(null)}
+      />
 
       {/* Add Review Dialog */}
       <Dialog open={isAddReviewOpen} onOpenChange={setIsAddReviewOpen}>

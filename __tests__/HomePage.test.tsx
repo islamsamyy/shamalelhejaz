@@ -8,9 +8,21 @@ vi.mock('next/link', () => ({
   default: ({ href, children }: any) => <a href={href}>{children}</a>,
 }));
 
-// Mock framer-motion's motion.div to a simple div
+// Mock framer-motion components
 vi.mock('framer-motion', () => ({
-  motion: { div: (props: any) => <div {...props} /> },
+  AnimatePresence: ({ children }: any) => <>{children}</>,
+  motion: new Proxy(
+    {},
+    {
+      get: (_target, prop: string) => {
+        return (props: any) => {
+          const { initial, animate, exit, transition, whileHover, whileTap, layout, ...rest } = props;
+          const Tag = typeof prop === 'string' && prop ? prop : 'div';
+          return <Tag {...rest} />;
+        };
+      },
+    }
+  ),
 }));
 
 const mockAddToCart = vi.fn();

@@ -100,6 +100,19 @@ html, body {
 }
 
 /* Legacy helper aliases so older templates render cleanly */
+
+/* Shimmer animation for loading placeholders */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.animate-shimmer {
+  background: linear-gradient(90deg, var(--color-surface-card) 25%, var(--color-surface-canvas) 50%, var(--color-surface-card) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+}
+
 .px-gutter {
   padding-left: 2rem;
   padding-right: 2rem;
