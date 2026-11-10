@@ -88,9 +88,9 @@ export default function AdminHeader() {
         <Button
           variant="outline"
           size="sm"
-          onClick={() => {
-            const { clearClientRole } = require("@/lib/rbac");
-            clearClientRole();
+          onClick={async () => {
+            const { signOutClient } = await import("@/lib/rbac");
+            await signOutClient();
             toast.success("تم تسجيل خروج مسؤول النظام.");
             window.location.href = "/auth/login?role=admin";
           }}

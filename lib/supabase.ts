@@ -1,13 +1,19 @@
-import { createClient } from "@supabase/supabase-js";
+import { createBrowserClient } from "@supabase/ssr";
 import { Product, Category } from "./catalogData";
 
-const supabaseUrl =
-  process.env.NEXT_PUBLIC_SUPABASE_URL || "https://lazleotmwyxglqgqwyrq.supabase.co";
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const supabaseAnonKey =
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imxhemxlb3Rtd3l4Z2xxZ3F3eXJxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTQyNjk1NTEsImV4cCI6MjEwOTg0NTU1MX0.Hld93PR5NQH2T1cG8FJx38D5jRnd4gnL48A_3EQ1JfA";
+  process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ||
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+if (!supabaseUrl || !supabaseAnonKey) {
+  throw new Error(
+    "Missing NEXT_PUBLIC_SUPABASE_URL or NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY. Set them in .env.local (see .env.example)."
+  );
+}
+
+// Cookie-based browser client so the server (proxy, route handlers) sees the same session.
+export const supabase = createBrowserClient(supabaseUrl, supabaseAnonKey);
 
 export interface DbProductRow {
   id: string;

@@ -39,7 +39,7 @@ import {
 } from "lucide-react";
 import { formatSAR } from "@/lib/utils";
 import { notify } from "@/lib/notify";
-import { getClientRole, clearClientRole, Role } from "@/lib/rbac";
+import { fetchClientRole, signOutClient, Role } from "@/lib/rbac";
 
 export default function StorefrontHeader() {
   const pathname = usePathname();
@@ -53,7 +53,7 @@ export default function StorefrontHeader() {
   const [currencyLabel, setCurrencyLabel] = useState("الريال السعودي (ر.س)");
 
   useEffect(() => {
-    setCurrentRole(getClientRole());
+    fetchClientRole().then(setCurrentRole);
     const handleScroll = () => setIsScrolled(window.scrollY > 16);
     handleScroll();
     window.addEventListener("scroll", handleScroll, { passive: true });
@@ -508,8 +508,8 @@ export default function StorefrontHeader() {
                 <DropdownMenuSeparator />
                 {currentRole ? (
                   <DropdownMenuItem
-                    onClick={() => {
-                      clearClientRole();
+                    onClick={async () => {
+                      await signOutClient();
                       setCurrentRole(null);
                       notify.success("تم تسجيل الخروج بنجاح.");
                       router.push("/");

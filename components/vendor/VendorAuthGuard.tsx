@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import { getClientRole } from "@/lib/rbac";
+import { fetchClientRole } from "@/lib/rbac";
 import { Store, ArrowLeft, LogIn } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -10,12 +10,7 @@ export default function VendorAuthGuard({ children }: { children: React.ReactNod
   const [isAuthorized, setIsAuthorized] = useState<boolean | null>(null);
 
   useEffect(() => {
-    const role = getClientRole();
-    if (role === "vendor" || role === "admin") {
-      setIsAuthorized(true);
-    } else {
-      setIsAuthorized(false);
-    }
+    fetchClientRole().then((role) => setIsAuthorized(role === "vendor" || role === "admin"));
   }, []);
 
   if (isAuthorized === null) {

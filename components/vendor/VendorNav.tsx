@@ -103,9 +103,9 @@ export default function VendorNav() {
             <Button
               variant="outline"
               size="sm"
-              onClick={() => {
-                const { clearClientRole } = require("@/lib/rbac");
-                clearClientRole();
+              onClick={async () => {
+                const { signOutClient } = await import("@/lib/rbac");
+                await signOutClient();
                 window.location.href = "/auth/login?role=vendor";
               }}
               className="bg-slate-800 text-rose-300 border-rose-900/40 hover:bg-rose-950/30 text-xs rounded-xl h-8"

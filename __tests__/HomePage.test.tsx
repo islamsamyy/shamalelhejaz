@@ -44,6 +44,9 @@ vi.mock('@/context/CartContext', () => ({
 
 // Mock supabase data functions
 vi.mock('@/lib/supabase', () => ({
+  supabase: {
+    auth: { getUser: async () => ({ data: { user: null }, error: null }), signOut: async () => ({}) },
+  },
   fetchProductsFromSupabase: vi.fn(),
   fetchTopCategoriesFromSupabase: vi.fn(),
   fetchReviewsFromSupabase: vi.fn(),
