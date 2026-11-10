@@ -2,7 +2,13 @@
 import { describe, it, expect, beforeEach } from "vitest";
 import { middleware } from "@/middleware";
 import { NextRequest } from "next/server";
-import { getClientRole, setClientRole, clearClientRole } from "@/lib/rbac";
+import {
+  getClientRole,
+  setClientRole,
+  clearClientRole,
+  authenticateWithCredentials,
+  TEST_ACCOUNTS,
+} from "@/lib/rbac";
 
 describe("RBAC Route Guards & Middleware Protection", () => {
   beforeEach(() => {
@@ -106,5 +112,56 @@ describe("RBAC Route Guards & Middleware Protection", () => {
 
     // Assert
     expect(response.status).toBe(200);
+  });
+
+  // =========================================================================
+  // 4. EMAIL & PASSWORD ACCOUNT AUTHENTICATION FOR ALL ROLES
+  // =========================================================================
+  it("should authenticate Admin account with email and password and set admin role", async () => {
+    const res = await authenticateWithCredentials(
+      TEST_ACCOUNTS.admin.email,
+      TEST_ACCOUNTS.admin.password,
+      "admin"
+    );
+    expect(res.success).toBe(true);
+    expect(res.user?.role).toBe("admin");
+    expect(res.redirectTo).toBe("/admin");
+    expect(getClientRole()).toBe("admin");
+  });
+
+  it("should authenticate Vendor account with email and password and set vendor role", async () => {
+    const res = await authenticateWithCredentials(
+      TEST_ACCOUNTS.vendor.email,
+      TEST_ACCOUNTS.vendor.password,
+      "vendor"
+    );
+    expect(res.success).toBe(true);
+    expect(res.user?.role).toBe("vendor");
+    expect(res.redirectTo).toBe("/vendor");
+    expect(getClientRole()).toBe("vendor");
+  });
+
+  it("should authenticate Customer account with email and password and set customer role", async () => {
+    const res = await authenticateWithCredentials(
+      TEST_ACCOUNTS.customer.email,
+      TEST_ACCOUNTS.customer.password,
+      "customer"
+    );
+    expect(res.success).toBe(true);
+    expect(res.user?.role).toBe("customer");
+    expect(res.redirectTo).toBe("/account");
+    expect(getClientRole()).toBe("customer");
+  });
+
+  it("should reject invalid password or mismatched role", async () => {
+    const badPass = await authenticateWithCredentials("admin@souq.sa", "WrongPassword", "admin");
+    expect(badPass.success).toBe(false);
+
+    const wrongRole = await authenticateWithCredentials(
+      TEST_ACCOUNTS.customer.email,
+      TEST_ACCOUNTS.customer.password,
+      "admin"
+    );
+    expect(wrongRole.success).toBe(false);
   });
 });

@@ -3,6 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "lint": "next lint",
+    "typecheck": "tsc --noEmit",
+    "build": "next build",
+    "dev": "next dev",
+    "start": "next start",
+    "postinstall": "node fix-magic-string.js",
+    "test": "node -e \"process.env.NODE_OPTIONS='--experimental-require-module'; require('child_process').spawnSync('npx', ['vitest', 'run'], { stdio: 'inherit', shell: true })\""
     "dev": "next dev",
     "build": "next build --webpack",
     "start": "next start",
