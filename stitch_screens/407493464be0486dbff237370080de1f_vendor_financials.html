@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_dashboard" name="shell-type"/><title>Souq Saudiya Sovereign Operations Hub</title><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config={darkMode:"class",theme:{extend:{"colors":{"tertiary-fixed":"#dce1ff","text-primary":"#0f172a","text-tertiary":"#94a3b8","text-secondary":"#475569","outline":"#6d7a72","sand-border":"#ddd5cd","on-error-container":"#93000a","on-secondary-container":"#00476e","surface":"#faf8ff","on-secondary-fixed-variant":"#004b73","on-tertiary-container":"#fffbff","on-tertiary-fixed":"#00164e","on-tertiary-fixed-variant":"#264191","primary-container":"#00855d","on-primary-container":"#f5fff7","surface-card":"#ffffff","surface-bright":"#faf8ff","badge-success-text":"#047857","teal-accent":"#06b6d4","tertiary-container":"#5870c3","secondary":"#006398","on-primary-fixed":"#002114","outline-variant":"#bccac0","inverse-surface":"#283044","secondary-fixed-dim":"#93ccff","sand-warm":"#f5f2ee","error-container":"#ffdad6","error":"#ba1a1a","on-background":"#131b2e","on-tertiary":"#ffffff","surface-container-lowest":"#ffffff","tertiary":"#3e57a8","on-secondary":"#ffffff","background":"#faf8ff","on-surface":"#131b2e","emerald-surface":"#ecfdf5","primary-fixed-dim":"#68dba9","border-subtle":"#e2e8f0","on-primary":"#ffffff","surface-container-low":"#f2f3ff","inverse-primary":"#68dba9","primary":"#006948","border-muted":"#f1f5f9","emerald-accent":"#10b981","inverse-on-surface":"#eef0ff","secondary-fixed":"#cce5ff","surface-container":"#eaedff","badge-success-bg":"#ecfdf5","primary-fixed":"#85f8c4","surface-dim":"#d2d9f4","surface-container-highest":"#dae2fd","surface-canvas":"#f8fafc","surface-tint":"#006c4a","surface-container-high":"#e2e7ff","on-secondary-fixed":"#001d31","on-surface-variant":"#3d4a42","tertiary-fixed-dim":"#b6c4ff","surface-variant":"#dae2fd","on-primary-fixed-variant":"#005137","secondary-container":"#5bb8fe","on-error":"#ffffff"},"borderRadius":{"DEFAULT":"0.25rem","lg":"0.5rem","xl":"0.75rem","full":"9999px"},"spacing":{"space-lg":"1.5rem","space-2xl":"4rem","margin":"2rem","gutter":"1.5rem","space-xl":"2.5rem","gutter-lg":"2rem","gutter-sm":"1rem","margin-lg":"4rem","margin-sm":"1rem","space-md":"1rem","space-xs":"0.25rem","space-sm":"0.5rem"},"fontFamily":{"mono-code":["JetBrains Mono"],"headline-xl-mobile":["IBM Plex Sans"],"headline-md":["IBM Plex Sans"],"display-lg":["IBM Plex Sans"],"headline-xl":["IBM Plex Sans"],"label-md":["IBM Plex Sans"],"headline-lg":["IBM Plex Sans"],"label-sm":["IBM Plex Sans"],"body-md":["IBM Plex Sans"],"body-lg":["IBM Plex Sans"],"body-sm":["IBM Plex Sans"],"label-lg":["IBM Plex Sans"],"headline-sm":["IBM Plex Sans"],"display-lg-mobile":["IBM Plex Sans"]},"fontSize":{"mono-code":["0.8125rem",{"lineHeight":"1.5","fontWeight":"400"}],"headline-xl-mobile":["1.75rem",{"lineHeight":"1.25","letterSpacing":"-0.015em","fontWeight":"600"}],"headline-md":["1.375rem",{"lineHeight":"1.35","letterSpacing":"-0.01em","fontWeight":"600"}],"display-lg":["3.5rem",{"lineHeight":"1.15","letterSpacing":"-0.025em","fontWeight":"700"}],"headline-xl":["2.5rem",{"lineHeight":"1.2","letterSpacing":"-0.02em","fontWeight":"600"}],"label-md":["0.8125rem",{"lineHeight":"1.4","letterSpacing":"0.02em","fontWeight":"500"}],"headline-lg":["1.75rem",{"lineHeight":"1.3","letterSpacing":"-0.015em","fontWeight":"600"}],"label-sm":["0.6875rem",{"lineHeight":"1.4","letterSpacing":"0.04em","fontWeight":"600"}],"body-md":["0.9375rem",{"lineHeight":"1.6","fontWeight":"400"}],"body-lg":["1.125rem",{"lineHeight":"1.6","fontWeight":"400"}],"body-sm":["0.8125rem",{"lineHeight":"1.5","fontWeight":"400"}],"label-lg":["0.9375rem",{"lineHeight":"1.4","letterSpacing":"0.01em","fontWeight":"600"}],"headline-sm":["1.125rem",{"lineHeight":"1.4","fontWeight":"600"}],"display-lg-mobile":["2.25rem",{"lineHeight":"1.2","letterSpacing":"-0.02em","fontWeight":"700"}]}}}};</script></head><body class="bg-surface-canvas font-body-md text-on-surface antialiased"><aside class="fixed left-0 top-0 h-full w-72 bg-surface-card border-r border-border-subtle z-50 flex flex-col shadow-sm"><div class="h-20 px-space-md border-b border-border-subtle flex items-center gap-space-sm"><img alt="Souq Saudiya Crest Logo" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDTWI8QZzcQ8vWUZCT0hYZoZu6-lalvA8vVXVoWiZIiqq_XY8YN_jJXJrw45iBcjBx_LlvGU1kbmwXL_dsgLwK3hXTZ9JB7NKh7NiT8HUJzUtgTAdfwLGLJsf-mOgkiTAcHGiRCRgM3F0KHEG3l0tPO020fnQmVUI3QoXNH9MUqUFh22FS0P8n1ZXgs9AkSZCkGGweXUMSq0PWOsAR7604pcR4z9Y9rDgev7VOkH7iE"/><div class="flex flex-col"><span class="font-headline-sm text-headline-sm text-text-primary leading-none">SOUQ SAUDIYA</span><span class="font-label-sm text-label-sm text-secondary uppercase tracking-widest mt-1">Vendor Portal Hub</span></div></div><div class="px-space-md py-space-sm"><div class="p-3 rounded-lg bg-emerald-surface border border-emerald-accent/20 flex items-center justify-between"><div class="flex flex-col"><span class="font-label-sm text-label-sm text-text-secondary uppercase">ZATCA Gateway</span><span class="font-label-md text-label-md text-badge-success-text font-semibold">Phase 2 Active (Synced)</span></div><span class="w-2.5 h-2.5 rounded-full bg-emerald-accent shadow-[0_0_8px_rgba(16,185,129,0.5)]"></span></div></div><nav class="flex-1 px-space-sm py-space-xs flex flex-col gap-1 overflow-y-auto" data-active-classes="bg-primary text-on-primary font-semibold rounded-lg"><div class="px-3 pt-2 pb-1"><span class="font-label-sm text-label-sm text-text-tertiary uppercase tracking-wider font-semibold">Overview &amp; Finance</span></div><a class="flex items-center px-3.5 py-2.5 rounded-lg text-text-secondary hover:bg-surface-container-low hover:text-text-primary transition-colors font-body-sm text-body-sm" data-path="vendor-portal" href="#">Vendor Settlement &amp; Overview</a><a class="flex items-center px-3.5 py-2.5 rounded-lg text-text-secondary hover:bg-surface-container-low hover:text-text-primary transition-colors font-body-sm text-body-sm" data-path="admin-operations" href="#">Executive Control</a><a class="flex items-center px-3.5 py-2.5 rounded-lg text-text-secondary hover:bg-surface-container-low hover:text-text-primary transition-colors font-body-sm text-body-sm" data-path="enterprise-b2b" href="#">Enterprise B2B Escrow</a><div class="px-3 pt-3 pb-1"><span class="font-label-sm text-label-sm text-text-tertiary uppercase tracking-wider font-semibold">Merchant Studio &amp; Inventory</span></div><a class="flex items-center px-3.5 py-2.5 rounded-lg text-text-secondary hover:bg-surface-container-low hover:text-text-primary transition-colors font-body-sm text-body-sm" data-path="catalog-management" href="#">Catalog Management</a><a class="flex items-center px-3.5 py-2.5 rounded-lg text-text-secondary hover:bg-surface-container-low hover:text-text-primary transition-colors font-body-sm text-body-sm" data-path="add-product" href="#">Add Product</a><a class="flex items-center px-3.5 py-2.5 rounded-lg text-text-secondary hover:bg-surface-container-low hover:text-text-primary transition-colors font-body-sm text-body-sm" data-path="curated-drops" href="#">Vault Drop Allocations</a><a class="flex items-center px-3.5 py-2.5 rounded-lg text-text-secondary hover:bg-surface-container-low hover:text-text-primary transition-colors mt-auto border-t border-border-subtle pt-3 font-body-sm text-body-sm" data-path="storefront" href="#">Return to Storefront</a></nav><div class="p-space-sm border-t border-border-subtle"><div class="flex items-center gap-space-sm p-2 rounded-lg bg-surface-container-low"><img alt="Profile" class="w-8 h-8 rounded-full object-cover ring-1 ring-emerald-accent/40" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD7w-w5KFbr8RsSWcM2F-SvRvHeaAPqB-590qbcQ6vRJY_1vGoDvikoN_JCIeDBVFhfeaKYJe1lAZJQh99lhkXRkpHaBxCGQJre_WxQ-IBFak1HLcF8h7hKMYDwOn-0bJULaHgMCV8s-FZha7PCga8UZ8TtnDMvtaOcK26sqT21ru28ZFfsc-UprfRqQmZJHLUHb51MT42vyOf-Oxaky2lVsAPYHnRxPgkFBMNQrrQ3"/><div class="flex flex-col truncate"><span class="font-label-md text-label-md font-semibold text-text-primary truncate">Master Artisan</span><span class="font-label-sm text-label-sm text-secondary uppercase">Verified Merchant</span></div></div></div></aside><div class="pl-72 min-h-screen flex flex-col"><header class="fixed top-0 left-72 right-0 h-20 bg-surface-card/95 backdrop-blur-md border-b border-border-subtle z-40 flex items-center justify-between px-space-lg shadow-sm"><div class="flex items-center gap-space-md"><div class="relative flex items-center w-96"><span class="material-symbols-outlined absolute left-3 text-text-tertiary text-[18px]">search</span><input class="w-full h-10 pl-9 pr-4 rounded-lg bg-surface-canvas border border-border-subtle text-text-primary text-body-sm placeholder:text-text-tertiary focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary" placeholder="Search products, SKUs, ZATCA invoices, orders..." type="search"/></div><span class="px-2.5 py-1 rounded bg-emerald-surface text-badge-success-text text-label-sm font-semibold border border-emerald-accent/30">SAR Escrow Ledger: Real-Time</span></div><div class="flex items-center gap-space-md"><div class="flex items-center gap-space-xs text-secondary font-label-md"><span class="material-symbols-outlined text-[16px]">account_balance_wallet</span><span>Available Balance: 48,290.00 SAR</span></div><div class="h-5 w-px bg-border-subtle"></div><button class="relative p-2 rounded-full text-text-secondary hover:text-text-primary hover:bg-surface-container-low transition-colors" type="button"><span class="material-symbols-outlined text-[20px]">notifications</span><span class="absolute top-1 right-1 w-2 h-2 rounded-full bg-emerald-accent"></span></button><button class="flex items-center gap-1.5 text-label-md text-text-secondary hover:text-primary transition-colors" type="button"><span class="material-symbols-outlined text-[18px]">language</span><span>العربية</span></button></div></header><main class="w-full pt-20 px-space-lg pb-space-xl flex-1 bg-surface-canvas"><div class="flex flex-col w-full" dir="rtl">
+<!-- Top Sovereign Trust Strip & Breadcrumb -->
+<div class="flex flex-col md:flex-row md:items-center md:justify-between gap-space-sm mb-space-md">
+<div class="flex flex-col gap-1">
+<div class="flex items-center gap-2 text-text-tertiary font-label-sm text-label-sm">
+<span>بوابة التجار</span>
+<span class="material-symbols-outlined text-[14px]">chevron_left</span>
+<span>الإدارة المالية والتقارير</span>
+<span class="material-symbols-outlined text-[14px]">chevron_left</span>
+<span class="text-primary font-semibold">التسويات والمحفظة السيادية</span>
+</div>
+<div class="flex flex-wrap items-center gap-x-space-md gap-y-2 mt-1">
+<h1 class="font-headline-lg text-headline-lg text-text-primary tracking-tight">
+          اللوحة المالية وحساب التسويات — <span class="text-primary">دار الحرمين للساعات والمجوهرات</span>
+</h1>
+<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-surface text-badge-success-text font-label-sm text-label-sm">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-accent animate-pulse"></span>
+          حساب تاجر موثوق (فئة ماسية)
+        </span>
+</div>
+</div>
+<!-- Quick Action Bar -->
+<div class="flex items-center gap-space-sm flex-wrap">
+<button class="inline-flex items-center gap-2 px-3.5 py-2 rounded-lg bg-surface-card hover:bg-surface-container-low text-text-secondary hover:text-text-primary font-label-md text-label-md shadow-sm transition-all" type="button">
+<span class="material-symbols-outlined text-[18px] text-text-tertiary">download</span>
+<span>تصدير كشف الحساب (Excel)</span>
+</button>
+<button class="inline-flex items-center gap-2 px-3.5 py-2 rounded-lg bg-surface-card hover:bg-surface-container-low text-text-secondary hover:text-text-primary font-label-md text-label-md shadow-sm transition-all" type="button">
+<span class="material-symbols-outlined text-[18px] text-secondary">receipt_long</span>
+<span>إقرار ZATCA الضريبي</span>
+</button>
+<button class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-primary hover:bg-primary-container text-on-primary font-label-md text-label-md shadow-sm hover:shadow transition-all" id="instantPayoutBtn" type="button">
+<span class="material-symbols-outlined text-[18px]">bolt</span>
+<span>طلب تسوية فورية (سريع)</span>
+</button>
+</div>
+</div>
+<!-- Verified Sovereign Credentials Ribbon -->
+<div class="bg-surface-card rounded-xl p-space-md shadow-sm mb-space-lg flex flex-col lg:flex-row lg:items-center justify-between gap-space-md">
+<div class="flex flex-wrap items-center gap-space-lg">
+<div class="flex items-center gap-space-sm">
+<div class="w-10 h-10 rounded-lg bg-surface-container-low flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[22px]">verified_user</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-text-tertiary uppercase">سجل تجاري موثق (واثق)</span>
+<span class="font-mono-code text-mono-code text-text-primary font-medium tracking-wider">CR-1010892014</span>
+</div>
+</div>
+<div class="h-8 w-px bg-surface-container-highest hidden sm:block"></div>
+<div class="flex items-center gap-space-sm">
+<div class="w-10 h-10 rounded-lg bg-surface-container-low flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined text-[22px]">account_balance</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-text-tertiary">الآيبان البنكي المعتمد (سريع)</span>
+<div class="flex items-center gap-2">
+<span class="font-mono-code text-mono-code text-text-primary font-medium" dir="ltr">SA44 8000 0456 1234 5678 9012</span>
+<span class="px-2 py-0.5 rounded bg-surface-container-high text-on-secondary-fixed-variant font-label-sm text-label-sm">مصرف الراجحي</span>
+</div>
+</div>
+</div>
+<div class="h-8 w-px bg-surface-container-highest hidden sm:block"></div>
+<div class="flex items-center gap-space-sm">
+<div class="w-10 h-10 rounded-lg bg-surface-container-low flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[22px]">shield</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-text-tertiary">حماية الضمان المالي</span>
+<span class="font-label-md text-label-md text-text-primary font-semibold">تحت إشراف ساما SAMA Escrow</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-2 text-text-secondary font-label-sm text-label-sm bg-surface-container-low px-3 py-1.5 rounded-lg self-start lg:self-center">
+<span class="material-symbols-outlined text-[16px] text-badge-success-text">sync</span>
+<span>آخر مزامنة دفتر أستاذ: <span class="font-mono-code text-text-primary">14:42:09</span> اليوم</span>
+</div>
+</div>
+<!-- Primary Balance & Liquidity Bento Matrix -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-space-md mb-space-lg">
+<!-- Hero Metric: Available for Immediate Payout (Cols 4) -->
+<div class="lg:col-span-4 bg-surface-card rounded-xl p-space-lg shadow-sm flex flex-col justify-between relative overflow-hidden">
+<div class="absolute -left-12 -top-12 w-36 h-36 bg-emerald-accent/5 rounded-full pointer-events-none"></div>
+<div>
+<div class="flex items-center justify-between mb-space-sm">
+<span class="font-label-sm text-label-sm uppercase tracking-wide text-text-secondary">الرصيد المتاح للتحويل اللحظي</span>
+<span class="px-2 py-0.5 rounded-full bg-emerald-surface text-badge-success-text font-label-sm text-label-sm font-semibold">سحب فوري</span>
+</div>
+<div class="flex items-baseline gap-2 mb-1">
+<span class="font-headline-xl text-headline-xl font-bold text-text-primary tracking-tight">142,850.00</span>
+<span class="font-label-md text-label-md text-text-secondary">ر.س</span>
+</div>
+<p class="font-body-sm text-body-sm text-text-secondary">
+          متاح للتحويل المباشر عبر نظام «سريع» إلى حساب الراجحي خلال 3 ثوانٍ دون انتظار دورة التسوية.
+        </p>
+</div>
+<div class="mt-space-md pt-space-sm bg-surface-container-low rounded-lg p-3 flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px] text-primary">schedule_send</span>
+<span class="font-label-sm text-label-sm text-text-primary">الحد اليومي المتبقي: 857,150 ر.س</span>
+</div>
+<span class="font-mono-code text-label-sm text-primary font-semibold">85% متبقٍ</span>
+</div>
+</div>
+<!-- Escrow In-Transit (Cols 4) -->
+<div class="lg:col-span-4 bg-surface-card rounded-xl p-space-lg shadow-sm flex flex-col justify-between relative overflow-hidden">
+<div class="absolute -left-12 -top-12 w-36 h-36 bg-secondary/5 rounded-full pointer-events-none"></div>
+<div>
+<div class="flex items-center justify-between mb-space-sm">
+<span class="font-label-sm text-label-sm uppercase tracking-wide text-text-secondary">المبالغ المحجوزة في الضمان السيادي</span>
+<span class="px-2 py-0.5 rounded-full bg-secondary-fixed text-on-secondary-fixed-variant font-label-sm text-label-sm font-semibold">SAMA Escrow</span>
+</div>
+<div class="flex items-baseline gap-2 mb-1">
+<span class="font-headline-xl text-headline-xl font-bold text-text-primary tracking-tight">89,400.00</span>
+<span class="font-label-md text-label-md text-text-secondary">ر.س</span>
+</div>
+<p class="font-body-sm text-body-sm text-text-secondary">
+          مبيعات مقتنيات قيد النقل أو ضمن مهلة المعاينة الـ 48 ساعة للعميل. التحرير تلقائي فور الاستلام.
+        </p>
+</div>
+<div class="mt-space-md pt-space-sm flex items-center justify-between text-text-secondary font-label-sm text-label-sm">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px] text-secondary">hourglass_top</span>
+<span>12 عملية بانتظار إشعار العميل</span>
+</div>
+<span class="font-mono-code text-secondary font-medium">متوسط التحرير: 22 س</span>
+</div>
+</div>
+<!-- GMV & VAT Breakdown (Cols 4 Split) -->
+<div class="lg:col-span-4 grid grid-cols-1 gap-space-sm">
+<!-- GMV Card -->
+<div class="bg-surface-card rounded-xl p-space-md shadow-sm flex items-center justify-between">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-text-secondary">إجمالي المبيعات المحققة (الشهر الحالي)</span>
+<div class="flex items-baseline gap-1.5 mt-0.5">
+<span class="font-headline-md text-headline-md font-bold text-text-primary">645,200.00</span>
+<span class="font-label-sm text-label-sm text-text-secondary">ر.س</span>
+</div>
+<div class="flex items-center gap-1 text-badge-success-text font-label-sm text-label-sm mt-1">
+<span class="material-symbols-outlined text-[14px]">trending_up</span>
+<span>+18.4% مقارنة بالشهر السابق</span>
+</div>
+</div>
+<div class="w-12 h-12 rounded-xl bg-surface-container-low flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[24px]">payments</span>
+</div>
+</div>
+<!-- VAT & Marketplace Fee Compact Row -->
+<div class="grid grid-cols-2 gap-space-sm">
+<div class="bg-surface-card rounded-xl p-3.5 shadow-sm flex flex-col justify-between">
+<span class="font-label-sm text-label-sm text-text-secondary">ضريبة VAT (15%)</span>
+<div class="mt-1">
+<span class="font-headline-sm text-headline-sm font-semibold text-text-primary">84,156.52</span>
+<span class="font-label-sm text-label-sm text-text-tertiary mr-1">ر.س</span>
+</div>
+<span class="font-label-sm text-label-sm text-secondary mt-1 flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+            مربوطة مع ZATCA
+          </span>
+</div>
+<div class="bg-surface-card rounded-xl p-3.5 shadow-sm flex flex-col justify-between">
+<span class="font-label-sm text-label-sm text-text-secondary">عمولة المنصة (3%)</span>
+<div class="mt-1">
+<span class="font-headline-sm text-headline-sm font-semibold text-text-primary">19,356.00</span>
+<span class="font-label-sm text-label-sm text-text-tertiary mr-1">ر.س</span>
+</div>
+<span class="font-label-sm text-label-sm text-text-tertiary mt-1">شاملة الفحص والتوثيق</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Cashflow Analytic Module & Release Velocity Insight -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-space-md mb-space-lg">
+<!-- Visual Trends Interactive Panel (Cols 8) -->
+<div class="lg:col-span-8 bg-surface-card rounded-xl p-space-lg shadow-sm flex flex-col justify-between">
+<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-space-sm mb-space-md">
+<div>
+<h2 class="font-headline-sm text-headline-sm text-text-primary font-semibold">تحليل التدفقات النقدية ومطابقة المبيعات</h2>
+<p class="font-body-sm text-body-sm text-text-secondary mt-0.5">مقارنة دورية بين إجمالي حجم المبيعات (GMV) والتسويات المصرفية المحولة فعلياً</p>
+</div>
+<div class="flex items-center gap-1 bg-surface-container-low p-1 rounded-lg self-start sm:self-auto" id="rangeSelector">
+<button class="px-3 py-1 rounded text-label-sm text-label-sm text-text-secondary hover:text-text-primary transition-colors" data-range="7d" type="button">7 أيام</button>
+<button class="px-3 py-1 rounded bg-surface-card text-text-primary shadow-xs font-semibold text-label-sm text-label-sm" data-range="month" type="button">هذا الشهر</button>
+<button class="px-3 py-1 rounded text-label-sm text-label-sm text-text-secondary hover:text-text-primary transition-colors" data-range="q4" type="button">Q4 2025</button>
+</div>
+</div>
+<!-- Financial Metric Inline Spark Bar / SVG Visualization -->
+<div class="relative w-full h-56 flex flex-col justify-end pt-4">
+<!-- SVG Area & Bars Chart -->
+<svg class="w-full h-44 overflow-visible" preserveaspectratio="none" viewbox="0 0 700 160">
+<defs>
+<lineargradient id="gmvGrad" x1="0" x2="0" y1="0" y2="1">
+<stop offset="0%" stop-color="#006948" stop-opacity="0.25"></stop>
+<stop offset="100%" stop-color="#006948" stop-opacity="0.0"></stop>
+</lineargradient>
+<lineargradient id="payoutGrad" x1="0" x2="0" y1="0" y2="1">
+<stop offset="0%" stop-color="#006398" stop-opacity="0.2"></stop>
+<stop offset="100%" stop-color="#006398" stop-opacity="0.0"></stop>
+</lineargradient>
+</defs>
+<!-- Horizontal Grid Lines -->
+<line stroke="#f1f5f9" stroke-dasharray="3 3" stroke-width="1" x1="0" x2="700" y1="20"></line>
+<line stroke="#f1f5f9" stroke-dasharray="3 3" stroke-width="1" x1="0" x2="700" y1="60"></line>
+<line stroke="#f1f5f9" stroke-dasharray="3 3" stroke-width="1" x1="0" x2="700" y1="100"></line>
+<line stroke="#f1f5f9" stroke-dasharray="3 3" stroke-width="1" x1="0" x2="700" y1="140"></line>
+<!-- GMV Area Path -->
+<polygon fill="url(#gmvGrad)" points="20,130 110,105 210,85 310,110 410,40 510,55 610,25 680,35 680,150 20,150"></polygon>
+<path d="M 20 130 Q 65 117 110 105 T 210 85 T 310 110 T 410 40 T 510 55 T 610 25 T 680 35" fill="none" stroke="#006948" stroke-linecap="round" stroke-width="2.5"></path>
+<!-- Settlement Area Path -->
+<polygon fill="url(#payoutGrad)" points="20,145 110,135 210,100 310,120 410,70 510,75 610,48 680,52 680,150 20,150"></polygon>
+<path d="M 20 145 Q 65 140 110 135 T 210 100 T 310 120 T 410 70 T 510 75 T 610 48 T 680 52" fill="none" stroke="#006398" stroke-dasharray="4 4" stroke-linecap="round" stroke-width="2"></path>
+<!-- Data Points on Peak -->
+<circle cx="410" cy="40" fill="#006948" r="4" stroke="#ffffff" stroke-width="2"></circle>
+<circle cx="610" cy="25" fill="#006948" r="4" stroke="#ffffff" stroke-width="2"></circle>
+<circle cx="610" cy="48" fill="#006398" r="3.5" stroke="#ffffff" stroke-width="2"></circle>
+</svg>
+<!-- X-Axis Labels -->
+<div class="flex items-center justify-between text-text-tertiary font-label-sm text-label-sm pt-2">
+<span>1 أكتوبر</span>
+<span>5 أكتوبر</span>
+<span>10 أكتوبر</span>
+<span>15 أكتوبر</span>
+<span>20 أكتوبر (اليوم الوطني)</span>
+<span>25 أكتوبر</span>
+<span>اليوم</span>
+</div>
+</div>
+<div class="flex flex-wrap items-center justify-between gap-space-md mt-space-md pt-space-md bg-surface-canvas rounded-lg px-4 py-3">
+<div class="flex items-center gap-space-md">
+<div class="flex items-center gap-2">
+<span class="w-3 h-3 rounded-full bg-primary"></span>
+<span class="font-label-sm text-label-sm text-text-secondary">المبيعات الإجمالية المحققة</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="w-3 h-3 rounded-full bg-secondary"></span>
+<span class="font-label-sm text-label-sm text-text-secondary">التسويات المودعة بنكياً</span>
+</div>
+</div>
+<div class="font-mono-code text-label-sm text-text-primary">
+          معدل التحصيل اللحظي: <span class="text-badge-success-text font-bold">99.4%</span>
+</div>
+</div>
+</div>
+<!-- Escrow Liquidity Velocity & Compliance Widget (Cols 4) -->
+<div class="lg:col-span-4 flex flex-col gap-space-md">
+<!-- SAMA Velocity Card -->
+<div class="bg-surface-card rounded-xl p-space-md shadow-sm flex flex-col justify-between flex-1">
+<div class="flex items-center justify-between mb-3">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[20px]">timer</span>
+<span class="font-headline-sm text-headline-sm font-semibold text-text-primary">سرعة تحرير الضمان</span>
+</div>
+<span class="px-2 py-0.5 rounded bg-emerald-surface text-badge-success-text font-label-sm text-label-sm font-semibold">ممتاز</span>
+</div>
+<div class="flex items-center gap-space-md my-2">
+<div class="relative w-20 h-20 shrink-0">
+<svg class="w-full h-full -rotate-90" viewbox="0 0 36 36">
+<path class="text-surface-container-high" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-width="3.5"></path>
+<path class="text-primary" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831" fill="none" stroke="currentColor" stroke-dasharray="78, 100" stroke-linecap="round" stroke-width="3.5"></path>
+</svg>
+<div class="absolute inset-0 flex flex-col items-center justify-center">
+<span class="font-mono-code text-label-lg font-bold text-text-primary leading-none">22</span>
+<span class="font-label-sm text-[10px] text-text-tertiary">ساعة</span>
+</div>
+</div>
+<div class="flex flex-col gap-1">
+<span class="font-label-md text-label-md text-text-primary font-semibold">متوسط زمن الإفراج النقدي</span>
+<p class="font-body-sm text-body-sm text-text-secondary leading-snug">
+              يتم إيداع القيمة تلقائياً بعد استلام المشتري للقطعة بـ 22 ساعة (أقل بـ 26 ساعة من المهلة النظامية).
+            </p>
+</div>
+</div>
+<div class="bg-surface-container-low p-2.5 rounded-lg text-text-secondary font-label-sm text-label-sm flex items-center justify-between">
+<span>نسبة المرتجعات أو النزاعات:</span>
+<span class="font-mono-code text-badge-success-text font-bold">0.12% (أدنى من المعيار)</span>
+</div>
+</div>
+<!-- ZATCA Phase 2 Compliance Status -->
+<div class="bg-surface-card rounded-xl p-space-md shadow-sm flex flex-col justify-between">
+<div class="flex items-center justify-between mb-2">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary text-[20px]">hub</span>
+<span class="font-headline-sm text-headline-sm font-semibold text-text-primary">بوابة زاتكا (ZATCA)</span>
+</div>
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-surface text-badge-success-text font-label-sm text-label-sm font-semibold">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-accent"></span>
+            المرحلة 2 مفعلة
+          </span>
+</div>
+<div class="space-y-2 font-label-sm text-label-sm text-text-secondary mt-1">
+<div class="flex justify-between">
+<span class="text-text-tertiary">الرقم الضريبي للمنشأة:</span>
+<span class="font-mono-code text-text-primary font-medium">310245678900003</span>
+</div>
+<div class="flex justify-between">
+<span class="text-text-tertiary">موعد الإقرار القادم:</span>
+<span class="text-text-primary font-medium">31 أكتوبر 2025 (Q3)</span>
+</div>
+<div class="flex justify-between">
+<span class="text-text-tertiary">الجدولة التلقائية:</span>
+<span class="text-primary font-medium">تحويل يومي تلقائي (04:00 ص)</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Recent Settlements & Bank Payout Ledger -->
+<div class="bg-surface-card rounded-xl shadow-sm mb-space-lg overflow-hidden">
+<div class="p-space-lg flex flex-col sm:flex-row sm:items-center sm:justify-between gap-space-sm bg-surface-card">
+<div>
+<h2 class="font-headline-sm text-headline-sm text-text-primary font-semibold">سجل التسويات والتحويلات البنكية الأخيرة (نظام سريع)</h2>
+<p class="font-body-sm text-body-sm text-text-secondary mt-0.5">الحوالات البنكية المودعة والمجدولة مباشرة إلى حساب الآيبان المسجل</p>
+</div>
+<div class="flex items-center gap-2">
+<span class="text-text-tertiary font-label-sm text-label-sm">عرض: 4 من أصل 48 حوالة</span>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-right border-collapse">
+<thead>
+<tr class="bg-surface-container-low text-text-secondary font-label-sm text-label-sm uppercase tracking-wider">
+<th class="py-3 px-space-lg font-semibold">معرف التسوية</th>
+<th class="py-3 px-4 font-semibold">التاريخ والوقت</th>
+<th class="py-3 px-4 font-semibold">المبلغ المحول</th>
+<th class="py-3 px-4 font-semibold">مرجع سريع (SARIE Ref)</th>
+<th class="py-3 px-4 font-semibold">البنك المستلم</th>
+<th class="py-3 px-4 font-semibold">الحالة</th>
+<th class="py-3 px-space-lg font-semibold text-left">إشعار البنك</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-surface-container-high font-body-sm text-body-sm text-text-primary">
+<!-- Row 1 -->
+<tr class="hover:bg-surface-container-low/60 transition-colors">
+<td class="py-3.5 px-space-lg">
+<span class="font-mono-code font-semibold text-primary">#STL-2025-0914</span>
+</td>
+<td class="py-3.5 px-4 text-text-secondary font-mono-code">24 أكتوبر 2025 • 09:30 ص</td>
+<td class="py-3.5 px-4">
+<div class="flex items-baseline gap-1 font-semibold text-text-primary">
+<span class="font-mono-code">86,400.00</span>
+<span class="font-label-sm text-label-sm text-text-tertiary">ر.س</span>
+</div>
+</td>
+<td class="py-3.5 px-4 font-mono-code text-text-secondary">SARIE-884210941</td>
+<td class="py-3.5 px-4">
+<span class="inline-flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+<span>مصرف الراجحي (..9012)</span>
+</span>
+</td>
+<td class="py-3.5 px-4">
+<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-surface text-badge-success-text font-label-sm text-label-sm font-semibold">
+<span class="material-symbols-outlined text-[14px]">check_circle</span>
+                مكتمل فوري
+              </span>
+</td>
+<td class="py-3.5 px-space-lg text-left">
+<button class="inline-flex items-center gap-1 text-primary hover:text-primary-container font-label-md text-label-md font-semibold transition-colors" type="button">
+<span class="material-symbols-outlined text-[16px]">receipt</span>
+<span>إشعار التحويل</span>
+</button>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-surface-container-low/60 transition-colors">
+<td class="py-3.5 px-space-lg">
+<span class="font-mono-code font-semibold text-primary">#STL-2025-0908</span>
+</td>
+<td class="py-3.5 px-4 text-text-secondary font-mono-code">21 أكتوبر 2025 • 14:15 م</td>
+<td class="py-3.5 px-4">
+<div class="flex items-baseline gap-1 font-semibold text-text-primary">
+<span class="font-mono-code">112,500.00</span>
+<span class="font-label-sm text-label-sm text-text-tertiary">ر.س</span>
+</div>
+</td>
+<td class="py-3.5 px-4 font-mono-code text-text-secondary">SARIE-883921703</td>
+<td class="py-3.5 px-4">
+<span class="inline-flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+<span>مصرف الراجحي (..9012)</span>
+</span>
+</td>
+<td class="py-3.5 px-4">
+<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-surface text-badge-success-text font-label-sm text-label-sm font-semibold">
+<span class="material-symbols-outlined text-[14px]">check_circle</span>
+                مكتمل فوري
+              </span>
+</td>
+<td class="py-3.5 px-space-lg text-left">
+<button class="inline-flex items-center gap-1 text-primary hover:text-primary-container font-label-md text-label-md font-semibold transition-colors" type="button">
+<span class="material-symbols-outlined text-[16px]">receipt</span>
+<span>إشعار التحويل</span>
+</button>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-surface-container-low/60 transition-colors">
+<td class="py-3.5 px-space-lg">
+<span class="font-mono-code font-semibold text-primary">#STL-2025-0899</span>
+</td>
+<td class="py-3.5 px-4 text-text-secondary font-mono-code">18 أكتوبر 2025 • 04:00 ص</td>
+<td class="py-3.5 px-4">
+<div class="flex items-baseline gap-1 font-semibold text-text-primary">
+<span class="font-mono-code">54,300.00</span>
+<span class="font-label-sm text-label-sm text-text-tertiary">ر.س</span>
+</div>
+</td>
+<td class="py-3.5 px-4 font-mono-code text-text-secondary">SARIE-883109244</td>
+<td class="py-3.5 px-4">
+<span class="inline-flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+<span>مصرف الراجحي (..9012)</span>
+</span>
+</td>
+<td class="py-3.5 px-4">
+<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-surface text-badge-success-text font-label-sm text-label-sm font-semibold">
+<span class="material-symbols-outlined text-[14px]">check_circle</span>
+                مكتمل فوري
+              </span>
+</td>
+<td class="py-3.5 px-space-lg text-left">
+<button class="inline-flex items-center gap-1 text-primary hover:text-primary-container font-label-md text-label-md font-semibold transition-colors" type="button">
+<span class="material-symbols-outlined text-[16px]">receipt</span>
+<span>إشعار التحويل</span>
+</button>
+</td>
+</tr>
+<!-- Row 4 -->
+<tr class="hover:bg-surface-container-low/60 transition-colors">
+<td class="py-3.5 px-space-lg">
+<span class="font-mono-code font-semibold text-text-secondary">#STL-2025-0885</span>
+</td>
+<td class="py-3.5 px-4 text-text-secondary font-mono-code">15 أكتوبر 2025 • 11:20 ص</td>
+<td class="py-3.5 px-4">
+<div class="flex items-baseline gap-1 font-semibold text-text-primary">
+<span class="font-mono-code">98,200.00</span>
+<span class="font-label-sm text-label-sm text-text-tertiary">ر.س</span>
+</div>
+</td>
+<td class="py-3.5 px-4 font-mono-code text-text-secondary">SARIE-882775190</td>
+<td class="py-3.5 px-4">
+<span class="inline-flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+<span>مصرف الراجحي (..9012)</span>
+</span>
+</td>
+<td class="py-3.5 px-4">
+<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-surface text-badge-success-text font-label-sm text-label-sm font-semibold">
+<span class="material-symbols-outlined text-[14px]">check_circle</span>
+                مكتمل فوري
+              </span>
+</td>
+<td class="py-3.5 px-space-lg text-left">
+<button class="inline-flex items-center gap-1 text-primary hover:text-primary-container font-label-md text-label-md font-semibold transition-colors" type="button">
+<span class="material-symbols-outlined text-[16px]">receipt</span>
+<span>إشعار التحويل</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- Detailed Granular Ledger & Operations Transactions -->
+<div class="bg-surface-card rounded-xl shadow-sm overflow-hidden mb-space-lg">
+<div class="p-space-lg flex flex-col lg:flex-row lg:items-center lg:justify-between gap-space-md">
+<div>
+<h2 class="font-headline-sm text-headline-sm text-text-primary font-semibold">دفتر المعاملات التفصيلي ومطابقة الضرائب والضمان</h2>
+<p class="font-body-sm text-body-sm text-text-secondary mt-0.5">تفصيل كل طلب مبيع مع احتساب ضريبة القيمة المضافة (15%) وعمولة المنصة والصافي</p>
+</div>
+<!-- Filters Strip -->
+<div class="flex flex-wrap items-center gap-2">
+<div class="relative flex items-center">
+<span class="material-symbols-outlined absolute right-3 text-text-tertiary text-[18px]">search</span>
+<input class="w-64 h-9 pr-9 pl-3 rounded-lg bg-surface-canvas text-body-sm text-text-primary placeholder:text-text-tertiary focus:outline-none focus:bg-surface-card transition-colors" placeholder="بحث برقم الطلب أو المقتنى..." type="text"/>
+</div>
+<select class="h-9 px-3 rounded-lg bg-surface-canvas text-body-sm text-text-secondary focus:outline-none focus:bg-surface-card transition-colors font-label-sm cursor-pointer">
+<option>جميع العمليات</option>
+<option>مبيعات مقتنيات</option>
+<option>حساب الضمان المحتجز</option>
+<option>محررة في الرصيد</option>
+</select>
+<button class="h-9 px-3 rounded-lg bg-surface-canvas hover:bg-surface-container-low text-text-secondary flex items-center gap-1 font-label-sm transition-colors" type="button">
+<span class="material-symbols-outlined text-[16px]">filter_list</span>
+<span>تصفية متقدمة</span>
+</button>
+</div>
+</div>
+<!-- Ledger Table -->
+<div class="overflow-x-auto">
+<table class="w-full text-right border-collapse">
+<thead>
+<tr class="bg-surface-container-low text-text-secondary font-label-sm text-label-sm uppercase tracking-wider">
+<th class="py-3 px-space-lg font-semibold">رقم الطلب والفاتورة</th>
+<th class="py-3 px-4 font-semibold">المقتنى الفاخر المبيع</th>
+<th class="py-3 px-4 font-semibold">القيمة الإجمالية (شاملة VAT)</th>
+<th class="py-3 px-4 font-semibold">ضريبة VAT (15%)</th>
+<th class="py-3 px-4 font-semibold">عمولة المنصة (3%)</th>
+<th class="py-3 px-4 font-semibold">صافي استحقاق التاجر</th>
+<th class="py-3 px-4 font-semibold">حالة الضمان (Escrow)</th>
+<th class="py-3 px-space-lg font-semibold text-left">فاتورة ZATCA</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-surface-container-high font-body-sm text-body-sm text-text-primary">
+<!-- Row 1 -->
+<tr class="hover:bg-surface-container-low/60 transition-colors">
+<td class="py-3.5 px-space-lg">
+<div class="flex flex-col">
+<span class="font-mono-code font-semibold text-text-primary">#ORD-2025-88492</span>
+<span class="font-label-sm text-[11px] text-text-tertiary">25 أكتوبر 2025 • 11:20 ص</span>
+</div>
+</td>
+<td class="py-3.5 px-4">
+<div class="flex items-center gap-3">
+<img class="w-9 h-9 rounded-lg object-cover" data-alt="Close up photograph of a prestigious luxury gold falcon chronograph watch on a sand-toned fabric backdrop" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAqVCFZJ3myolfvTBaa1-YHv3PveC2_UjNvM4xA-5PW4eFW2ZNOdo7xSV7qGYKC0NyuER_z9RnZMMakkKc2JYEGR-iWr3g7pQ4RHujqypgFPOMip6LbHWOZl8ZD5jL_u5mjLebQYwwfnX3u5vmOP3Q6HxoqEiUQKwkNSiG4JEAdw9Fym4faHq4wiwFVeqzG1AUiK7yOjxSmkaf-hGFPfbsIhSgNW0coKxRIPatBl3LR"/>
+<div class="flex flex-col">
+<span class="font-medium text-text-primary">ساعة الصقر الكرونوغراف الملكية</span>
+<span class="font-label-sm text-text-tertiary">إصدار مرقّم خاص (ذهب عيار 18)</span>
+</div>
+</div>
+</td>
+<td class="py-3.5 px-4 font-mono-code font-semibold">48,000.00 ر.س</td>
+<td class="py-3.5 px-4 font-mono-code text-text-secondary">6,260.87 ر.س</td>
+<td class="py-3.5 px-4 font-mono-code text-text-secondary">1,252.17 ر.س</td>
+<td class="py-3.5 px-4 font-mono-code font-bold text-primary">40,486.96 ر.س</td>
+<td class="py-3.5 px-4">
+<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-secondary-fixed text-on-secondary-fixed-variant font-label-sm text-label-sm font-semibold">
+<span class="material-symbols-outlined text-[13px]">lock_clock</span>
+                ضمان ساما (معاينة 38 س)
+              </span>
+</td>
+<td class="py-3.5 px-space-lg text-left">
+<button class="inline-flex items-center gap-1.5 p-1.5 rounded-lg bg-surface-container-low hover:bg-surface-container text-text-primary transition-colors" title="تحميل فاتورة ZATCA مع QR" type="button">
+<span class="material-symbols-outlined text-[18px] text-primary">qr_code_2</span>
+<span class="font-label-sm font-semibold">فاتورة</span>
+</button>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-surface-container-low/60 transition-colors">
+<td class="py-3.5 px-space-lg">
+<div class="flex flex-col">
+<span class="font-mono-code font-semibold text-text-primary">#ORD-2025-88480</span>
+<span class="font-label-sm text-[11px] text-text-tertiary">24 أكتوبر 2025 • 17:45 م</span>
+</div>
+</td>
+<td class="py-3.5 px-4">
+<div class="flex items-center gap-3">
+<img class="w-9 h-9 rounded-lg object-cover" data-alt="Detailed macro shot of an emerald royal cufflinks set crafted in platinum and pure green Zambian emerald" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBkwYhVVOVtLHCTwhBEJDv3aIiLwSyE6dDPxaj3bS-DJg-EIV0ypyMB3MqkqaBY3_FzgpIMwqIBPq9zgBdbwtmDd0b9IpB2dFqSILMBHnjxJEDCuqvvwSnNJc780Rf_Zv8O5Ig4NvMUblj-V72JyjbBtPEfDXyVduEDEHGyt4guIiE2q06mFFc0FUUP7v-y2oIP5vuxLlnfHsQbh41cZlALgcrsoaQZIBDxHbxtrdkC"/>
+<div class="flex flex-col">
+<span class="font-medium text-text-primary">كبك الزمرد الكولومبي الملكي</span>
+<span class="font-label-sm text-text-tertiary">صياغة يدوية • بلاتين مرصع</span>
+</div>
+</div>
+</td>
+<td class="py-3.5 px-4 font-mono-code font-semibold">22,500.00 ر.س</td>
+<td class="py-3.5 px-4 font-mono-code text-text-secondary">2,934.78 ر.س</td>
+<td class="py-3.5 px-4 font-mono-code text-text-secondary">586.96 ر.س</td>
+<td class="py-3.5 px-4 font-mono-code font-bold text-badge-success-text">18,978.26 ر.س</td>
+<td class="py-3.5 px-4">
+<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-surface text-badge-success-text font-label-sm text-label-sm font-semibold">
+<span class="material-symbols-outlined text-[13px]">check</span>
+                محرر ومتاح للسحب
+              </span>
+</td>
+<td class="py-3.5 px-space-lg text-left">
+<button class="inline-flex items-center gap-1.5 p-1.5 rounded-lg bg-surface-container-low hover:bg-surface-container text-text-primary transition-colors" title="تحميل فاتورة ZATCA مع QR" type="button">
+<span class="material-symbols-outlined text-[18px] text-primary">qr_code_2</span>
+<span class="font-label-sm font-semibold">فاتورة</span>
+</button>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-surface-container-low/60 transition-colors">
+<td class="py-3.5 px-space-lg">
+<div class="flex flex-col">
+<span class="font-mono-code font-semibold text-text-primary">#ORD-2025-88461</span>
+<span class="font-label-sm text-[11px] text-text-tertiary">23 أكتوبر 2025 • 20:10 م</span>
+</div>
+</td>
+<td class="py-3.5 px-4">
+<div class="flex items-center gap-3">
+<img class="w-9 h-9 rounded-lg object-cover" data-alt="Traditional luxury Saudi gold dagger with hand engraved motifs and embedded rubies" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCEA0PXYJyiL1MVr21LUenD2uhhM2n9OG87sstweKBEsjgKsHmkg3UXSkOZectql2s7iU4CTwvu3d6pPmyvxr8gctmVKrQwcyqPHZ46lQFGj-uE_6VYWlNiT8OXfXj-gfDTrbLmMGPHKbZrQPEckzMNpoiQLLCdBIfakFGhglInqonVd2pmff4S4L2skEivHzKVPFdG92Z3NgtkUKe0LGg4kqywDRU6zkH_J-buWvy8"/>
+<div class="flex flex-col">
+<span class="font-medium text-text-primary">خنجر تراثي مرصع بالياقوت</span>
+<span class="font-label-sm text-text-tertiary">مقتنى تراثي معتمد من هيئة التراث</span>
+</div>
+</div>
+</td>
+<td class="py-3.5 px-4 font-mono-code font-semibold">35,000.00 ر.س</td>
+<td class="py-3.5 px-4 font-mono-code text-text-secondary">4,565.22 ر.س</td>
+<td class="py-3.5 px-4 font-mono-code text-text-secondary">913.04 ر.س</td>
+<td class="py-3.5 px-4 font-mono-code font-bold text-badge-success-text">29,521.74 ر.س</td>
+<td class="py-3.5 px-4">
+<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-surface text-badge-success-text font-label-sm text-label-sm font-semibold">
+<span class="material-symbols-outlined text-[13px]">check</span>
+                محرر ومتاح للسحب
+              </span>
+</td>
+<td class="py-3.5 px-space-lg text-left">
+<button class="inline-flex items-center gap-1.5 p-1.5 rounded-lg bg-surface-container-low hover:bg-surface-container text-text-primary transition-colors" title="تحميل فاتورة ZATCA مع QR" type="button">
+<span class="material-symbols-outlined text-[18px] text-primary">qr_code_2</span>
+<span class="font-label-sm font-semibold">فاتورة</span>
+</button>
+</td>
+</tr>
+<!-- Row 4 -->
+<tr class="hover:bg-surface-container-low/60 transition-colors">
+<td class="py-3.5 px-space-lg">
+<div class="flex flex-col">
+<span class="font-mono-code font-semibold text-text-primary">#ORD-2025-88415</span>
+<span class="font-label-sm text-[11px] text-text-tertiary">22 أكتوبر 2025 • 15:02 م</span>
+</div>
+</td>
+<td class="py-3.5 px-4">
+<div class="flex items-center gap-3">
+<img class="w-9 h-9 rounded-lg object-cover" data-alt="High end luxury Swiss tourbillon skeleton watch placed neatly on pristine white marble stone" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAetit0wJJVLKdhWrSZ1DIKvTVU7-EAT12T0lkfPkjjnJnzSYIAmZmS0QZYVPADyjLAX1KwwQU2nkFOpWyktPfT49q0smyU_TDy9LCaMkK-WKUdERCrNO3hPwJHuObQ5qLCS8zp0MEwYuBBWxnmTvQJaI0m_C1Pzb6H3ggTRKI-eS7wNqY0ObCEba6aJTtpcbQhRK4qbUD4gdL3rtbGxe2j_OtLprjgL0C402wiX3D6"/>
+<div class="flex flex-col">
+<span class="font-medium text-text-primary">ساعة توربيون أوتوماتيكية سويسرية</span>
+<span class="font-label-sm text-text-tertiary">حركة ميكانيكية مفرغة يدوياً</span>
+</div>
+</div>
+</td>
+<td class="py-3.5 px-4 font-mono-code font-semibold">62,000.00 ر.س</td>
+<td class="py-3.5 px-4 font-mono-code text-text-secondary">8,086.96 ر.س</td>
+<td class="py-3.5 px-4 font-mono-code text-text-secondary">1,617.39 ر.س</td>
+<td class="py-3.5 px-4 font-mono-code font-bold text-badge-success-text">52,295.65 ر.س</td>
+<td class="py-3.5 px-4">
+<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-surface text-badge-success-text font-label-sm text-label-sm font-semibold">
+<span class="material-symbols-outlined text-[13px]">check</span>
+                محرر ومتاح للسحب
+              </span>
+</td>
+<td class="py-3.5 px-space-lg text-left">
+<button class="inline-flex items-center gap-1.5 p-1.5 rounded-lg bg-surface-container-low hover:bg-surface-container text-text-primary transition-colors" title="تحميل فاتورة ZATCA مع QR" type="button">
+<span class="material-symbols-outlined text-[18px] text-primary">qr_code_2</span>
+<span class="font-label-sm font-semibold">فاتورة</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Pagination & Audit Footer -->
+<div class="p-space-md bg-surface-canvas flex flex-col sm:flex-row sm:items-center sm:justify-between gap-space-sm">
+<div class="flex items-center gap-2 text-text-secondary font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[16px] text-primary">gavel</span>
+<span>جميع القيود المحاسبية مطابقة لمعايير البنك المركزي السعودي وهيئة الزكاة والضريبة والجمارك</span>
+</div>
+<div class="flex items-center gap-1">
+<button class="w-8 h-8 rounded flex items-center justify-center text-text-tertiary hover:bg-surface-container transition-colors disabled:opacity-50" disabled="" type="button">
+<span class="material-symbols-outlined text-[18px]">chevron_right</span>
+</button>
+<span class="px-3 py-1 rounded bg-surface-card text-text-primary font-mono-code text-label-sm font-semibold shadow-xs">1</span>
+<button class="w-8 h-8 rounded flex items-center justify-center text-text-secondary hover:bg-surface-container transition-colors font-mono-code text-label-sm" type="button">2</button>
+<button class="w-8 h-8 rounded flex items-center justify-center text-text-secondary hover:bg-surface-container transition-colors font-mono-code text-label-sm" type="button">3</button>
+<button class="w-8 h-8 rounded flex items-center justify-center text-text-secondary hover:bg-surface-container transition-colors" type="button">
+<span class="material-symbols-outlined text-[18px]">chevron_left</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Interactive Modal for Immediate Settlement Execution (SARIE Payout) -->
+<div class="fixed inset-0 bg-text-primary/40 backdrop-blur-xs z-50 hidden items-center justify-center p-4 transition-opacity" id="payoutModal">
+<div class="bg-surface-card rounded-2xl max-w-lg w-full p-space-lg shadow-xl relative animate-in fade-in duration-200">
+<div class="flex items-center justify-between pb-space-sm mb-space-md">
+<div class="flex items-center gap-2">
+<div class="w-10 h-10 rounded-xl bg-emerald-surface text-primary flex items-center justify-center">
+<span class="material-symbols-outlined text-[24px]">bolt</span>
+</div>
+<div>
+<h3 class="font-headline-sm text-headline-sm font-bold text-text-primary">طلب تحويل تسوية فورية</h3>
+<span class="font-label-sm text-label-sm text-text-secondary">نظام سريع (SARIE) اللحظي على مدار 24/7</span>
+</div>
+</div>
+<button class="text-text-tertiary hover:text-text-primary transition-colors p-1" id="closeModalBtn" type="button">
+<span class="material-symbols-outlined text-[22px]">close</span>
+</button>
+</div>
+<div class="space-y-space-md">
+<div class="bg-surface-container-low p-space-md rounded-xl space-y-2">
+<div class="flex justify-between font-label-sm text-label-sm">
+<span class="text-text-secondary">الحساب المحول إليه:</span>
+<span class="font-semibold text-text-primary">مصرف الراجحي (حساب تجاري)</span>
+</div>
+<div class="flex justify-between font-label-sm text-label-sm">
+<span class="text-text-secondary">الآيبان البنكي:</span>
+<span class="font-mono-code text-text-primary" dir="ltr">SA44 8000 0456 1234 5678 9012</span>
+</div>
+<div class="flex justify-between font-label-sm text-label-sm">
+<span class="text-text-secondary">الرصيد المتاح حالياً:</span>
+<span class="font-mono-code font-bold text-primary">142,850.00 ر.س</span>
+</div>
+</div>
+<div>
+<label class="block font-label-sm text-label-sm text-text-secondary mb-1.5">مبلغ التحويل المطلوب (ر.س)</label>
+<div class="relative flex items-center">
+<input class="w-full h-11 px-4 text-headline-sm font-mono-code font-bold rounded-lg bg-surface-canvas text-text-primary focus:outline-none focus:bg-surface-card transition-colors" id="payoutAmountInput" type="number" value="142850"/>
+<button class="absolute left-3 text-label-sm text-primary font-semibold hover:underline" id="setFullAmountBtn" type="button">كامل الرصيد</button>
+</div>
+<span class="font-label-sm text-[11px] text-text-tertiary mt-1 block">رسوم التحويل الفوري عبر سريع: 0.00 ر.س (متحملة من منصة سوق السعودية)</span>
+</div>
+<div class="p-3 bg-emerald-surface rounded-lg flex items-center gap-2 text-badge-success-text font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[18px]">verified</span>
+<span>يتم إيداع المبلغ في حسابك البنكي خلال أقل من 10 ثوانٍ مع رقم مرجع فوري.</span>
+</div>
+</div>
+<div class="mt-space-lg flex items-center justify-end gap-space-sm">
+<button class="px-4 py-2 rounded-lg text-text-secondary hover:text-text-primary hover:bg-surface-container-low font-label-md text-label-md transition-colors" id="cancelModalBtn" type="button">إلغاء</button>
+<button class="px-5 py-2.5 rounded-lg bg-primary hover:bg-primary-container text-on-primary font-label-md text-label-md font-semibold shadow-sm transition-all flex items-center gap-2" id="confirmPayoutBtn" type="button">
+<span class="material-symbols-outlined text-[18px]">send</span>
+<span>تأكيد الإيداع اللحظي</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<script>
+  // Micro-interactions for Payout Modal
+  const instantPayoutBtn = document.getElementById('instantPayoutBtn');
+  const payoutModal = document.getElementById('payoutModal');
+  const closeModalBtn = document.getElementById('closeModalBtn');
+  const cancelModalBtn = document.getElementById('cancelModalBtn');
+  const confirmPayoutBtn = document.getElementById('confirmPayoutBtn');
+  const payoutAmountInput = document.getElementById('payoutAmountInput');
+  const setFullAmountBtn = document.getElementById('setFullAmountBtn');
+
+  function openModal() {
+    if (payoutModal) {
+      payoutModal.classList.remove('hidden');
+      payoutModal.classList.add('flex');
+    }
+  }
+
+  function closeModal() {
+    if (payoutModal) {
+      payoutModal.classList.add('hidden');
+      payoutModal.classList.remove('flex');
+    }
+  }
+
+  if (instantPayoutBtn) instantPayoutBtn.addEventListener('click', openModal);
+  if (closeModalBtn) closeModalBtn.addEventListener('click', closeModal);
+  if (cancelModalBtn) cancelModalBtn.addEventListener('click', closeModal);
+
+  if (setFullAmountBtn && payoutAmountInput) {
+    setFullAmountBtn.addEventListener('click', () => {
+      payoutAmountInput.value = '142850';
+    });
+  }
+
+  if (confirmPayoutBtn) {
+    confirmPayoutBtn.addEventListener('click', () => {
+      confirmPayoutBtn.disabled = true;
+      confirmPayoutBtn.innerHTML = '<span class="material-symbols-outlined animate-spin text-[18px]">progress_activity</span> <span>جارِ التنفيذ عبر سريع...</span>';
+      setTimeout(() => {
+        confirmPayoutBtn.innerHTML = '<span class="material-symbols-outlined text-[18px]">check</span> <span>تم التحويل بنجاح!</span>';
+        setTimeout(() => {
+          closeModal();
+          confirmPayoutBtn.disabled = false;
+          confirmPayoutBtn.innerHTML = '<span class="material-symbols-outlined text-[18px]">send</span> <span>تأكيد الإيداع اللحظي</span>';
+        }, 1200);
+      }, 1000);
+    });
+  }
+
+  // Interactive Range Selector Toggle
+  const rangeSelector = document.getElementById('rangeSelector');
+  if (rangeSelector) {
+    const buttons = rangeSelector.querySelectorAll('button');
+    buttons.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        buttons.forEach((b) => {
+          b.className = 'px-3 py-1 rounded text-label-sm text-label-sm text-text-secondary hover:text-text-primary transition-colors';
+        });
+        btn.className = 'px-3 py-1 rounded bg-surface-card text-text-primary shadow-xs font-semibold text-label-sm text-label-sm';
+      });
+    });
+  }
+</script></main></div></body></html>

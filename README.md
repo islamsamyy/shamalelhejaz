@@ -1,36 +1,102 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# منصة شمال الحجاز | Shamal Al-Hijaz (Souq Saudiya)
 
-## Getting Started
+منصة تجارة إلكترونية متكاملة ومتطورة متعددة التجار (Multi-Vendor E-Commerce Marketplace) مصممة خصيصاً للمملكة العربية السعودية، تجمع بين الفخامة والسرعة الفائقة والذكاء الاصطناعي مع دعم ثنائي اللغة (العربية والإنجليزية) وتوافق 100% مع الاتجاهين (RTL / LTR).
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## 🌟 مميزات المنصة الرئيسية
+
+### 1. واجهة المتجر للعملاء (Customer Storefront - B2C)
+- **تجربة تسوق متطورة وسريعة:** تدعم الوضع الليلي والنهاري وتوافق كامل للأجهزة المحمولة.
+- **تصفح الكتالوج وفئات المنتجات:** بحث ذكي مع فلترة متقدمة حسب الفئة، السعر، العلامة التجارية، والتقييم.
+- **عربة تسوق متطورة ومصنفة:** تجميع المنتجات حسب التاجر مع حساب فوري للضريبة وتطبيق كوبونات الخصم.
+- **بوابة إتمام الشراء (Checkout):** 5 خطوات تدعم العنوان الوطني (SPL)، وخيارات الدفع (مدى، بطاقات الائتمان، Apple Pay، تابي، تمارا، والدفع عند الاستلام).
+- **تتبع الطلبات والفواتير:** جدول زمني مباشر لحالة الشحنة مع إصدار فاتورة ضريبية متوافقة مع هيئة الزكاة والضريبة والجمارك (ZATCA Phase-2).
+- **قائمة الرغبات ومركز المرتجعات:** إدارة سهلة للمنتجات المفضلة وتقديم طلبات الإرجاع آلياً.
+
+### 2. بوابة التجار (Vendor Portal - B2B)
+- **لوحة تحكم شاملة للتاجر:** إحصائيات المبيعات، الطلبات المعلقة، وتقييمات العملاء.
+- **إدارة كتالوج المنتجات:** إضافة وتعديل المنتجات مع الصور، المتغيرات (الألوان والمقاسات)، والمخزون.
+- **إدارة الطلبات والشحن:** متابعة دورة حياة الطلبات وطباعة بوالص الشحن.
+- **التقارير المالية والمستحقات:** تفصيل العمولات، الأرصدة القابلة للسحب، وسجل التحويلات البنكية.
+
+### 3. مركز الإدارة والتحكم (Enterprise Admin Command Center)
+- **إشراف شامل على المنصة:** مراقبة الأداء اليومي والمبيعات ونشاط التجار والعملاء.
+- **إدارة الكتالوج والتصنيفات:** اعتماد المنتجات الجديدة وتحديث شجرة التصنيفات.
+- **التوافق المالي:** إدارة المعاملات، الضرائب، وتسوية حسابات التجار.
+- **التحكم بالصلاحيات (RBAC):** حماية كاملة للمسارات ومستويات الوصول (Admin / Vendor / Customer).
+
+---
+
+## 🛠 التكنولوجيا المستخدمة (Tech Stack)
+
+- **Framework:** [Next.js 16](https://nextjs.org) (App Router, Turbopack / Webpack)
+- **Library:** React 19, TypeScript
+- **Styling:** Tailwind CSS v4 باستخدام **CSS Logical Properties** حصرياً (`ms-*`, `me-*`, `ps-*`, `pe-*`, `start-*`, `end-*`) لضمان التبديل المثالي بين العربية والإنجليزية.
+- **UI & Components:** Radix UI Primitives, `shadcn/ui`, Lucide Icons
+- **Animation & Notifications:** Framer Motion, Sonner Toasts, Canvas-Confetti
+- **Database & Auth:** [Supabase](https://supabase.com) (PostgreSQL), Prisma ORM
+- **Testing:** Vitest, React Testing Library, Jest DOM
+
+---
+
+## 📁 هيكل المشروع (Project Structure)
+
+```
+d:\SOUQ\
+├── app/                  # مسارات صفحات Next.js (App Router - 39 مساراً)
+│   ├── (storefront)     # المتجر، الكتالوج، السلة، الدفع، الطلبات، الحساب
+│   ├── admin/           # لوحة تحكم الإدارة العامة
+│   ├── vendor/          # بوابة التجار
+│   └── auth/            # المصادقة (تسجيل الدخول والتسجيل)
+├── components/          # مكونات واجهة المستخدم وعناصر التصميم
+├── context/             # سياقات الحالة (السلة، اللغة، الأدوار)
+├── database/            # تعريفات قاعدة البيانات ومخططات SQL
+├── lib/                 # مكتبات الخدمات (Supabase، RBAC، العملات، الأدوات)
+├── public/              # الأصول العامة والصور
+├── scripts/             # برامج الترحيل وتغذية البيانات (Seeding)
+├── supabase/            # مخططات Supabase الرسمية (schema.sql)
+└── __tests__/           # اختبارات الوحدة والتكامل (42 اختباراً ناجحاً)
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🚀 التشغيل والتطوير (Getting Started)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### المتطلبات المسبقة
+- Node.js 18+ أو أعلى
+- npm أو pnpm أو yarn
 
-## Learn More
+### التثبيت
+```bash
+# تثبيت التبعيات
+npm install
+```
 
-To learn more about Next.js, take a look at the following resources:
+### تشغيل خادم التطوير
+```bash
+npm run dev
+```
+افتح المتصفح على [http://localhost:3000](http://localhost:3000)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### تشغيل الاختبارات
+```bash
+npm test
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### بناء نسخة الإنتاج
+```bash
+npm run build
+```
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 🔒 الأمان والمصادقة
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- مفاتيح البيئة الحساسة محفوظة في `.env.local` وهي مستثناة ومحمية عبر `.gitignore`.
+- نموذج بيانات الصلاحيات (RBAC) يضمن عزل بيانات التجار ولوحة الإدارة مع تأمين المسارات عبر الـ Middleware وحمايتها على مستوى العميل والخادم.
+
+---
+
+## 📄 الترخيص
+حقوق النشر والتطوير محفوظة © لمنصة **شمال الحجاز** (Shamal Al-Hijaz).

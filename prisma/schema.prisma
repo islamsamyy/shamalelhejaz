@@ -1,0 +1,319 @@
+// Prisma schema for Souq platform
+// Generated based on Platform_Specifications.md
+
+generator client {
+  provider = "prisma-client-js"
+  previewFeatures = ["postgresqlExtensions"]
+}
+
+ datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// --------- Core models ---------
+model User {
+  id            Int        @id @default(autoincrement())
+  email         String     @unique
+  phoneNumber   String?    @unique
+  passwordHash  String
+  name          String?
+  role          UserRole   @default(CUSTOMER)
+  locale        String     @default("en")
+  currency      String     @default("USD")
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+
+  // relations
+  wallet        Wallet?
+  referrals     Referral[] @relation("Referrer")
+  referredBy    Referral?  @relation("Referred", fields: [referredById], references: [id])
+  referredById  Int?
+  reviews       Review[]
+  orders        Order[]
+  notifications Notification[]
+  follows       Follow[]   @relation("Follower")
+  following     Follow[]   @relation("Following")
+}
+
+enum UserRole {
+  CUSTOMER
+  SELLER
+  ADMIN
+}
+
+model Wallet {
+  id            Int        @id @default(autoincrement())
+  user          User       @relation(fields: [userId], references: [id])
+  userId        Int        @unique
+  balance       Decimal    @default(0)
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+  transactions  Transaction[]
+}
+
+model Transaction {
+  id            Int        @id @default(autoincrement())
+  wallet        Wallet     @relation(fields: [walletId], references: [id])
+  walletId      Int
+  type          TransactionType
+  amount        Decimal
+  currency      String
+  description   String?
+  status        TransactionStatus @default(PENDING)
+  createdAt     DateTime   @default(now())
+}
+
+enum TransactionType {
+  CREDIT
+  DEBIT
+  REFUND
+  REWARD
+  REFERRAL
+}
+
+enum TransactionStatus {
+  PENDING
+  COMPLETED
+  FAILED
+}
+
+model Category {
+  id            Int        @id @default(autoincrement())
+  name          String
+  slug          String     @unique
+  parentId      Int?
+  parent        Category?  @relation("Children", fields: [parentId], references: [id])
+  children      Category[] @relation("Children")
+  translations  CategoryTranslation[]
+  products      Product[]
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+}
+
+model CategoryTranslation {
+  id            Int        @id @default(autoincrement())
+  locale        String
+  name          String
+  category      Category   @relation(fields: [categoryId], references: [id])
+  categoryId    Int
+  @@unique([locale, categoryId])
+}
+
+model Product {
+  id            Int        @id @default(autoincrement())
+  sku           String     @unique
+  name          String
+  description   String?
+  price         Decimal
+  baseCurrency  String     @default("USD")
+  category      Category   @relation(fields: [categoryId], references: [id])
+  categoryId    Int
+  translations  ProductTranslation[]
+  images        Image[]
+  seo           SEOData?
+  reviews       Review[]
+  rewardRules   RewardRule[]
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+}
+
+model ProductTranslation {
+  id            Int        @id @default(autoincrement())
+  locale        String
+  name          String
+  description   String?
+  product       Product    @relation(fields: [productId], references: [id])
+  productId     Int
+  @@unique([locale, productId])
+}
+
+model Image {
+  id            Int        @id @default(autoincrement())
+  url           String
+  altText       String?
+  product       Product?   @relation(fields: [productId], references: [id])
+  productId     Int?
+}
+
+model SEOData {
+  id            Int        @id @default(autoincrement())
+  product       Product    @relation(fields: [productId], references: [id])
+  productId     Int        @unique
+  metaTitle     String?
+  metaDescription String?
+  keywords      String?
+  jsonLd        Json?
+}
+
+model Review {
+  id            Int        @id @default(autoincrement())
+  rating        Int        @default(0)
+  comment       String?
+  user          User       @relation(fields: [userId], references: [id])
+  userId        Int
+  product       Product    @relation(fields: [productId], references: [id])
+  productId     Int
+  media         ReviewMedia[]
+  createdAt     DateTime   @default(now())
+}
+
+model ReviewMedia {
+  id            Int        @id @default(autoincrement())
+  url           String
+  type          MediaType
+  review        Review     @relation(fields: [reviewId], references: [id])
+  reviewId      Int
+}
+
+enum MediaType {
+  IMAGE
+  VIDEO
+}
+
+model RewardProgram {
+  id            Int        @id @default(autoincrement())
+  name          String
+  description   String?
+  type          RewardType
+  value         Decimal    // could be amount, percent, or points
+  startAt       DateTime?
+  endAt         DateTime?
+  conditions    Json?
+  createdAt     DateTime   @default(now())
+}
+
+enum RewardType {
+  COUPON
+  POINTS
+  CASH
+  FREE_PRODUCT
+}
+
+model RewardRule {
+  id            Int        @id @default(autoincrement())
+  product       Product    @relation(fields: [productId], references: [id])
+  productId     Int
+  program       RewardProgram @relation(fields: [programId], references: [id])
+  programId     Int
+}
+
+model Referral {
+  id            Int        @id @default(autoincrement())
+  code          String     @unique
+  referrer      User       @relation("Referrer", fields: [referrerId], references: [id])
+  referrerId    Int
+  referred      User?      @relation("Referred", fields: [referredId], references: [id])
+  referredId    Int?
+  commission    Decimal    @default(0)
+  createdAt     DateTime   @default(now())
+}
+
+model Coupon {
+  id            Int        @id @default(autoincrement())
+  code          String     @unique
+  discountType  DiscountType
+  amount        Decimal
+  usageLimit    Int?
+  usedCount     Int        @default(0)
+  expiresAt     DateTime?
+  applicableTo  Json?      // product/category filters
+  createdAt     DateTime   @default(now())
+}
+
+enum DiscountType {
+  PERCENTAGE
+  FIXED
+}
+
+model Order {
+  id            Int        @id @default(autoincrement())
+  user          User       @relation(fields: [userId], references: [id])
+  userId        Int
+  status        OrderStatus @default(PENDING)
+  totalAmount   Decimal
+  currency      String
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+  items         OrderItem[]
+  shipping      ShippingInfo?
+  payment       PaymentInfo?
+}
+
+enum OrderStatus {
+  PENDING
+  PAID
+  SHIPPED
+  COMPLETED
+  CANCELLED
+  RETURNED
+}
+
+model OrderItem {
+  id            Int        @id @default(autoincrement())
+  order         Order      @relation(fields: [orderId], references: [id])
+  orderId       Int
+  product       Product    @relation(fields: [productId], references: [id])
+  productId     Int
+  quantity      Int        @default(1)
+  unitPrice     Decimal
+  currency      String
+}
+
+model ShippingInfo {
+  id            Int        @id @default(autoincrement())
+  order         Order      @relation(fields: [orderId], references: [id])
+  orderId       Int       @unique
+  carrier       String
+  trackingCode  String?
+  cost          Decimal
+  address       Json       // contains street, city, country, etc.
+}
+
+model PaymentInfo {
+  id            Int        @id @default(autoincrement())
+  order         Order      @relation(fields: [orderId], references: [id])
+  orderId       Int       @unique
+  provider      String     // stripe, paypal, etc.
+  providerId    String     // payment intent id
+  status        PaymentStatus @default(PENDING)
+}
+
+enum PaymentStatus {
+  PENDING
+  SUCCEEDED
+  FAILED
+  REFUNDED
+}
+
+model Follow {
+  id            Int        @id @default(autoincrement())
+  follower      User       @relation("Follower", fields: [followerId], references: [id])
+  followerId    Int
+  following     User       @relation("Following", fields: [followingId], references: [id])
+  followingId   Int
+  createdAt     DateTime   @default(now())
+  @@unique([followerId, followingId])
+}
+
+model Notification {
+  id            Int        @id @default(autoincrement())
+  user          User       @relation(fields: [userId], references: [id])
+  userId        Int
+  title         String
+  body          String?
+  read          Boolean    @default(false)
+  createdAt     DateTime   @default(now())
+}
+
+// ----- Additional tables for future extensions -----
+// e.g., PixelEvent, CRMContact, etc.
+
+// Enable pg_trgm extension for full‑text search (optional)
+model _ext {
+}
+
+enum _Unsupported {
+}
+
+@@extension(pg_trgm, schema: "public")

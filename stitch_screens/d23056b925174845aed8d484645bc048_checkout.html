@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+
+<html class="light" dir="rtl" lang="ar"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta content="web_standard" name="shell-type"/>
+<title>سوق سعودية | الدفع الآمن المتوافق مع سريان المدفوعات السعودية</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<!-- Cairo and IBM Plex Sans Arabic for authentic Moyasar-grade Saudi fintech feel -->
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&amp;family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<style>
+    @layer base {
+      html, body {
+        margin: 0;
+        padding: 0;
+        font-family: 'IBM Plex Sans Arabic', 'Cairo', sans-serif;
+      }
+      body {
+        background-color: #f8fafc;
+        color: #0f172a;
+      }
+    }
+    ::-webkit-scrollbar {
+      display: none;
+    }
+  </style>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "surface-canvas": "#f8fafc",
+            "surface-card": "#ffffff",
+            "border-subtle": "#e2e8f0",
+            "border-muted": "#f1f5f9",
+            "text-primary": "#0f172a",
+            "text-secondary": "#475569",
+            "text-tertiary": "#94a3b8",
+            "primary": "#059669",
+            "primary-dark": "#047857",
+            "emerald-accent": "#10b981",
+            "teal-accent": "#0d9488",
+            "emerald-surface": "#ecfdf5",
+            "sand-warm": "#fcfaf7",
+            "sand-border": "#f3eee7"
+          },
+          fontFamily: {
+            sans: ["'IBM Plex Sans Arabic'", "'Cairo'", "sans-serif"],
+            display: ["'Cairo'", "'IBM Plex Sans Arabic'", "sans-serif"]
+          }
+        }
+      }
+    };
+  </script>
+</head>
+<body class="bg-surface-canvas text-text-primary antialiased selection:bg-emerald-100 selection:text-primary-dark min-h-screen flex flex-col">
+<!-- Sovereign Moyasar-Inspired Top Trust Bar -->
+<div class="w-full bg-white border-b border-border-subtle sticky top-0 z-50">
+<!-- Mini Regulatory Ribbon -->
+<div class="bg-slate-900 text-white text-xs py-2 px-4">
+<div class="max-w-[1360px] mx-auto flex items-center justify-between">
+<div class="flex items-center gap-3">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 font-medium text-[11px]">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+            بوابة دفع معتمدة من البنك المركزي السعودي (ساما)
+          </span>
+<span class="hidden md:inline text-slate-400">|</span>
+<span class="hidden md:inline text-slate-300">متوافق مع هيئة الزكاة والضريبة والجمارك (زاتكا المرحلة الثانية)</span>
+</div>
+<div class="flex items-center gap-4 text-[11px] text-slate-300">
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[15px] text-emerald-400">verified_user</span>
+            توثيق نفاذ الوطني الموحد
+          </span>
+<span class="text-slate-500">|</span>
+<span class="font-semibold text-emerald-300">الريال السعودي (ر.س)</span>
+</div>
+</div>
+</div>
+<!-- Main Clean Header -->
+<header class="max-w-[1360px] mx-auto px-4 sm:px-6 h-20 flex items-center justify-between">
+<div class="flex items-center gap-4">
+<a class="flex items-center gap-3 group" href="#">
+<div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-600 to-teal-500 flex items-center justify-center text-white shadow-sm shadow-emerald-500/20">
+<span class="material-symbols-outlined text-[24px]">account_balance</span>
+</div>
+<div class="flex flex-col">
+<div class="flex items-center gap-2">
+<span class="font-display font-bold text-xl text-slate-900 tracking-tight">سوق سعودية</span>
+<span class="text-xs px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 font-semibold border border-emerald-200">المنصة السيادية</span>
+</div>
+<span class="text-[11px] text-slate-500 font-medium">SOUQ SAUDIYA • بوابة الدفع الإلكتروني المباشر</span>
+</div>
+</a>
+</div>
+<!-- Quick Step Status & Safe Lock -->
+<div class="flex items-center gap-4">
+<div class="hidden lg:flex items-center gap-2 text-xs text-slate-600 bg-slate-50 border border-slate-200 px-3 py-1.5 rounded-lg">
+<span class="material-symbols-outlined text-[16px] text-emerald-600">lock</span>
+<span>تشفير مالي آمن بمعيار TLS 1.3 معتمد عبر ميسر (Moyasar Protocol)</span>
+</div>
+<a class="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-600 hover:text-emerald-600 transition-colors" href="#">
+<span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+<span>العودة للمتجر</span>
+</a>
+</div>
+</header>
+</div>
+<main class="flex-1 max-w-[1360px] w-full mx-auto px-4 sm:px-6 py-8">
+<!-- Moyasar Minimal Modern Stepper -->
+<div class="bg-white border border-border-subtle rounded-2xl p-5 mb-8 shadow-sm">
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4 relative">
+<!-- الخطوة 1: العنوان الوطني تم التحقق -->
+<div class="flex items-center gap-3.5 p-3 rounded-xl bg-slate-50/70 border border-slate-100">
+<div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[22px]">check</span>
+</div>
+<div class="flex flex-col min-w-0">
+<div class="flex items-center gap-2">
+<span class="text-xs font-bold text-emerald-700">الخطوة الأولى</span>
+<span class="text-[10px] bg-emerald-100/80 text-emerald-800 px-1.5 py-0.2 rounded font-medium">مكتمل وموثق</span>
+</div>
+<span class="font-bold text-sm text-slate-900 truncate">العنوان الوطني والشحن</span>
+<span class="text-xs text-slate-500 truncate">حي العليا، الرياض • توصيل مدرع فاخر</span>
+</div>
+</div>
+<!-- الخطوة 2: الدفع الآمن (نشط) -->
+<div class="flex items-center gap-3.5 p-3 rounded-xl bg-emerald-50/60 border border-emerald-300 ring-2 ring-emerald-500/10">
+<div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-600 to-teal-500 text-white flex items-center justify-center shrink-0 shadow-sm shadow-emerald-500/25">
+<span class="material-symbols-outlined text-[22px]">credit_card</span>
+</div>
+<div class="flex flex-col min-w-0">
+<div class="flex items-center gap-2">
+<span class="text-xs font-bold text-emerald-700">الخطوة الثانية • الحالية</span>
+<span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
+</div>
+<span class="font-bold text-sm text-emerald-950 truncate">بوابة الدفع وقنوات السداد السعودية</span>
+<span class="text-xs text-emerald-700/80 truncate">مدى • أبل باي • تمارا وتابي • البطاقات الائتمانية</span>
+</div>
+</div>
+<!-- الخطوة 3: فاتورة زاتكا وتأكيد الشراء -->
+<div class="flex items-center gap-3.5 p-3 rounded-xl opacity-60">
+<div class="w-10 h-10 rounded-xl bg-slate-100 text-slate-400 flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[22px]">receipt_long</span>
+</div>
+<div class="flex flex-col min-w-0">
+<span class="text-xs font-semibold text-slate-400">الخطوة الثالثة</span>
+<span class="font-bold text-sm text-slate-700 truncate">الفاتورة الضريبية ZATCA</span>
+<span class="text-xs text-slate-400 truncate">رمز الاستجابة السريعة وصك الملكية السيادي</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Main Grid: Payment Details & Sidebar -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+<!-- Left Column: Payment Methods, Address & Gifting (8 Cols) -->
+<div class="lg:col-span-8 flex flex-col gap-6">
+<!-- 1-Tap Express Pay (Moyasar Style) -->
+<div class="bg-white rounded-2xl border border-border-subtle p-6 shadow-sm">
+<div class="flex items-center justify-between mb-4">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-emerald-600 text-[22px]">bolt</span>
+<h2 class="font-display font-bold text-lg text-slate-900">السداد الفوري السريع (نقرة واحدة)</h2>
+</div>
+<span class="text-xs text-slate-500 font-medium">معالجة فورية مشفرة</span>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+<!-- Apple Pay -->
+<button class="relative h-13 py-3 px-4 rounded-xl bg-black hover:bg-slate-900 text-white font-medium flex items-center justify-center gap-2.5 transition-all shadow-sm group" type="button">
+<span class="text-2xl leading-none"></span>
+<span class="text-base font-semibold tracking-wide font-sans">Pay</span>
+<span class="text-[11px] bg-slate-800 text-slate-300 px-2 py-0.5 rounded-full mr-2">بصمة الوجه</span>
+</button>
+<!-- mada Express Pay -->
+<button class="relative h-13 py-3 px-4 rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-900 border border-slate-300 font-bold flex items-center justify-center gap-2.5 transition-all shadow-sm group" type="button">
+<span class="text-emerald-700 font-bold text-lg font-display">مدى</span>
+<span class="text-sm font-medium text-slate-700">الدفع المباشر السريع</span>
+<span class="material-symbols-outlined text-[18px] text-emerald-600 group-hover:-translate-x-1 transition-transform">arrow_back</span>
+</button>
+</div>
+<div class="relative flex py-5 items-center">
+<div class="flex-grow border-t border-slate-200"></div>
+<span class="flex-shrink mx-4 text-xs font-semibold text-slate-400">أو اختر وسيلة الدفع المعتمدة</span>
+<div class="flex-grow border-t border-slate-200"></div>
+</div>
+<!-- Payment Rails Accordion / Radio Cards (Moyasar Clean Form) -->
+<div class="space-y-4">
+<!-- خيار 1: بطاقة مدى (الخيار النشط والافتراضي في السعودية) -->
+<div class="border-2 border-emerald-500 rounded-xl p-5 bg-white shadow-sm transition-all">
+<div class="flex items-center justify-between mb-4">
+<label class="flex items-center gap-3 cursor-pointer">
+<input checked="" class="w-5 h-5 text-emerald-600 focus:ring-emerald-500 border-slate-300" name="payment_method" type="radio"/>
+<span class="font-bold text-slate-900 text-base">بطاقة مدى البنكية (mada)</span>
+<span class="bg-emerald-100 text-emerald-800 text-xs px-2.5 py-0.5 rounded-full font-semibold">القناة الافتراضية بالمملكة</span>
+</label>
+<div class="flex items-center gap-2">
+<span class="px-2.5 py-1 rounded bg-slate-100 text-emerald-800 text-xs font-bold font-display border border-slate-200">مدى</span>
+<span class="text-xs text-slate-500 font-medium">رسوم سداد: 0% مجاناً</span>
+</div>
+</div>
+<!-- Form Inputs in Moyasar Layout -->
+<div class="bg-slate-50/80 rounded-xl p-4 border border-slate-200 space-y-4">
+<div>
+<label class="block text-xs font-semibold text-slate-700 mb-1.5">اسم حامل البطاقة</label>
+<input class="w-full h-11 px-3.5 bg-white border border-slate-300 rounded-lg text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600 shadow-sm" type="text" value="فهد بن ناصر العتيبي"/>
+</div>
+<div>
+<label class="block text-xs font-semibold text-slate-700 mb-1.5">رقم بطاقة مدى</label>
+<div class="relative flex items-center">
+<input class="w-full h-11 pl-20 pr-3.5 bg-white border border-slate-300 rounded-lg text-sm font-mono text-slate-900 tracking-wider placeholder:text-slate-400 focus:outline-none focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600 shadow-sm" dir="ltr" type="text" value="5888 4210 9934 9014"/>
+<div class="absolute left-3 flex items-center gap-1.5">
+<span class="text-xs font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">mada</span>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div>
+<label class="block text-xs font-semibold text-slate-700 mb-1.5">تاريخ الانتهاء</label>
+<input class="w-full h-11 px-3.5 text-center bg-white border border-slate-300 rounded-lg text-sm font-mono text-slate-900 focus:outline-none focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600 shadow-sm" dir="ltr" placeholder="MM/YY" type="text" value="09/28"/>
+</div>
+<div>
+<label class="block text-xs font-semibold text-slate-700 mb-1.5">رمز الأمان (CVV)</label>
+<div class="relative flex items-center">
+<input class="w-full h-11 pl-9 pr-3.5 text-center bg-white border border-slate-300 rounded-lg text-sm font-mono text-slate-900 focus:outline-none focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600 shadow-sm" dir="ltr" placeholder="123" type="password" value="842"/>
+<span class="material-symbols-outlined absolute left-2.5 text-slate-400 text-[18px]">lock</span>
+</div>
+</div>
+</div>
+<!-- Nafath Biometric Verification Strip -->
+<div class="flex items-center justify-between p-3 rounded-lg bg-emerald-50 border border-emerald-200">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-lg bg-emerald-600 text-white flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[18px]">fingerprint</span>
+</div>
+<div class="flex flex-col">
+<span class="text-xs font-bold text-slate-900">مصادقة نفاذ الوطني الموحد (Nafath)</span>
+<span class="text-[11px] text-slate-600">سيتم إرسال إشعار فوري لتطبيق نفاذ لاعتماد عملية الدفع بأمان تام</span>
+</div>
+</div>
+<span class="text-xs font-bold text-emerald-800 bg-white px-2 py-1 rounded border border-emerald-200 shadow-xs">مفعل تلقائياً</span>
+</div>
+</div>
+</div>
+<!-- خيار 2: البطاقات الائتمانية العالمية (فيزا، ماستركارد، أمريكان إكسبريس) -->
+<div class="border border-slate-200 rounded-xl p-4 bg-white hover:border-slate-300 transition-all cursor-pointer">
+<div class="flex items-center justify-between">
+<label class="flex items-center gap-3 cursor-pointer">
+<input class="w-5 h-5 text-emerald-600 focus:ring-emerald-500 border-slate-300" name="payment_method" type="radio"/>
+<span class="font-bold text-slate-900 text-sm">البطاقات الائتمانية (فيزا / ماستركارد / أمريكان إكسبريس)</span>
+</label>
+<div class="flex items-center gap-2">
+<span class="px-2 py-0.5 rounded bg-slate-100 text-slate-700 text-xs font-bold">Visa</span>
+<span class="px-2 py-0.5 rounded bg-slate-100 text-slate-700 text-xs font-bold">Mastercard</span>
+<span class="px-2 py-0.5 rounded bg-slate-100 text-slate-700 text-xs font-bold">AMEX KSA</span>
+</div>
+</div>
+</div>
+<!-- خيار 3: التقسيط المتوافق مع أحكام الشريعة (تابي وتمارا) -->
+<div class="border border-slate-200 rounded-xl p-4 bg-white hover:border-slate-300 transition-all flex flex-col gap-3">
+<div class="flex items-center justify-between">
+<label class="flex items-center gap-3 cursor-pointer">
+<input class="w-5 h-5 text-emerald-600 focus:ring-emerald-500 border-slate-300" name="payment_method" type="radio"/>
+<span class="font-bold text-slate-900 text-sm">الدفع الآجل والتقسيط المتوافق مع الشريعة (BNPL)</span>
+</label>
+<span class="text-xs font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">0% فوائد • 0% رسوم إضافية</span>
+</div>
+<!-- Tamara & Tabby Micro Banners -->
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+<!-- تمارا -->
+<div class="p-3 rounded-lg border border-amber-200 bg-amber-50/40 flex items-center justify-between">
+<div class="flex flex-col">
+<div class="flex items-center gap-2">
+<span class="font-bold text-sm text-amber-900">تمارا (Tamara)</span>
+<span class="text-[10px] bg-amber-200 text-amber-900 px-1.5 py-0.2 rounded font-medium">قسّم على 3</span>
+</div>
+<span class="text-xs text-slate-700 mt-1"><strong>1,715.00 ر.س</strong> / شهرياً بدون أي فوائد</span>
+</div>
+<span class="material-symbols-outlined text-amber-700 text-[20px]">calendar_month</span>
+</div>
+<!-- تابي -->
+<div class="p-3 rounded-lg border border-teal-200 bg-teal-50/40 flex items-center justify-between">
+<div class="flex flex-col">
+<div class="flex items-center gap-2">
+<span class="font-bold text-sm text-teal-900">تابي (Tabby)</span>
+<span class="text-[10px] bg-teal-200 text-teal-900 px-1.5 py-0.2 rounded font-medium">قسّم على 4</span>
+</div>
+<span class="text-xs text-slate-700 mt-1"><strong>1,286.25 ر.س</strong> / شهرياً بدون أي فوائد</span>
+</div>
+<span class="material-symbols-outlined text-teal-700 text-[20px]">payments</span>
+</div>
+</div>
+</div>
+<!-- خيار 4: محفظة سوق سعودية السيادية -->
+<div class="border border-slate-200 rounded-xl p-4 bg-white hover:border-slate-300 transition-all flex items-center justify-between">
+<label class="flex items-center gap-3 cursor-pointer">
+<input class="w-5 h-5 text-emerald-600 focus:ring-emerald-500 border-slate-300" name="payment_method" type="radio"/>
+<div class="flex flex-col">
+<div class="flex items-center gap-2">
+<span class="font-bold text-slate-900 text-sm">رصيد محفظة سوق سعودية</span>
+<span class="text-[10px] bg-slate-900 text-white px-2 py-0.5 rounded-full font-medium">الفئة الملكية</span>
+</div>
+<span class="text-xs text-slate-500">الرصيد المتاح في حساب الضمان: <strong class="text-slate-800">14,500.00 ر.س</strong></span>
+</div>
+</label>
+<button class="text-xs font-bold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 px-3 py-1.5 rounded-lg transition-colors" type="button">
+                استخدام كامل الرصيد
+              </button>
+</div>
+</div>
+</div>
+<!-- Saudi National Address Dispatch Card (Clean Light Layout) -->
+<div class="bg-white rounded-2xl border border-border-subtle p-6 shadow-sm">
+<div class="flex items-center justify-between mb-4">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-emerald-600 text-[22px]">location_on</span>
+<h3 class="font-display font-bold text-lg text-slate-900">العنوان الوطني السعودي والشحن الفاخر</h3>
+</div>
+<button class="text-xs font-bold text-emerald-700 hover:text-emerald-800 transition-colors" type="button">
+              تعديل الإحداثيات
+            </button>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-12 gap-5 items-center">
+<!-- Address Map Visual Badge -->
+<div class="md:col-span-4 h-36 rounded-xl overflow-hidden relative border border-slate-200 shadow-inner bg-slate-100">
+<div class="w-full h-full bg-cover bg-center" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBwpKofrHsicmEnaHKrf30K-dRThoPEkj1lT7ZwsKgurqqrSsGwiP37i9mw31o2vdv7sOaMEtcKUUFIsLwYjOeK34TuZ54RmBiaVPu7L_ec90B276m_RB3-hpbOVpdjNBV5vy7vnaloNWCAyZ4iELT1PDrDjrPXcPCLVL1HVmYmNsY5rFu96ZGMrtn44WSjbySQa9SCC49ypm63jcHE5SqBtg90JYDIR9_YDSMZcLZr')"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-slate-900/60 via-transparent to-transparent"></div>
+<div class="absolute bottom-2.5 right-2.5 flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-white/95 text-slate-900 text-xs font-semibold shadow">
+<span class="material-symbols-outlined text-emerald-600 text-[14px]">pin_drop</span>
+<span>مركز الرياض - حي العليا</span>
+</div>
+</div>
+<!-- National Address Text Information -->
+<div class="md:col-span-8 flex flex-col justify-between space-y-3">
+<div>
+<div class="flex items-center gap-2">
+<span class="font-bold text-base text-slate-900">المهندس فهد بن ناصر العتيبي</span>
+<span class="text-xs bg-slate-100 text-slate-600 px-2 py-0.5 rounded font-mono">هوية وطنية موثقة</span>
+</div>
+<p class="text-sm text-slate-600 mt-1 leading-relaxed">
+                  طريق الملك فهد الفرعي، حي العليا، مبنى رقم 7401، الرياض، المملكة العربية السعودية
+                </p>
+<div class="flex flex-wrap items-center gap-3 text-xs text-slate-500 mt-1.5 font-medium">
+<span>الرمز البريدي الإضافي (العنوان المختصر): <strong class="text-slate-900 font-mono">RYDA8921</strong></span>
+<span>•</span>
+<span>الرمز البريدي: <strong class="text-slate-900 font-mono">12214</strong></span>
+</div>
+</div>
+<!-- Courier Detail -->
+<div class="p-3 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[18px]">verified</span>
+</div>
+<div class="flex flex-col">
+<span class="text-xs font-bold text-slate-900">توصيل مصفح ومكيف (درجة VIP)</span>
+<span class="text-[11px] text-slate-500">لوجستيات أرامكس السيادية مع خزائن مبردة للحفاظ على العود والنفائس</span>
+</div>
+</div>
+<span class="text-xs font-bold text-emerald-700 bg-white px-2 py-1 rounded border border-emerald-200">مجاناً بالكامل</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Royal Concierge & Arabic Calligraphy Gifting -->
+<div class="bg-white rounded-2xl border border-border-subtle p-6 shadow-sm space-y-4">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-amber-600 text-[22px]">featured_seasonal_and_gifts</span>
+<h3 class="font-display font-bold text-lg text-slate-900">خدمات الإهداء الملكي والخط العربي</h3>
+</div>
+<span class="text-xs font-bold text-amber-700 bg-amber-50 px-2.5 py-0.5 rounded-full border border-amber-200">ميزة شرفية مجانية</span>
+</div>
+<p class="text-xs text-slate-600 leading-relaxed">
+            يتم تجهيز كافة الطلبيات داخل صندوق مخملي فاخر مختوم بالشمع الملكي الأخضر. يمكنك تدوين إهداء مخصص بخط الثلث العربي الأصيل:
+          </p>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+<div class="p-3.5 rounded-xl border border-slate-200 bg-slate-50/60 flex items-start gap-3">
+<input checked="" class="mt-1 w-4 h-4 text-emerald-600 rounded border-slate-300 focus:ring-emerald-500" type="checkbox"/>
+<div class="flex flex-col">
+<span class="text-xs font-bold text-slate-900">صندوق مخملي زمردي مطعم بالذهب</span>
+<span class="text-[11px] text-slate-500">قاعدة خشبية صلبة مغلفة بالمخمل الملكي الأخضر مع قفل نحاسي مذهب.</span>
+</div>
+</div>
+<div class="p-3.5 rounded-xl border border-slate-200 bg-slate-50/60 flex items-start gap-3">
+<input checked="" class="mt-1 w-4 h-4 text-emerald-600 rounded border-slate-300 focus:ring-emerald-500" type="checkbox"/>
+<div class="flex flex-col">
+<span class="text-xs font-bold text-slate-900">بطاقة إهداء بخط الثلث اليدوي المذهب</span>
+<span class="text-[11px] text-slate-500">تخطيط يدوي بحبر الذهب الخالص عيار 24 على ورق طائفي معتق.</span>
+</div>
+</div>
+</div>
+<div>
+<label class="block text-xs font-semibold text-slate-700 mb-1.5">نص الإهداء المخصص للخطاط الملكي</label>
+<input class="w-full h-11 px-3.5 bg-white border border-slate-300 rounded-lg text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600 shadow-sm" type="text" value="إهداء إلى معالي فهد بن ناصر العتيبي بمناسبة التكريم السامي - مع أطيب التمنيات بموفور العزة والرفعة"/>
+</div>
+</div>
+</div>
+<!-- Right Column: Order Summary, Moyasar CTA, ZATCA e-Invoice (4 Cols) -->
+<div class="lg:col-span-4 flex flex-col gap-6 sticky top-28">
+<!-- Clean Moyasar Order Summary Card -->
+<div class="bg-white rounded-2xl border border-border-subtle p-6 shadow-sm space-y-5">
+<div class="flex items-center justify-between pb-3 border-b border-slate-100">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-emerald-600 text-[22px]">shopping_bag</span>
+<h3 class="font-display font-bold text-base text-slate-900">ملخص الطلب</h3>
+</div>
+<span class="text-xs font-bold text-slate-600 bg-slate-100 px-2 py-0.5 rounded-full">قطعتان فاخرتان</span>
+</div>
+<!-- Items in Cart -->
+<div class="space-y-4">
+<!-- Item 1: خاتم زمرد العلا الملكي -->
+<div class="flex items-center gap-3 pb-3 border-b border-slate-100">
+<img alt="خاتم زمرد العلا الملكي" class="w-14 h-14 rounded-xl object-cover border border-slate-200 shrink-0 bg-slate-50" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBfZl_GhNGlQ8Zzg-XgRzqb7mXLfbz2DRcNdbs4I2BcPIgIN9P1H4StYi7hnXFPwlxDb3Ju6IVkysHiE4KkJs1GZEHD19Uj3dj4-rPFPutGCwIb9ATnb6Qjqr9VOVg8Tco_PWHUU-VvnKe6u2Ao6ZjORphLT5Dn5IwoD_cMhg_nN-M99tMPyXJHwanzI-gfLgqVyOTxn5iBVfMUwxDMysq5TKx1yrNbhMTMF66diO7V"/>
+<div class="flex flex-col flex-1 min-w-0">
+<span class="text-xs font-bold text-slate-900 truncate">خاتم زمرد العلا الملكي</span>
+<span class="text-[11px] text-slate-500 truncate">ذهب أصفر عيار 18 مصاغ يدوياً • مقاس 56</span>
+<div class="flex items-center justify-between mt-1">
+<span class="text-[11px] text-slate-500">الكمية: 1</span>
+<span class="text-xs font-bold text-slate-900">3,400.00 ر.س</span>
+</div>
+</div>
+</div>
+<!-- Item 2: دهن عود معتق -->
+<div class="flex items-center gap-3 pb-3 border-b border-slate-100">
+<img alt="دهن عود كلمنتان ملكي معتق" class="w-14 h-14 rounded-xl object-cover border border-slate-200 shrink-0 bg-slate-50" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCuM_sPT1T3chaBKuAsvhkoJUFCNVmw_f3oTeiyIRjKmZehpRoVvybjxUjC6alcq_TIHIeqvAXQlJF9SCutgg8zfTG8k266gnlIGmN_154mYS-70oceAHg4X-46mVw-2GgeTjriEZ7CVvqlWcK6Mk61D4T0KBr4ZdkuLEvc4IH5R4DCwzXlBjKY7IJR1JmH0ZQsOPPfZ4j2YSS3EOyvvrhX9kGskwYkFwOh5hZfQrOl"/>
+<div class="flex flex-col flex-1 min-w-0">
+<span class="text-xs font-bold text-slate-900 truncate">دهن عود كلاكاسي معتق 1982</span>
+<span class="text-[11px] text-slate-500 truncate">نصف تولة في زجاجة كريستال محفورة بماء الذهب</span>
+<div class="flex items-center justify-between mt-1">
+<span class="text-[11px] text-slate-500">الكمية: 1</span>
+<span class="text-xs font-bold text-slate-900">1,500.00 ر.س</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Promo Code Active -->
+<div class="p-3 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-emerald-600 text-[18px]">verified</span>
+<div class="flex flex-col">
+<span class="text-xs font-bold text-emerald-950">كوبون رؤية 2030 (VISION2030)</span>
+<span class="text-[10px] text-emerald-700">خصم الرعاة الحصري بنسبة 10%</span>
+</div>
+</div>
+<span class="text-xs font-bold text-emerald-700">-490.00 ر.س</span>
+</div>
+<!-- Price Ledger Breakdown (ZATCA Compliant) -->
+<div class="space-y-2.5 text-xs text-slate-600">
+<div class="flex justify-between">
+<span>المجموع الإجمالي للسلع</span>
+<span class="text-slate-900 font-semibold">4,900.00 ر.س</span>
+</div>
+<div class="flex justify-between">
+<span>خصم الرعاة السيادي (10%)</span>
+<span class="text-emerald-700 font-semibold">-490.00 ر.س</span>
+</div>
+<div class="flex justify-between">
+<span>التوصيل المصفح السريع (الرياض VIP)</span>
+<span class="text-emerald-700 font-bold">مجاناً (0.00 ر.س)</span>
+</div>
+<div class="flex justify-between items-center text-[11px] text-slate-500 pt-1 border-t border-slate-100">
+<span class="flex items-center gap-1">
+<span>ضريبة القيمة المضافة (15% مشمولة حسب نظام زاتكا)</span>
+<span class="material-symbols-outlined text-[13px] text-slate-400">info</span>
+</span>
+<span class="font-medium text-slate-700">735.00 ر.س</span>
+</div>
+<!-- Grand Total -->
+<div class="pt-3 border-t-2 border-slate-100 flex items-baseline justify-between">
+<div class="flex flex-col">
+<span class="font-display font-bold text-base text-slate-900">المبلغ الإجمالي المستحق</span>
+<span class="text-[11px] text-slate-500">شامل ضريبة القيمة المضافة 15%</span>
+</div>
+<div class="text-left">
+<span class="font-display font-extrabold text-2xl text-slate-900">5,145.00</span>
+<span class="text-xs font-bold text-slate-600 mr-1">ر.س</span>
+</div>
+</div>
+</div>
+<!-- ZATCA Phase 2 E-Invoice QR Box Preview -->
+<div class="p-3 rounded-xl bg-slate-50 border border-slate-200 flex items-center gap-3">
+<div class="w-12 h-12 bg-white p-1 rounded-lg border border-slate-200 shrink-0 flex items-center justify-center">
+<svg class="w-full h-full text-slate-800" fill="currentColor" viewbox="0 0 24 24">
+<path d="M2 2h8v8H2V2zm2 2v4h4V4H4zm10-2h8v8h-8V2zm2 2v4h4V4h-4zM2 14h8v8H2v-8zm2 2v4h4v-4H4zm14 2h4v4h-4v-4zm-4-2h2v2h-2v-2zm2-2h2v2h-2v-2zm-2 4h2v2h-2v-2zm4-4h2v2h-2v-2zm0 4h2v2h-2v-2zM6 6h-1v-1h1v1zm12 0h-1v-1h1v1zM6 18h-1v-1h1v1z"></path>
+</svg>
+</div>
+<div class="flex flex-col min-w-0">
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-emerald-600 text-[14px]">qr_code_2</span>
+<span class="text-xs font-bold text-slate-900">فاتورة إلكترونية معتمدة (زاتكا)</span>
+</div>
+<span class="text-[10px] text-slate-500 leading-tight">مشفرة بتوقيع رقمي مرمز وفق متطلبات المرحلة الثانية للربط والتكامل</span>
+</div>
+</div>
+<!-- Moyasar Emerald-Teal Action Button -->
+<button class="w-full h-13 py-3.5 px-4 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-display font-bold text-base shadow-lg shadow-emerald-600/20 hover:shadow-xl hover:shadow-emerald-600/30 transition-all flex items-center justify-center gap-2 cursor-pointer" type="button">
+<span class="material-symbols-outlined text-[22px]">lock</span>
+<span>إتمام السداد الآمن بمدى (5,145.00 ر.س)</span>
+</button>
+<!-- Footer Trust Badges -->
+<div class="text-center space-y-2 pt-1">
+<p class="text-[11px] text-slate-500">
+              بالنقر على إتمام السداد، يتم توجيهك للمصادقة الآمنة عبر تطبيق نفاذ أو الرمز البنكي.
+            </p>
+<div class="flex items-center justify-center gap-3 text-xs text-slate-600 pt-1">
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[15px] text-emerald-600">verified</span>
+                حماية الضمان من ساما
+              </span>
+<span>•</span>
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[15px] text-teal-600">autorenew</span>
+                استرجاع مجاني ميسر
+              </span>
+</div>
+</div>
+</div>
+<!-- VIP Support Card -->
+<div class="bg-white rounded-2xl border border-border-subtle p-4 shadow-sm flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center">
+<span class="material-symbols-outlined text-[20px]">support_agent</span>
+</div>
+<div class="flex flex-col">
+<span class="text-xs font-bold text-slate-900">مساعد الكونسيرج الخاص</span>
+<span class="text-[11px] text-slate-500">مستشار حصري جاهز لخدمتك في الرياض</span>
+</div>
+</div>
+<a class="px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold transition-colors" href="tel:8001237687">
+            اتصال فوري
+          </a>
+</div>
+</div>
+</div>
+<!-- Security & Institutional Assurances Strip (Moyasar Modern Clean Style) -->
+<div class="mt-12 bg-white rounded-2xl border border-border-subtle p-6 shadow-sm">
+<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+<div class="flex items-start gap-3.5">
+<div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center shrink-0 border border-emerald-100">
+<span class="material-symbols-outlined text-[22px]">account_balance</span>
+</div>
+<div class="flex flex-col">
+<span class="text-xs font-bold text-slate-900">مرخص من البنك المركزي</span>
+<span class="text-[11px] text-slate-500 mt-0.5">قنوات دفع متوافقة مع ضوابط الحوكمة والأمان النقدي السعودي (SAMA)</span>
+</div>
+</div>
+<div class="flex items-start gap-3.5">
+<div class="w-10 h-10 rounded-xl bg-teal-50 text-teal-700 flex items-center justify-center shrink-0 border border-teal-100">
+<span class="material-symbols-outlined text-[22px]">verified_user</span>
+</div>
+<div class="flex flex-col">
+<span class="text-xs font-bold text-slate-900">ربط زاتكا للمرحلة الثانية</span>
+<span class="text-[11px] text-slate-500 mt-0.5">إصدار آلي ومباشر للفاتورة الضريبية المعتمدة بصيغة XML وQR</span>
+</div>
+</div>
+<div class="flex items-start gap-3.5">
+<div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center shrink-0 border border-emerald-100">
+<span class="material-symbols-outlined text-[22px]">local_shipping</span>
+</div>
+<div class="flex flex-col">
+<span class="text-xs font-bold text-slate-900">نقل مدرع ومكيف</span>
+<span class="text-[11px] text-slate-500 mt-0.5">تسليم مباشر ومؤمن عبر العنوان الوطني السعودي إلى باب قصرك</span>
+</div>
+</div>
+<div class="flex items-start gap-3.5">
+<div class="w-10 h-10 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center shrink-0 border border-slate-200">
+<span class="material-symbols-outlined text-[22px]">security</span>
+</div>
+<div class="flex flex-col">
+<span class="text-xs font-bold text-slate-900">سيادة البيانات الوطنية (PDPL)</span>
+<span class="text-[11px] text-slate-500 mt-0.5">حماية مشددة لكافة البيانات داخل مراكز حوسبة سحابية داخل المملكة</span>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Clean Moyasar Styled Light Footer -->
+<footer class="w-full bg-white border-t border-border-subtle mt-16 text-slate-600 text-xs">
+<div class="max-w-[1360px] mx-auto px-4 sm:px-6 py-10">
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 pb-8 border-b border-slate-100">
+<div class="space-y-3">
+<div class="flex items-center gap-2">
+<div class="w-8 h-8 rounded-lg bg-emerald-600 text-white flex items-center justify-center font-bold">
+<span class="material-symbols-outlined text-[18px]">account_balance</span>
+</div>
+<span class="font-display font-bold text-slate-900 text-sm">سوق سعودية السيادية</span>
+</div>
+<p class="text-slate-500 leading-relaxed text-[11px]">
+            منصة الفخامة الرقمية الرائدة في المملكة العربية السعودية، صممت بأعلى معايير تقنية لخدمة نخبة المقتنين وشركاء رؤية 2030.
+          </p>
+</div>
+<div class="space-y-2">
+<span class="font-bold text-slate-900 text-xs block mb-1">قنوات السداد المعتمدة</span>
+<div class="flex flex-wrap gap-2">
+<span class="px-2.5 py-1 rounded bg-slate-50 text-slate-700 border border-slate-200 font-bold text-[11px]">مدى (mada)</span>
+<span class="px-2.5 py-1 rounded bg-slate-50 text-slate-700 border border-slate-200 font-bold text-[11px]">Apple Pay</span>
+<span class="px-2.5 py-1 rounded bg-slate-50 text-slate-700 border border-slate-200 font-bold text-[11px]">فيزا وماستركارد</span>
+<span class="px-2.5 py-1 rounded bg-slate-50 text-slate-700 border border-slate-200 font-bold text-[11px]">تمارا</span>
+<span class="px-2.5 py-1 rounded bg-slate-50 text-slate-700 border border-slate-200 font-bold text-[11px]">تابي</span>
+</div>
+</div>
+<div class="space-y-2">
+<span class="font-bold text-slate-900 text-xs block mb-1">الاعتماد والتراخيص</span>
+<ul class="space-y-1.5 text-slate-500 text-[11px]">
+<li class="flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>معتمد من البنك المركزي السعودي (ساما)</li>
+<li class="flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>متوافق مع منظومة الفوترة (زاتكا)</li>
+<li class="flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>توثيق المركز السعودي للأعمال</li>
+</ul>
+</div>
+<div class="space-y-2">
+<span class="font-bold text-slate-900 text-xs block mb-1">مركز مساعدة العملاء</span>
+<p class="text-[11px] text-slate-500">الرقم المجاني الموحد لخدمة كبار الشخصيات:</p>
+<a class="font-bold text-sm text-emerald-700 hover:text-emerald-800 dir-ltr inline-block" href="tel:8001237687">800 123 7687</a>
+</div>
+</div>
+<div class="pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-slate-500">
+<p>© 2025 سوق سعودية المحدودة. جميع الحقوق السيادية محفوظة. المملكة العربية السعودية.</p>
+<div class="flex items-center gap-4">
+<a class="hover:text-slate-900 transition-colors" href="#">سياسة الخصوصية</a>
+<span>•</span>
+<a class="hover:text-slate-900 transition-colors" href="#">شروط البيع والضمان</a>
+<span>•</span>
+<span>سجل تجاري رقم: 1010892019</span>
+</div>
+</div>
+</div>
+</footer>
+</body></html>

@@ -1,0 +1,985 @@
+<!DOCTYPE html>
+
+<html class="light" dir="rtl" lang="ar"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta content="web_standard" name="shell-type"/>
+<title>سوق سعودية | المنصة الوطنية للمقتنيات الفاخرة</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+    @layer base {
+      html, body {
+        margin: 0;
+        padding: 0;
+        font-family: 'IBM Plex Sans Arabic', sans-serif;
+      }
+      body {
+        overscroll-behavior: none;
+      }
+    }
+    ::-webkit-scrollbar {
+      display: none;
+    }
+  </style>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "surface-card": "#ffffff",
+            "background": "#faf8ff",
+            "surface-canvas": "#f8fafc",
+            "border-subtle": "#e2e8f0",
+            "border-muted": "#f1f5f9",
+            "text-primary": "#0f172a",
+            "text-secondary": "#475569",
+            "text-tertiary": "#94a3b8",
+            "primary": "#006948",
+            "primary-container": "#00855d",
+            "emerald-accent": "#10b981",
+            "teal-accent": "#06b6d4",
+            "emerald-surface": "#ecfdf5",
+            "sand-warm": "#fbf9f6",
+            "sand-border": "#e8e2dc",
+            "secondary": "#006398",
+            "error": "#ba1a1a",
+            "badge-success-bg": "#ecfdf5",
+            "badge-success-text": "#047857"
+          },
+          fontFamily: {
+            sans: ['IBM Plex Sans Arabic', 'sans-serif'],
+            arabic: ['IBM Plex Sans Arabic', 'sans-serif']
+          },
+          boxShadow: {
+            'moyasar': '0 4px 20px -2px rgba(15, 23, 42, 0.05)',
+            'moyasar-hover': '0 12px 30px -4px rgba(15, 23, 42, 0.09)',
+            'moyasar-glow': '0 0 25px rgba(16, 185, 129, 0.22)'
+          }
+        }
+      }
+    };
+  </script>
+</head>
+<body class="bg-[#f8fafc] text-text-primary font-sans antialiased selection:bg-emerald-100 selection:text-emerald-900">
+<!-- Fixed Header Region -->
+<div class="fixed top-0 left-0 right-0 z-50 flex flex-col shadow-sm">
+<!-- Top Bar -->
+<div class="w-full bg-slate-900 text-white text-xs border-b border-slate-800">
+<div class="max-w-[1400px] mx-auto px-4 lg:px-8 h-9 flex items-center justify-between">
+<div class="flex items-center gap-2 overflow-hidden">
+<span class="inline-flex items-center px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 text-[11px] font-semibold">
+            رؤية المملكة ٢٠٣٠
+          </span>
+<p class="truncate text-slate-300 text-[12px]">
+            إصدارات خاصة وحصرية • توصيل آمن وفوري خلال ساعتين في الرياض وجدة • ضمان استرجاع ملكي موثّق
+          </p>
+</div>
+<div class="flex items-center gap-4 shrink-0 text-slate-300 text-[12px]">
+<div class="flex items-center gap-1.5 text-emerald-400 font-medium">
+<span class="material-symbols-outlined text-[15px]">payments</span>
+<span>الريال السعودي (ر.س)</span>
+</div>
+<div class="h-3 w-px bg-slate-700"></div>
+<div class="flex items-center gap-1 hover:text-white transition-colors cursor-pointer">
+<span class="material-symbols-outlined text-[15px]">verified</span>
+<span>منصة معتمدة من هيئة الزكاة والضريبة والجمارك</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Main Navigation Header (Clean Moyasar White Style) -->
+<header class="w-full bg-white/95 backdrop-blur-xl border-b border-slate-200/80">
+<div class="max-w-[1400px] mx-auto px-4 lg:px-8 h-20 flex items-center justify-between gap-6">
+<!-- Logo & Identity -->
+<div class="flex items-center gap-4 shrink-0">
+<a class="flex items-center gap-3 group" href="#">
+<div class="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-600 to-teal-700 flex items-center justify-center text-white shadow-md shadow-emerald-600/20">
+<span class="material-symbols-outlined text-[24px]">account_balance</span>
+</div>
+<div class="flex flex-col text-right">
+<div class="flex items-center gap-2">
+<span class="text-xl font-bold text-slate-900 tracking-tight group-hover:text-emerald-700 transition-colors">سوق سعودية</span>
+<span class="text-xs px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 border border-emerald-200/60 font-medium">المقتنيات السيادية</span>
+</div>
+<span class="text-[11px] text-slate-500 font-medium">الوجهة الرسمية للحِرف والمقتنيات الفاخرة</span>
+</div>
+</a>
+</div>
+<!-- Search Bar (Moyasar Modern Pill Search) -->
+<div class="hidden lg:flex flex-1 max-w-xl mx-4">
+<div class="relative flex items-center w-full">
+<span class="material-symbols-outlined absolute right-3.5 text-slate-400 text-[20px] pointer-events-none">search</span>
+<input class="w-full h-11 pr-11 pl-28 bg-slate-50 hover:bg-slate-100/70 focus:bg-white rounded-full border border-slate-200 text-slate-800 text-sm placeholder:text-slate-400 focus:outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-500/10 transition-all shadow-inner" placeholder="ابحث عن أدهان العود الملكية، البشوت الحساوية، المجوهرات النادرة..." type="search"/>
+<button class="absolute left-2 px-3 py-1.5 rounded-full bg-white hover:bg-slate-100 text-slate-600 text-xs font-medium border border-slate-200 flex items-center gap-1 transition-colors" type="button">
+<span class="material-symbols-outlined text-[16px] text-emerald-600">center_focus_strong</span>
+<span>بحث ذكي</span>
+</button>
+</div>
+</div>
+<!-- Utility & Actions -->
+<div class="flex items-center gap-3 shrink-0">
+<button class="relative p-2.5 rounded-full bg-slate-50 hover:bg-slate-100 text-slate-600 border border-slate-200 transition-colors" title="التنبيهات" type="button">
+<span class="material-symbols-outlined text-[20px]">notifications</span>
+<span class="absolute top-1.5 left-1.5 w-2 h-2 rounded-full bg-emerald-500 ring-2 ring-white"></span>
+</button>
+<button class="relative p-2.5 rounded-full bg-slate-50 hover:bg-slate-100 text-slate-600 border border-slate-200 transition-colors" title="المفضلة" type="button">
+<span class="material-symbols-outlined text-[20px]">favorite</span>
+<span class="absolute -top-1 -left-1 flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full bg-emerald-600 text-white text-[10px] font-bold">٢</span>
+</button>
+<!-- Cart Action -->
+<button class="flex items-center gap-2.5 px-4 py-2 rounded-full bg-slate-900 hover:bg-slate-800 text-white transition-all shadow-sm group" type="button">
+<span class="material-symbols-outlined text-[20px] text-emerald-400 group-hover:scale-105 transition-transform">shopping_bag</span>
+<div class="flex flex-col text-right leading-tight">
+<span class="text-[10px] text-slate-400 font-medium">سلة المقتنيات (٣)</span>
+<span class="text-xs text-white font-bold">١٤,٢٥٠ ر.س</span>
+</div>
+</button>
+<!-- User Profile -->
+<div class="flex items-center gap-2.5 pr-2 mr-1 border-r border-slate-200">
+<div class="relative">
+<img alt="صورة العضو" class="w-9 h-9 rounded-full object-cover ring-2 ring-emerald-500/20" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD7w-w5KFbr8RsSWcM2F-SvRvHeaAPqB-590qbcQ6vRJY_1vGoDvikoN_JCIeDBVFhfeaKYJe1lAZJQh99lhkXRkpHaBxCGQJre_WxQ-IBFak1HLcF8h7hKMYDwOn-0bJULaHgMCV8s-FZha7PCga8UZ8TtnDMvtaOcK26sqT21ru28ZFfsc-UprfRqQmZJHLUHb51MT42vyOf-Oxaky2lVsAPYHnRxPgkFBMNQrrQ3"/>
+<span class="absolute bottom-0 left-0 w-2.5 h-2.5 rounded-full bg-emerald-500 ring-2 ring-white"></span>
+</div>
+<div class="hidden xl:flex flex-col text-right">
+<span class="text-xs font-bold text-slate-900 leading-none">صاحب السمو / المقتني</span>
+<span class="text-[10px] text-emerald-700 font-semibold mt-1">عضوية الدرجة الملكية</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Secondary Subnav -->
+<div class="w-full border-t border-slate-100 bg-white">
+<div class="max-w-[1400px] mx-auto px-4 lg:px-8 h-11 flex items-center justify-between">
+<nav class="flex items-center gap-6 h-full text-sm font-medium">
+<a aria-current="page" class="h-full inline-flex items-center text-emerald-700 font-bold border-b-2 border-emerald-600 px-1" href="#">الرئيسية</a>
+<a class="h-full inline-flex items-center text-slate-600 hover:text-emerald-700 transition-colors px-1" href="#">الإصدارات الخاصة</a>
+<a class="h-full inline-flex items-center text-slate-600 hover:text-emerald-700 transition-colors px-1" href="#">المصممون السعوديون</a>
+<a class="h-full inline-flex items-center text-slate-600 hover:text-emerald-700 transition-colors px-1" href="#">بوابة قطاع الأعمال (B2B)</a>
+<a class="h-full inline-flex items-center text-slate-600 hover:text-emerald-700 transition-colors px-1" href="#">منصة الحِرفيين</a>
+<a class="h-full inline-flex items-center text-slate-600 hover:text-emerald-700 transition-colors px-1" href="#">خدمات الضمان والتوثيق</a>
+</nav>
+<div class="hidden lg:flex items-center gap-2 text-xs text-slate-500 font-medium">
+<span class="material-symbols-outlined text-[16px] text-emerald-600">verified_user</span>
+<span>دفع مؤمّن بإشراف البنك المركزي السعودي (ساما)</span>
+</div>
+</div>
+</div>
+</header>
+</div>
+<!-- Main Body Content -->
+<main class="w-full pt-[156px] min-h-screen bg-[#f8fafc]">
+<div class="flex flex-col w-full">
+<!-- Hero Section (Light, Airy, Moyasar Clean Atmosphere) -->
+<section class="relative w-full overflow-hidden bg-gradient-to-b from-white via-slate-50/70 to-slate-100/40 py-12 lg:py-16 border-b border-slate-200/60">
+<!-- Soft Ambient Emerald Glow -->
+<div class="absolute -top-24 right-1/4 w-[600px] h-[350px] bg-emerald-200/30 rounded-full blur-[100px] pointer-events-none"></div>
+<div class="absolute top-1/2 left-10 w-[450px] h-[300px] bg-teal-200/20 rounded-full blur-[90px] pointer-events-none"></div>
+<div class="max-w-[1400px] mx-auto px-4 lg:px-8 relative z-10">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+<!-- Hero Text Column -->
+<div class="lg:col-span-7 flex flex-col gap-5 text-right">
+<!-- Refined Pill Badge -->
+<div class="inline-flex items-center gap-2 self-start px-3.5 py-1.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-semibold shadow-xs">
+<span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+<span>المجموعة الوطنية الملكية • موسم الرياض ٢٠٢٥</span>
+</div>
+<!-- Main Title -->
+<div class="flex flex-col gap-2">
+<h1 class="text-4xl lg:text-5xl font-extrabold text-slate-900 tracking-tight leading-[1.25]">
+                  الفخامة السعودية المعاصرة <br/>
+<span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-700 via-teal-700 to-emerald-600">
+                    بأصالة التاريخ وهندسة المستقبل
+                  </span>
+</h1>
+<p class="text-lg lg:text-xl text-slate-600 font-medium">
+                  حيث يلتقي إبداع الدرعية العريق مع أحدث ابتكارات نيوم في منصة وطنية واحدة موثقة.
+                </p>
+</div>
+<p class="text-sm lg:text-base text-slate-600 max-w-2xl leading-relaxed">
+                اقتنِ أنفس أدهان العود المعتقة، والبشوت الملكية المشغولة يدويًا بالزري الألماني الخالص، وساعات اليد الميكانيكية الاستثنائية، مع شهادات توثيق رقمية فورية وفاتورة إلكترونية معتمدة من هيئة الزكاة والضريبة والجمارك.
+              </p>
+<!-- Countdown Box -->
+<div class="p-4 rounded-2xl bg-white border border-slate-200 shadow-moyasar max-w-xl">
+<div class="flex items-center justify-between pb-3 border-b border-slate-100">
+<span class="text-xs font-bold text-slate-800 flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[17px] text-emerald-600">timer</span>
+                    الإصدار الخاص السابع // صندوق الصقر الأسود
+                  </span>
+<span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-amber-50 text-amber-800 border border-amber-200">
+                    ينتهي الطرح قريبًا
+                  </span>
+</div>
+<div class="grid grid-cols-4 gap-2.5 pt-3 text-center" id="heroCountdown">
+<div class="p-2.5 rounded-xl bg-slate-50 border border-slate-100 flex flex-col">
+<span class="text-xl font-bold text-slate-900" id="cdHours">٠٨</span>
+<span class="text-[11px] text-slate-500 font-medium">ساعة</span>
+</div>
+<div class="p-2.5 rounded-xl bg-slate-50 border border-slate-100 flex flex-col">
+<span class="text-xl font-bold text-slate-900" id="cdMinutes">٤٢</span>
+<span class="text-[11px] text-slate-500 font-medium">دقيقة</span>
+</div>
+<div class="p-2.5 rounded-xl bg-slate-50 border border-slate-100 flex flex-col">
+<span class="text-xl font-bold text-slate-900" id="cdSeconds">١٩</span>
+<span class="text-[11px] text-slate-500 font-medium">ثانية</span>
+</div>
+<div class="p-2.5 rounded-xl bg-emerald-50 border border-emerald-100 flex flex-col">
+<span class="text-xl font-bold text-emerald-700">١٤ / ٢٠</span>
+<span class="text-[11px] text-emerald-800 font-medium">محجوزة</span>
+</div>
+</div>
+</div>
+<!-- CTA Buttons (Moyasar Clean Gradient Buttons) -->
+<div class="flex flex-wrap items-center gap-3 pt-2">
+<button class="px-6 py-3.5 rounded-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-bold text-sm tracking-wide shadow-md shadow-emerald-700/20 hover:shadow-lg transition-all flex items-center gap-2">
+<span class="material-symbols-outlined text-[19px]">diamond</span>
+<span>استكشف الإصدارات الملكية</span>
+</button>
+<button class="px-6 py-3.5 rounded-full bg-white hover:bg-slate-50 text-slate-800 font-semibold text-sm border border-slate-200 shadow-sm transition-all flex items-center gap-2">
+<span class="material-symbols-outlined text-[19px] text-emerald-600">play_circle</span>
+<span>مشاهدة العرض الوثائقي</span>
+</button>
+</div>
+<!-- Trust Metrics -->
+<div class="flex flex-wrap items-center gap-6 pt-2 text-xs text-slate-600 font-medium">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-emerald-600 text-[18px]">verified</span>
+<span>توثيق رسمي ومعتمد من وزارة الثقافة</span>
+</div>
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-emerald-600 text-[18px]">electric_bolt</span>
+<span>توصيل مصفّح خلال ساعتين داخل الرياض</span>
+</div>
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-emerald-600 text-[18px]">shield</span>
+<span>ضمان استرجاع وإيداع مصرفي محمي</span>
+</div>
+</div>
+</div>
+<!-- Hero Masterpiece Card Column -->
+<div class="lg:col-span-5 relative">
+<div class="relative rounded-3xl overflow-hidden bg-white border border-slate-200 p-3 shadow-moyasar-hover">
+<div class="relative w-full h-[480px] rounded-2xl overflow-hidden group">
+<img class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="ساعة يد فاخرة فريدة مزينة بالزمرد" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDb3JWusoFG017kBWA1IeSnF3q9pOY-NEhVG6bYFx42Elfhr6OrYnOakpwOL31CJHpclWIUXJQQh4Mxn_-WeG4KAV_k82FHyERQXHKtxoBLvpJsTOexqENlCW_VjwnCuza3kns0tgwDeXVdz_kdqwRHY8s-eRFVb_BPhfWRvNo9HXK63T0zmz1C9ig8ZlzoDqpolRG0txDcAgqIY3tYi0cP_56QFkiCTf1oquSTlaSo"/>
+<div class="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-slate-900/20 to-transparent"></div>
+<div class="absolute top-4 right-4 left-4 flex items-center justify-between">
+<span class="px-3 py-1 rounded-full bg-white/90 backdrop-blur-md text-slate-900 text-xs font-bold shadow-sm">
+                      قطعة فريدة • إصدار وحيد
+                    </span>
+<span class="px-3 py-1 rounded-full bg-emerald-600 text-white text-xs font-bold shadow-sm">
+                      الرقم التوثيقي: ٠١٨
+                    </span>
+</div>
+<div class="absolute bottom-4 right-4 left-4 p-4 rounded-xl bg-white/95 backdrop-blur-md shadow-lg flex flex-col gap-2 text-right">
+<div class="flex items-center justify-between">
+<span class="text-xs text-slate-500 font-semibold">دار اليمامة لصناعة الساعات الفاخرة</span>
+<span class="text-sm text-emerald-700 font-extrabold">١٨٥,٠٠٠ ر.س</span>
+</div>
+<div class="flex items-center justify-between">
+<h3 class="text-base font-bold text-slate-900">ساعة كرونوغراف الصقر السماوي</h3>
+<button class="w-8 h-8 rounded-full bg-slate-900 text-white flex items-center justify-center hover:bg-emerald-600 transition-colors">
+<span class="material-symbols-outlined text-[18px]">arrow_back</span>
+</button>
+</div>
+<p class="text-xs text-slate-600 line-clamp-1">
+                      مصنوعة من تيتانيوم دمشقي عيار ١٨ مع ميناء منحوت من كوارتز عسير الأخضر النادر ومحرك توربيون يدوي.
+                    </p>
+</div>
+</div>
+</div>
+<!-- Micro Badge -->
+<div class="absolute -bottom-4 -right-4 hidden sm:flex items-center gap-3 p-3 rounded-2xl bg-white border border-slate-200 shadow-moyasar">
+<div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
+<span class="material-symbols-outlined text-[22px]">verified_user</span>
+</div>
+<div class="flex flex-col text-right">
+<span class="text-xs font-bold text-slate-900">عقد ذكي موثق عبر منصة زاتكا</span>
+<span class="text-[11px] text-slate-500 font-medium">شهادة ملكية رقمية غير قابلة للاستبدال</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Category Pillars Section (Super Clean Moyasar Bento Grid) -->
+<section class="w-full bg-[#f8fafc] py-14 border-b border-slate-200/60">
+<div class="max-w-[1400px] mx-auto px-4 lg:px-8">
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8 text-right">
+<div class="flex flex-col gap-1">
+<span class="text-xs font-bold text-emerald-700 uppercase tracking-wider">٠١ // الركائز والقطاعات</span>
+<h2 class="text-2xl font-bold text-slate-900">ركائز المقتنيات الملكية والحِرف التراثية</h2>
+</div>
+<div class="flex items-center gap-2 self-start md:self-auto">
+<button class="p-2 rounded-full bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 hover:text-emerald-700 transition-colors shadow-xs" title="السابق">
+<span class="material-symbols-outlined text-[18px]">chevron_right</span>
+</button>
+<button class="p-2 rounded-full bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 hover:text-emerald-700 transition-colors shadow-xs" title="التالي">
+<span class="material-symbols-outlined text-[18px]">chevron_left</span>
+</button>
+</div>
+</div>
+<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+<!-- Pillar 1 -->
+<a class="group flex flex-col p-5 rounded-2xl bg-white border border-slate-200 hover:border-emerald-300 hover:shadow-moyasar-hover transition-all text-right shadow-moyasar" href="#">
+<div class="w-11 h-11 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center group-hover:bg-emerald-600 group-hover:text-white transition-all mb-4">
+<span class="material-symbols-outlined text-[24px]">watch</span>
+</div>
+<span class="text-base font-bold text-slate-900 group-hover:text-emerald-700 transition-colors">الساعات الفاخرة</span>
+<span class="text-xs text-slate-500 font-medium mt-1">إصدارات خزائن الرياض</span>
+<p class="text-xs text-slate-500 mt-2 line-clamp-2 leading-relaxed">توربيونات نادرة وميكانيكا سويسرية سعودية مخصصة.</p>
+</a>
+<!-- Pillar 2 -->
+<a class="group flex flex-col p-5 rounded-2xl bg-white border border-slate-200 hover:border-emerald-300 hover:shadow-moyasar-hover transition-all text-right shadow-moyasar" href="#">
+<div class="w-11 h-11 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center group-hover:bg-emerald-600 group-hover:text-white transition-all mb-4">
+<span class="material-symbols-outlined text-[24px]">local_fire_department</span>
+</div>
+<span class="text-base font-bold text-slate-900 group-hover:text-emerald-700 transition-colors">أدهان العود الملكية</span>
+<span class="text-xs text-slate-500 font-medium mt-1">كلاكاسي وورد طائفي</span>
+<p class="text-xs text-slate-500 mt-2 line-clamp-2 leading-relaxed">تقطير أثري من أندر غابات العود الطبيعي المعتق.</p>
+</a>
+<!-- Pillar 3 -->
+<a class="group flex flex-col p-5 rounded-2xl bg-white border border-slate-200 hover:border-emerald-300 hover:shadow-moyasar-hover transition-all text-right shadow-moyasar" href="#">
+<div class="w-11 h-11 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center group-hover:bg-emerald-600 group-hover:text-white transition-all mb-4">
+<span class="material-symbols-outlined text-[24px]">styler</span>
+</div>
+<span class="text-base font-bold text-slate-900 group-hover:text-emerald-700 transition-colors">الأزياء والبشوت</span>
+<span class="text-xs text-slate-500 font-medium mt-1">زري حساوي ملكي</span>
+<p class="text-xs text-slate-500 mt-2 line-clamp-2 leading-relaxed">بشوت يدوية وعبايات راقية بأيدي كبار النساجين.</p>
+</a>
+<!-- Pillar 4 -->
+<a class="group flex flex-col p-5 rounded-2xl bg-white border border-slate-200 hover:border-emerald-300 hover:shadow-moyasar-hover transition-all text-right shadow-moyasar" href="#">
+<div class="w-11 h-11 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center group-hover:bg-emerald-600 group-hover:text-white transition-all mb-4">
+<span class="material-symbols-outlined text-[24px]">smart_toy</span>
+</div>
+<span class="text-base font-bold text-slate-900 group-hover:text-emerald-700 transition-colors">تقنيات نيوم الذكية</span>
+<span class="text-xs text-slate-500 font-medium mt-1">ابتكارات معيشية حديثة</span>
+<p class="text-xs text-slate-500 mt-2 line-clamp-2 leading-relaxed">مباخر ذكية وأجهزة معمارية بتيتانيوم أوكساجون.</p>
+</a>
+<!-- Pillar 5 -->
+<a class="group flex flex-col p-5 rounded-2xl bg-white border border-slate-200 hover:border-emerald-300 hover:shadow-moyasar-hover transition-all text-right shadow-moyasar" href="#">
+<div class="w-11 h-11 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center group-hover:bg-emerald-600 group-hover:text-white transition-all mb-4">
+<span class="material-symbols-outlined text-[24px]">flutter_dash</span>
+</div>
+<span class="text-base font-bold text-slate-900 group-hover:text-emerald-700 transition-colors">الصقارة والفروسية</span>
+<span class="text-xs text-slate-500 font-medium mt-1">تجهيزات الأصايل</span>
+<p class="text-xs text-slate-500 mt-2 line-clamp-2 leading-relaxed">براقع كربونية مدمجة وسروج جلدية إيطالية مطرزة.</p>
+</a>
+<!-- Pillar 6 -->
+<a class="group flex flex-col p-5 rounded-2xl bg-white border border-slate-200 hover:border-emerald-300 hover:shadow-moyasar-hover transition-all text-right shadow-moyasar" href="#">
+<div class="w-11 h-11 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center group-hover:bg-emerald-600 group-hover:text-white transition-all mb-4">
+<span class="material-symbols-outlined text-[24px]">diamond</span>
+</div>
+<span class="text-base font-bold text-slate-900 group-hover:text-emerald-700 transition-colors">المجوهرات النادرة</span>
+<span class="text-xs text-slate-500 font-medium mt-1">ذهب وصياغة فاخرة</span>
+<p class="text-xs text-slate-500 mt-2 line-clamp-2 leading-relaxed">زمرد كولومبي طبيعي وذهب صحراوي عيار ٢٤.</p>
+</a>
+</div>
+</div>
+</section>
+<!-- Flash VIP Drop Section (Clean Light Highlight Banner) -->
+<section class="w-full bg-white py-14 border-b border-slate-200/60">
+<div class="max-w-[1400px] mx-auto px-4 lg:px-8">
+<!-- Header -->
+<div class="flex items-center justify-between pb-6 text-right">
+<div class="flex items-center gap-3">
+<span class="w-3 h-3 rounded-full bg-emerald-500 ring-4 ring-emerald-100"></span>
+<div>
+<span class="text-xs font-bold text-emerald-700 uppercase tracking-wider">الحجز الحصري المباشر</span>
+<h2 class="text-2xl font-bold text-slate-900">دفعة حجر بازلت الدرعية الملكية</h2>
+</div>
+</div>
+<div class="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-100 text-slate-700 text-xs font-medium">
+<span class="material-symbols-outlined text-[16px] text-slate-500">lock_clock</span>
+<span>إغلاق الحجز بعد: ٤٧ دقيقة</span>
+</div>
+</div>
+<!-- Feature Flash Product Card (Moyasar White Style) -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 p-6 lg:p-8 rounded-3xl bg-slate-50/70 border border-slate-200 shadow-moyasar">
+<div class="lg:col-span-6 relative rounded-2xl overflow-hidden min-h-[380px] bg-white border border-slate-200">
+<img class="w-full h-full object-cover" data-alt="دهن عود ملكي في قارورة كريستال فاخرة" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAjYZUPd85zGoz4eSXUp6em1yM1xIsRmcm_WQxHl-nb3qxGDEHrZabm7zpQrXuqx7xspl9bxUevahddiuJ-USrdnCMxePlaZhP-KepAh8pdSx2Q9U2W9FY146FOSbnSeMUE-K-jHECJ357evMDKFSRHELN1K3pCBjOu1U4ogD9mldEfaOlM6__zcun_qJgTb6N-8efY0XlSg-gEcueVyuh_2JGlGfnkQLt2hMIBPo6h"/>
+<div class="absolute top-4 right-4 flex flex-col gap-2">
+<span class="px-3 py-1 rounded-full bg-red-50 text-red-700 border border-red-200 text-xs font-bold">
+                  متبقي فقط ٤ زجاجات
+                </span>
+<span class="px-3 py-1 rounded-full bg-white/90 backdrop-blur-md text-slate-800 text-xs font-semibold shadow-xs">
+                  معتق لأكثر من ٦٥ عامًا
+                </span>
+</div>
+</div>
+<div class="lg:col-span-6 flex flex-col justify-between text-right">
+<div class="flex flex-col gap-3">
+<div class="flex items-center justify-between">
+<span class="text-xs font-bold text-emerald-800 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">
+                    مقتنيات العطور الملكية
+                  </span>
+<div class="flex items-center gap-1 text-amber-500">
+<span class="material-symbols-outlined text-[18px] fill-current">star</span>
+<span class="text-xs font-bold text-slate-800">٥٫٠</span>
+<span class="text-xs text-slate-400">(٣٨ مقتني ملكي)</span>
+</div>
+</div>
+<h3 class="text-2xl font-bold text-slate-900 leading-snug">
+                  دهن العود الملكي سوليتير ١٩٥٨
+                </h3>
+<p class="text-sm font-semibold text-emerald-700">
+                  توقيع وإشراف شيخ العطارين • الرياض
+                </p>
+<p class="text-sm text-slate-600 leading-relaxed pt-1">
+                  مستخلص من أشجار العود البري العتيق من أرقى الرتب الدهنية، محفوظ في قارورة كريستال أوبسيديان سوداء مع غطاء من الزمرد والذهب عيار ١٨. مرفق بشهادة أصالة سيادية مختومة برقم توثيق رسمي.
+                </p>
+<!-- Depletion Progress -->
+<div class="flex flex-col gap-2 pt-2">
+<div class="flex justify-between text-xs font-bold">
+<span class="text-slate-700">الكمية المتبقية من الحصة المعتمدة</span>
+<span class="text-emerald-700">٤ من أصل ٢٠ زجاجة</span>
+</div>
+<div class="w-full h-2 rounded-full bg-slate-200 overflow-hidden">
+<div class="w-[80%] h-full rounded-full bg-gradient-to-r from-emerald-600 to-teal-500"></div>
+</div>
+</div>
+<!-- Price Breakdown -->
+<div class="flex flex-wrap items-baseline gap-3 pt-2">
+<span class="text-3xl font-extrabold text-slate-900">٤٢,٠٠٠ ر.س</span>
+<span class="text-base text-slate-400 line-through">٥٥,٠٠٠ ر.س</span>
+<span class="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-xs font-bold">
+                    وفر ١٣,٠٠٠ ر.س
+                  </span>
+</div>
+<!-- Installment badge -->
+<div class="p-3 rounded-xl bg-white border border-slate-200 flex items-center justify-between text-xs text-slate-600">
+<span>التقسيط المعتمد عبر تمارا أو تابي:</span>
+<span class="text-emerald-700 font-bold">١٠,٥٠٠ ر.س / شهريًا (بدون أي فوائد)</span>
+</div>
+</div>
+<!-- Buttons -->
+<div class="flex flex-col sm:flex-row items-center gap-3 pt-6">
+<button class="w-full sm:flex-1 py-3.5 rounded-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-bold text-sm tracking-wide shadow-md shadow-emerald-600/20 hover:shadow-lg transition-all flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-[19px]">shopping_bag</span>
+<span>حجز القطعة فورًا مع التوثيق</span>
+</button>
+<button class="w-full sm:w-auto p-3.5 rounded-full bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 transition-colors flex items-center justify-center" title="حجز معاينة خاصة">
+<span class="material-symbols-outlined text-[20px]">visibility</span>
+</button>
+<button class="w-full sm:w-auto p-3.5 rounded-full bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 transition-colors flex items-center justify-center" title="إضافة للخزينة المفضلة">
+<span class="material-symbols-outlined text-[20px]">bookmark</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Featured Product Grid: 8 Items (Clean Crisp White Cards with Light Borders) -->
+<section class="w-full bg-[#f8fafc] py-14">
+<div class="max-w-[1400px] mx-auto px-4 lg:px-8">
+<!-- Filters & Header -->
+<div class="flex flex-col lg:flex-row lg:items-end justify-between gap-4 pb-8 text-right">
+<div class="flex flex-col gap-1">
+<span class="text-xs font-bold text-emerald-700 uppercase tracking-wider">٠٢ // المجموعة الوطنية</span>
+<h2 class="text-2xl font-bold text-slate-900">مقتنيات وتحف الجزيرة العربية</h2>
+<p class="text-xs lg:text-sm text-slate-500 font-medium">قطع حصرية ومصنوعة يدويًا بأيدي نخبة المصممين والحرفيين السعوديين</p>
+</div>
+<!-- Category Tabs -->
+<div class="flex flex-wrap items-center gap-2 self-start lg:self-auto">
+<button class="px-4 py-2 rounded-full bg-slate-900 text-white text-xs font-bold">كافة المقتنيات</button>
+<button class="px-4 py-2 rounded-full bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 text-xs font-medium transition-colors">الأزياء الملكية</button>
+<button class="px-4 py-2 rounded-full bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 text-xs font-medium transition-colors">أدهان العود</button>
+<button class="px-4 py-2 rounded-full bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 text-xs font-medium transition-colors">المجوهرات والساعات</button>
+<button class="px-4 py-2 rounded-full bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 text-xs font-medium transition-colors">تقنيات نيوم</button>
+</div>
+</div>
+<!-- 8-Card Grid -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+<!-- Card 1 -->
+<div class="group flex flex-col rounded-2xl bg-white border border-slate-200 hover:border-emerald-300 overflow-hidden shadow-moyasar hover:shadow-moyasar-hover transition-all text-right">
+<div class="relative w-full aspect-[4/5] bg-slate-100 overflow-hidden">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" data-alt="عباية الحجر الحريرية" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAwJkeYoxVGwyekQzrkAUuFTjDmzy5qF49Ab97BqCYTutZVYSGpVzvjhDDEpBltZMOH96t7ptSqagDADxNtBw65LzbPpTCwjuWqfKX5VWkaXMzElI4s4_2WTgqJH-rzShmNMz_3qg-9AeOgru6c87fDRRrYsSNbANCrkGbIppVhLkJH2aWi9mOcfPoG8NgcJYseCRjG4pDY1tmHOaFTHovMj2jyyQ9n5PksutSCIW0f"/>
+<span class="absolute top-3 right-3 px-2.5 py-1 rounded-full bg-white/95 backdrop-blur-md text-emerald-800 text-[11px] font-bold shadow-xs">
+                  مدرج أسبوع أزياء العلا
+                </span>
+<button class="absolute top-3 left-3 p-2 rounded-full bg-white/90 backdrop-blur-md text-slate-500 hover:text-red-500 transition-colors shadow-xs" title="المفضلة">
+<span class="material-symbols-outlined text-[18px]">favorite</span>
+</button>
+</div>
+<div class="p-4 flex flex-col gap-2">
+<div class="flex items-center justify-between text-xs">
+<span class="text-emerald-700 font-bold">استوديو رزان العزوني</span>
+<span class="text-slate-400">توثيق الرياض</span>
+</div>
+<h3 class="text-base font-bold text-slate-900 group-hover:text-emerald-700 transition-colors line-clamp-1">
+                  عباية الحجر الحريرية بتطريز الزمرد
+                </h3>
+<p class="text-xs text-slate-500 line-clamp-1">حرير طبيعي بنقوش مستوحاة من واجهات مدائن صالح</p>
+<div class="flex items-baseline justify-between pt-2 border-t border-slate-100">
+<span class="text-lg font-extrabold text-slate-900">٧,٨٥٠ ر.س</span>
+<span class="text-[11px] text-slate-500">١,٩٦٢ ر.س / شهريًا</span>
+</div>
+<button class="w-full mt-2 py-2.5 rounded-xl bg-slate-900 group-hover:bg-emerald-600 text-white text-xs font-bold transition-colors">
+                  اقتناء فوري
+                </button>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="group flex flex-col rounded-2xl bg-white border border-slate-200 hover:border-emerald-300 overflow-hidden shadow-moyasar hover:shadow-moyasar-hover transition-all text-right">
+<div class="relative w-full aspect-[4/5] bg-slate-100 overflow-hidden">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" data-alt="بشت حساوي ملكي زري مذهب" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCMdGSsa2AJlCE0t8UwDzh4KtquUI2UZRJZu2gif5vYygubOjVBDgfgklI1SdN7YG6MFO47ZpWC7_bmMSQNLXcf0rqE8aKfMEqbCiQMZewQWXz1TIB6PZEYGzgTlYaMFFlXG9Lo73sTxnak0cgEe7MCGO-UynwFYRGPAhU9ZpYku3B_0xtIPrfMlBiNMaWFwEM9d6q4gqoB5y-1ndMKEMWHBkwSDDoF83Nq0yv_hMOl"/>
+<span class="absolute top-3 right-3 px-2.5 py-1 rounded-full bg-amber-50 text-amber-800 border border-amber-200 text-[11px] font-bold shadow-xs">
+                  نول الأحساء الملكي
+                </span>
+<button class="absolute top-3 left-3 p-2 rounded-full bg-white/90 backdrop-blur-md text-slate-500 hover:text-red-500 transition-colors shadow-xs" title="المفضلة">
+<span class="material-symbols-outlined text-[18px]">favorite</span>
+</button>
+</div>
+<div class="p-4 flex flex-col gap-2">
+<div class="flex items-center justify-between text-xs">
+<span class="text-amber-800 font-bold">بيت القطان الحساوي</span>
+<span class="text-slate-400">صياغة زري ألماني</span>
+</div>
+<h3 class="text-base font-bold text-slate-900 group-hover:text-emerald-700 transition-colors line-clamp-1">
+                  البشت الحساوي الملكي بالزري المذهب
+                </h3>
+<p class="text-xs text-slate-500 line-clamp-1">صوف وبر ناعم مغزول يدويًا مع دقة ملكية عيار ٢٤</p>
+<div class="flex items-baseline justify-between pt-2 border-t border-slate-100">
+<span class="text-lg font-extrabold text-slate-900">٢٤,٥٠٠ ر.س</span>
+<span class="text-[11px] text-slate-500">٦,١٢٥ ر.س / شهريًا</span>
+</div>
+<button class="w-full mt-2 py-2.5 rounded-xl bg-slate-900 group-hover:bg-emerald-600 text-white text-xs font-bold transition-colors">
+                  اقتناء فوري
+                </button>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="group flex flex-col rounded-2xl bg-white border border-slate-200 hover:border-emerald-300 overflow-hidden shadow-moyasar hover:shadow-moyasar-hover transition-all text-right">
+<div class="relative w-full aspect-[4/5] bg-slate-100 overflow-hidden">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" data-alt="مبخرة أورا الذكية من نيوم" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB5MEdFehHdv2cgarVeroSyzQdcKPcCRY3VuR4it--IdOeHS6X89Iy_9YACKO1D1emvw5bgTaUMQvh1Zr8PzvexmfifaSzguRR9NHCnBf_tHAuLsBHrpX093DACSRQxoXd-rM2u8wo4wzmJugUAC3yWmXyOglaB6MrJADx2Q53ZkHhhfLZLjbEFEDgC3NABlat-HTAgH57NrocbU0ylrf81b1E94rrLhiSc7u1_xxO4"/>
+<span class="absolute top-3 right-3 px-2.5 py-1 rounded-full bg-teal-50 text-teal-800 border border-teal-200 text-[11px] font-bold shadow-xs">
+                  مختبرات نيوم الصناعية
+                </span>
+<button class="absolute top-3 left-3 p-2 rounded-full bg-white/90 backdrop-blur-md text-slate-500 hover:text-red-500 transition-colors shadow-xs" title="المفضلة">
+<span class="material-symbols-outlined text-[18px]">favorite</span>
+</button>
+</div>
+<div class="p-4 flex flex-col gap-2">
+<div class="flex items-center justify-between text-xs">
+<span class="text-teal-700 font-bold">أوكساجون للتصميم KSA</span>
+<span class="text-slate-400">تحكم رقمي بالهاتف</span>
+</div>
+<h3 class="text-base font-bold text-slate-900 group-hover:text-emerald-700 transition-colors line-clamp-1">
+                  مبخرة أورا الذكية من التيتانيوم
+                </h3>
+<p class="text-xs text-slate-500 line-clamp-1">تسخين رقمي بدون فحم مع إضاءة زمردية محيطية</p>
+<div class="flex items-baseline justify-between pt-2 border-t border-slate-100">
+<span class="text-lg font-extrabold text-slate-900">٣,٤٥٠ ر.س</span>
+<span class="text-[11px] text-slate-500">٨٦٢ ر.س / شهريًا</span>
+</div>
+<button class="w-full mt-2 py-2.5 rounded-xl bg-slate-900 group-hover:bg-emerald-600 text-white text-xs font-bold transition-colors">
+                  اقتناء فوري
+                </button>
+</div>
+</div>
+<!-- Card 4 -->
+<div class="group flex flex-col rounded-2xl bg-white border border-slate-200 hover:border-emerald-300 overflow-hidden shadow-moyasar hover:shadow-moyasar-hover transition-all text-right">
+<div class="relative w-full aspect-[4/5] bg-slate-100 overflow-hidden">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" data-alt="خاتم واحة النخيل من الزمرد والماس" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBKFUVJgsC2sykph70kyDCgXocN-S4RutxRd1VccXLPRDYAICmGW1AVEI7pKqUPbJP4QyCkYfhVnoW6-JYu5RZmzGapRj6ZRFG21IWCNf-oHfFp8fVGP-i_W3k8yvL4jN6fHD7j3P2EYKh_v8FvCPtYWyfg6GL1azQP7wh9RWd1KIJac8J-Vb1qtyDhV811rE2dmiA4ow_2qqsbCa2Ss_0KJMRv4rDPcDHpLS-V_b23"/>
+<span class="absolute top-3 right-3 px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 text-[11px] font-bold shadow-xs">
+                  إصدار من قطعتين فقط
+                </span>
+<button class="absolute top-3 left-3 p-2 rounded-full bg-white/90 backdrop-blur-md text-slate-500 hover:text-red-500 transition-colors shadow-xs" title="المفضلة">
+<span class="material-symbols-outlined text-[18px]">favorite</span>
+</button>
+</div>
+<div class="p-4 flex flex-col gap-2">
+<div class="flex items-center justify-between text-xs">
+<span class="text-emerald-700 font-bold">لازوردي بريفيه</span>
+<span class="text-slate-400">مجوهرات راقية</span>
+</div>
+<h3 class="text-base font-bold text-slate-900 group-hover:text-emerald-700 transition-colors line-clamp-1">
+                  خاتم واحة النخيل من الزمرد والماس
+                </h3>
+<p class="text-xs text-slate-500 line-clamp-1">زمرد كولومبي غير معالج محاط بماس أصفر وأبيض نقي</p>
+<div class="flex items-baseline justify-between pt-2 border-t border-slate-100">
+<span class="text-lg font-extrabold text-slate-900">٦٨,٠٠٠ ر.س</span>
+<span class="text-[11px] text-emerald-700 font-bold">حساب ضامن مؤمّن</span>
+</div>
+<button class="w-full mt-2 py-2.5 rounded-xl bg-slate-900 group-hover:bg-emerald-600 text-white text-xs font-bold transition-colors">
+                  اقتناء فوري
+                </button>
+</div>
+</div>
+<!-- Card 5 -->
+<div class="group flex flex-col rounded-2xl bg-white border border-slate-200 hover:border-emerald-300 overflow-hidden shadow-moyasar hover:shadow-moyasar-hover transition-all text-right">
+<div class="relative w-full aspect-[4/5] bg-slate-100 overflow-hidden">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" data-alt="سرج الخيل العربي الملكي" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB1zWHoekZrjabweDDqOOYP9WPsHXT-obNSwREKCt6up_bq-QdPzXWPpN_eIMcVk-uqnN889jw-XjmAef9VJzATG60ypwiWX9i5FbfcMsSRkcRMudliCbtj6hPJZj-Lo33TZJJu0S6uctLc3HqrkxEvY5EydniBpSFwI4WUrm8XL7YLQJIZwfLq7RfLMrgtvwF15HcmzYGdjTAGTfGGZ_MCI4G0BZOMSwSyDHJd90z9"/>
+<span class="absolute top-3 right-3 px-2.5 py-1 rounded-full bg-slate-100 text-slate-800 text-[11px] font-bold shadow-xs">
+                  حرفة الجنادرية
+                </span>
+<button class="absolute top-3 left-3 p-2 rounded-full bg-white/90 backdrop-blur-md text-slate-500 hover:text-red-500 transition-colors shadow-xs" title="المفضلة">
+<span class="material-symbols-outlined text-[18px]">favorite</span>
+</button>
+</div>
+<div class="p-4 flex flex-col gap-2">
+<div class="flex items-center justify-between text-xs">
+<span class="text-amber-800 font-bold">مشغولات الخالدية</span>
+<span class="text-slate-400">ورشة الفروسية</span>
+</div>
+<h3 class="text-base font-bold text-slate-900 group-hover:text-emerald-700 transition-colors line-clamp-1">
+                  سرج الخيل العربي المطرز بالذهب
+                </h3>
+<p class="text-xs text-slate-500 line-clamp-1">جلد إيطالي أصيل بحياكة خيوط الذهب وتطعيمات الفيروز</p>
+<div class="flex items-baseline justify-between pt-2 border-t border-slate-100">
+<span class="text-lg font-extrabold text-slate-900">٣٢,٥٠٠ ر.س</span>
+<span class="text-[11px] text-slate-500">٨,١٢٥ ر.س / شهريًا</span>
+</div>
+<button class="w-full mt-2 py-2.5 rounded-xl bg-slate-900 group-hover:bg-emerald-600 text-white text-xs font-bold transition-colors">
+                  اقتناء فوري
+                </button>
+</div>
+</div>
+<!-- Card 6 -->
+<div class="group flex flex-col rounded-2xl bg-white border border-slate-200 hover:border-emerald-300 overflow-hidden shadow-moyasar hover:shadow-moyasar-hover transition-all text-right">
+<div class="relative w-full aspect-[4/5] bg-slate-100 overflow-hidden">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" data-alt="برقع الصقر الكربوني" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAmTiSrCujvlfa1ddGirIls0gEMvrR6ELKZcvo8rMJ6Sy1MOqwme1NaNLOAzjAuBpas0KVigC_TZRpMVJnSwJAQMgmc5l44OYEesGWthnrBTiF22IaUttfS9COWchLFv9hR4zWJFho15HbkqM5HUHKeb7EF7BNALrzO7ACAdur9-NMAeatdsl3TFdrKgY0kiQSs-yc0tRR43lDk0kcS9K3xGatogKFdPkcM_NbSOOsC"/>
+<span class="absolute top-3 right-3 px-2.5 py-1 rounded-full bg-teal-50 text-teal-800 border border-teal-200 text-[11px] font-bold shadow-xs">
+                  ابتكار الصقارة الحديث
+                </span>
+<button class="absolute top-3 left-3 p-2 rounded-full bg-white/90 backdrop-blur-md text-slate-500 hover:text-red-500 transition-colors shadow-xs" title="المفضلة">
+<span class="material-symbols-outlined text-[18px]">favorite</span>
+</button>
+</div>
+<div class="p-4 flex flex-col gap-2">
+<div class="flex items-center justify-between text-xs">
+<span class="text-teal-700 font-bold">شاهين تك لاب</span>
+<span class="text-slate-400">تقنية الرياض</span>
+</div>
+<h3 class="text-base font-bold text-slate-900 group-hover:text-emerald-700 transition-colors line-clamp-1">
+                  برقع الصقر الكربوني مع شريحة التتبع
+                </h3>
+<p class="text-xs text-slate-500 line-clamp-1">ألياف كربونية فائقة الخفة مع هوائي تحديد المواقع الفضائي</p>
+<div class="flex items-baseline justify-between pt-2 border-t border-slate-100">
+<span class="text-lg font-extrabold text-slate-900">٦,٢٠٠ ر.س</span>
+<span class="text-[11px] text-slate-500">١,٥٥٠ ر.س / شهريًا</span>
+</div>
+<button class="w-full mt-2 py-2.5 rounded-xl bg-slate-900 group-hover:bg-emerald-600 text-white text-xs font-bold transition-colors">
+                  اقتناء فوري
+                </button>
+</div>
+</div>
+<!-- Card 7 -->
+<div class="group flex flex-col rounded-2xl bg-white border border-slate-200 hover:border-emerald-300 overflow-hidden shadow-moyasar hover:shadow-moyasar-hover transition-all text-right">
+<div class="relative w-full aspect-[4/5] bg-slate-100 overflow-hidden">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" data-alt="دهن ورد طائفي نخب أول" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAbzt-J6wFu2IF-DU1hgPNH4wwUUdlpgsCI_Vjv5B276jjbw0R-MELW2XIcdKHg_4craZ1ODWzpIv6s866luQhmGnni8ygBu16sJIDTbw_IL0EZhsOllGYu7fi3F5IxDg0jdfk1Wx-fNFAxKtp7wYC72T1IXLKyhleMEaLtQxy7HkZZTkwSxi1MZyxTEPPEpPEywtlh819J8BTXCxQfKeoV1Lng-BDOXx2_HTIft4re"/>
+<span class="absolute top-3 right-3 px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 text-[11px] font-bold shadow-xs">
+                  قطفة الهدا ٢٠٢٤
+                </span>
+<button class="absolute top-3 left-3 p-2 rounded-full bg-white/90 backdrop-blur-md text-slate-500 hover:text-red-500 transition-colors shadow-xs" title="المفضلة">
+<span class="material-symbols-outlined text-[18px]">favorite</span>
+</button>
+</div>
+<div class="p-4 flex flex-col gap-2">
+<div class="flex items-center justify-between text-xs">
+<span class="text-emerald-700 font-bold">مزارع ورد الهدا</span>
+<span class="text-slate-400">عصرة أولى نقية</span>
+</div>
+<h3 class="text-base font-bold text-slate-900 group-hover:text-emerald-700 transition-colors line-clamp-1">
+                  دهن الورد الطائفي الفاخر سوليتير
+                </h3>
+<p class="text-xs text-slate-500 line-clamp-1">مقطر على نار الحطب الطبيعي في قوارير بلورية محفورة</p>
+<div class="flex items-baseline justify-between pt-2 border-t border-slate-100">
+<span class="text-lg font-extrabold text-slate-900">٥,٨٠٠ ر.س</span>
+<span class="text-[11px] text-slate-500">١,٤٥٠ ر.س / شهريًا</span>
+</div>
+<button class="w-full mt-2 py-2.5 rounded-xl bg-slate-900 group-hover:bg-emerald-600 text-white text-xs font-bold transition-colors">
+                  اقتناء فوري
+                </button>
+</div>
+</div>
+<!-- Card 8 -->
+<div class="group flex flex-col rounded-2xl bg-white border border-slate-200 hover:border-emerald-300 overflow-hidden shadow-moyasar hover:shadow-moyasar-hover transition-all text-right">
+<div class="relative w-full aspect-[4/5] bg-slate-100 overflow-hidden">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" data-alt="حذاء نجدي شرقي ملكي مطرز بالفضة" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDrSVRINk45W28AoU9-w5JKu2iTyDHcocMwXAvSxKbVpgNeNQCF5S0TEjCZQizdpnZVD9a8xzUChcCnUnC-9nEZdwEzSYL3XCcPKUHOL9kIN20VWrkd0qdJjcb7hDyJlkGesyt4LseAdds_S2O5T-YOHXZK9x9vO6z5-tCXLWBRiD9wRutsIK5Bbxqyf9Ere7gRDvfl27mdIdW0aTIpXX7J_rMmmMzfaPqLv5R8xbyd"/>
+<span class="absolute top-3 right-3 px-2.5 py-1 rounded-full bg-slate-100 text-slate-800 text-[11px] font-bold shadow-xs">
+                  أحذية الملوك
+                </span>
+<button class="absolute top-3 left-3 p-2 rounded-full bg-white/90 backdrop-blur-md text-slate-500 hover:text-red-500 transition-colors shadow-xs" title="المفضلة">
+<span class="material-symbols-outlined text-[18px]">favorite</span>
+</button>
+</div>
+<div class="p-4 flex flex-col gap-2">
+<div class="flex items-center justify-between text-xs">
+<span class="text-slate-800 font-bold">صنّاع المدائن التراثية</span>
+<span class="text-slate-400">تفصيل حسب المقاس</span>
+</div>
+<h3 class="text-base font-bold text-slate-900 group-hover:text-emerald-700 transition-colors line-clamp-1">
+                  الحذاء النجدي الإمبراطوري المطرز
+                </h3>
+<p class="text-xs text-slate-500 line-clamp-1">جلد عجل فاخر بتطريز خيوط الفضة الخالصة وبطانة مريحة</p>
+<div class="flex items-baseline justify-between pt-2 border-t border-slate-100">
+<span class="text-lg font-extrabold text-slate-900">٤,٩٥٠ ر.س</span>
+<span class="text-[11px] text-slate-500">١,٢٣٧ ر.س / شهريًا</span>
+</div>
+<button class="w-full mt-2 py-2.5 rounded-xl bg-slate-900 group-hover:bg-emerald-600 text-white text-xs font-bold transition-colors">
+                  اقتناء فوري
+                </button>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Saudi Artisanal Heritage Spotlight (Diriyah & AlUla) -->
+<section class="w-full bg-white py-16 border-b border-slate-200/60">
+<div class="max-w-[1400px] mx-auto px-4 lg:px-8">
+<div class="rounded-3xl bg-slate-50 border border-slate-200 p-8 lg:p-12 shadow-moyasar">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+<!-- Text Info -->
+<div class="lg:col-span-6 flex flex-col gap-4 text-right">
+<div class="flex items-center gap-2">
+<span class="px-3.5 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-bold">
+                    برنامج الرعاية الملكية للحِرف
+                  </span>
+<span class="text-xs text-slate-500 font-medium">بوابة الدرعية • الهيئة الملكية للعلا</span>
+</div>
+<h2 class="text-2xl lg:text-3xl font-bold text-slate-900 leading-snug">
+                  صون التراث السعودي العريق بدقة وحرفية معاصرة
+                </h2>
+<p class="text-base text-emerald-800 font-semibold italic">
+                  "نحن لا نستنسخ التاريخ، بل نمنحه أجنحة المستقبل في سماء الرياض."
+                </p>
+<p class="text-sm text-slate-600 leading-relaxed">
+                  من خلال الحاضنات التراثية المشتركة، يعمل شيوخ الصياغة والنسيج جنبًا إلى جنب مع نخبة المصممين وعلماء المواد. تذهب عوائد كل اقتناء بصورة مباشرة لدعم أسر الحرفيين ومؤسسة حفظ التراث السعودي.
+                </p>
+<!-- Artisan Testimony Card (Clean White) -->
+<div class="p-4 rounded-2xl bg-white border border-slate-200 flex items-center gap-4 shadow-sm">
+<img class="w-14 h-14 rounded-full object-cover shrink-0 ring-2 ring-emerald-500/20" data-alt="صورة شيخ الحرفيين" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC_5Z-uqamWgbL_Vy94E8V44uzmFGj8uFjTa63lqueax7DtFA3yiMLLk0qteX7zsttHj8Pm2iz19osW9c9LuvXv30zcO2o8M-dX1ypo--yjhbfGRFTFP0e-BPAa29le-u_cB-NNfxyD2FkBPJGLhPHkq-vQELZ-4g4rhnTzPI52kT62ZdNDLAtXKMN11oWG7Y-QiNE6PWy84PiQI6yKshuRvoVgmlPONg872zlQimaR"/>
+<div class="flex flex-col text-right">
+<span class="text-sm font-bold text-slate-900">الشيخ منصور الهذيل</span>
+<span class="text-xs text-emerald-700 font-semibold">كبير نساجي الأحساء • الجيل الرابع</span>
+<p class="text-xs text-slate-500 mt-1">"خيوط الزري التي نسجت أردية الملوك تصل اليوم لكل عاشق للأصالة عبر المنصة."</p>
+</div>
+</div>
+<div class="flex items-center gap-4 pt-2">
+<button class="px-5 py-3 rounded-full bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold transition-all shadow-sm">
+                    ميثاق نقابة الحرفيين
+                  </button>
+<button class="flex items-center gap-1.5 text-emerald-700 hover:text-emerald-800 text-xs font-bold">
+<span class="material-symbols-outlined text-[18px]">description</span>
+<span>وثيقة رؤية ٢٠٣٠ للحرف الوطنية</span>
+</button>
+</div>
+</div>
+<!-- Media Showcase -->
+<div class="lg:col-span-6 flex flex-col gap-4">
+<div class="relative rounded-2xl overflow-hidden shadow-moyasar aspect-video bg-slate-900 group cursor-pointer border border-slate-200">
+<img class="w-full h-full object-cover opacity-90 transition-transform duration-700 group-hover:scale-105" data-alt="لقطة وثائقية لصناعة الحرف اليدوية في الدرعية" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBabiMMyyTagk7EVBItLWIpBK7AdEQcB5K6x0DON0XeWLvfiyxc1DWig-hK_n4DkfNa6_2AKvKPFttFS5jydGj0U8R_SFVJeLrpdijC7YPzwkWHsZEqpqaagUneHqDDZQ9S8iaQWLcWBOgqE4JJ2qR3WTOeLfDo6N8TTVRbWEhT5itQYp5jvgz4Y3BBxGH-28xUoDshLUt-33WgZx49lft9n-yAUGNRHi9puDCAm10b"/>
+<div class="absolute inset-0 bg-slate-900/30 flex items-center justify-center">
+<div class="w-16 h-16 rounded-full bg-gradient-to-r from-emerald-600 to-teal-600 text-white flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-[32px] mr-1">play_arrow</span>
+</div>
+</div>
+<div class="absolute bottom-3 right-3 left-3 flex items-center justify-between text-slate-800 bg-white/95 backdrop-blur-md px-3.5 py-2 rounded-xl text-xs font-medium">
+<span class="font-bold text-slate-900">فيلم وثائقي: زري الدرعية المذهب</span>
+<span class="text-emerald-700 font-bold">٠٦:٤٥ دقيقة • بدقة عالية 4K</span>
+</div>
+</div>
+<!-- Stats -->
+<div class="grid grid-cols-3 gap-3 text-center">
+<div class="p-3.5 rounded-2xl bg-white border border-slate-200 shadow-xs">
+<span class="text-xl font-bold text-slate-900">١٤٢</span>
+<p class="text-[11px] text-slate-500 font-medium mt-0.5">ورشة حرفية معتمدة</p>
+</div>
+<div class="p-3.5 rounded-2xl bg-white border border-slate-200 shadow-xs">
+<span class="text-xl font-bold text-emerald-700">١٠٠٪</span>
+<p class="text-[11px] text-slate-500 font-medium mt-0.5">صناعة سعودية أصيلة</p>
+</div>
+<div class="p-3.5 rounded-2xl bg-white border border-slate-200 shadow-xs">
+<span class="text-xl font-bold text-slate-900">٤٨+ مليون</span>
+<p class="text-[11px] text-slate-500 font-medium mt-0.5">عوائد مدفوعة للحرفيين (ر.س)</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Trust Bar (SAMA Escrow, ZATCA, Armored Courier) -->
+<section class="w-full bg-[#f8fafc] py-10">
+<div class="max-w-[1400px] mx-auto px-4 lg:px-8">
+<div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-moyasar flex flex-col lg:flex-row items-center justify-between gap-6">
+<div class="flex flex-wrap items-center justify-center lg:justify-start gap-8 text-right">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center">
+<span class="material-symbols-outlined text-[24px]">security</span>
+</div>
+<div class="flex flex-col">
+<span class="text-xs font-bold text-slate-900">حساب ضامن معتمد من ساما</span>
+<span class="text-[11px] text-slate-500">تحرير المبالغ فقط بعد الفحص والاستلام التام</span>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center">
+<span class="material-symbols-outlined text-[24px]">receipt_long</span>
+</div>
+<div class="flex flex-col">
+<span class="text-xs font-bold text-slate-900">فوترة إلكترونية زاتكا المرحلة الثانية</span>
+<span class="text-[11px] text-slate-500">رمز استجابة سريع مشفر وفوري لكل عملية</span>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center">
+<span class="material-symbols-outlined text-[24px]">local_shipping</span>
+</div>
+<div class="flex flex-col">
+<span class="text-xs font-bold text-slate-900">شحن آمن ومصفح في دول الخليج</span>
+<span class="text-[11px] text-slate-500">توصيل سري وفوري مع تتبع عبر الأقمار الصناعية</span>
+</div>
+</div>
+</div>
+<!-- Concierge CTA -->
+<div class="flex items-center gap-3 shrink-0">
+<a class="px-5 py-2.5 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold transition-colors flex items-center gap-2" href="tel:8001237687">
+<span class="material-symbols-outlined text-[17px] text-emerald-700">support_agent</span>
+<span>المساعد الملكي ٢٤/٧</span>
+</a>
+<button class="px-5 py-2.5 rounded-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white text-xs font-bold transition-all shadow-sm">
+                بوابة كبار الشخصيات
+              </button>
+</div>
+</div>
+</div>
+</section>
+</div>
+</main>
+<!-- Clean Moyasar-Inspired Light Footer -->
+<footer class="w-full bg-white border-t border-slate-200 pt-12 pb-8 text-slate-700 text-right">
+<div class="max-w-[1400px] mx-auto px-4 lg:px-8">
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 pb-12 border-b border-slate-200">
+<!-- Column 1: Brand Info -->
+<div class="lg:col-span-2 flex flex-col gap-4">
+<div class="flex items-center gap-3">
+<div class="w-9 h-9 rounded-xl bg-gradient-to-br from-emerald-600 to-teal-700 flex items-center justify-center text-white shadow-sm">
+<span class="material-symbols-outlined text-[22px]">account_balance</span>
+</div>
+<div class="flex flex-col">
+<span class="text-lg font-bold text-slate-900">سوق سعودية</span>
+<span class="text-[11px] text-emerald-700 font-semibold">المملكة العربية السعودية</span>
+</div>
+</div>
+<p class="text-xs text-slate-500 max-w-sm leading-relaxed">
+            المنصة الوطنية المعتمدة لتجارة واقتناء الكنوز التراثية، أدهان العود المعتقة، الأزياء الراقية، والابتكارات الحرفية المعاصرة بمعايير عالمية.
+          </p>
+<div class="flex flex-col gap-1 pt-1">
+<span class="text-xs text-slate-400 font-medium">خط خدمة كبار المقتنين المباشر</span>
+<a class="text-lg font-bold text-slate-900 hover:text-emerald-700 transition-colors" dir="ltr" href="tel:8001237687">
+              800 123 SOUQ (7687)
+            </a>
+</div>
+</div>
+<!-- Column 2: Pillars -->
+<div class="flex flex-col gap-3">
+<span class="text-xs font-bold text-slate-900 uppercase">الأقسام الملكية</span>
+<ul class="flex flex-col gap-2 text-xs text-slate-500">
+<li class="hover:text-emerald-700 transition-colors cursor-pointer">أدهان العود والورد الطائفي</li>
+<li class="hover:text-emerald-700 transition-colors cursor-pointer">البشوت والعبايات الحريرية</li>
+<li class="hover:text-emerald-700 transition-colors cursor-pointer">المجوهرات النادرة وذهب نجد</li>
+<li class="hover:text-emerald-700 transition-colors cursor-pointer">عتاد الصقارة وأصايل الخيل</li>
+<li class="hover:text-emerald-700 transition-colors cursor-pointer">تقنيات نيوم وأوكساجون المعاصرة</li>
+</ul>
+</div>
+<!-- Column 3: Governance & Compliance -->
+<div class="flex flex-col gap-3">
+<span class="text-xs font-bold text-slate-900 uppercase">الحوكمة والاعتمادات</span>
+<ul class="flex flex-col gap-2 text-xs text-slate-500">
+<li class="hover:text-emerald-700 transition-colors cursor-pointer">مبادرات رؤية السعودية ٢٠٣٠</li>
+<li class="hover:text-emerald-700 transition-colors cursor-pointer">الربط المباشر مع منصة زاتكا</li>
+<li class="hover:text-emerald-700 transition-colors cursor-pointer">حاضنات منشآت لدعم الحرفيين</li>
+<li class="hover:text-emerald-700 transition-colors cursor-pointer">إشراف البنك المركزي السعودي</li>
+<li class="hover:text-emerald-700 transition-colors cursor-pointer">ميثاق حماية العميل والمقتني</li>
+</ul>
+</div>
+<!-- Column 4: Newsletter -->
+<div class="flex flex-col gap-3">
+<span class="text-xs font-bold text-slate-900 uppercase">النشرة الدورية الحصرية</span>
+<p class="text-xs text-slate-500 leading-relaxed">
+            اشترك لتصلك إشعارات المزادات الخاصة والطروحات المحدودة قبل الإعلان العام.
+          </p>
+<form class="flex flex-col gap-2" onsubmit="return false;">
+<div class="relative flex items-center">
+<input class="w-full h-10 pr-3 pl-20 rounded-xl bg-slate-50 border border-slate-200 text-slate-800 text-xs placeholder:text-slate-400 focus:outline-none focus:border-emerald-600 transition-colors" placeholder="عنوان بريدك الإلكتروني" type="email"/>
+<button class="absolute left-1 px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition-colors" type="button">
+                اشتراك
+              </button>
+</div>
+<span class="text-[10px] text-slate-400">متوافق تمامًا مع نظام حماية البيانات الشخصية بالمملكة (PDPL).</span>
+</form>
+</div>
+</div>
+<!-- Payment Badges & Regulatory Seals -->
+<div class="pt-6 flex flex-col md:flex-row items-center justify-between gap-4">
+<div class="flex flex-wrap items-center gap-3">
+<div class="flex items-center gap-1.5 px-3 py-1 rounded-lg bg-slate-50 border border-slate-200 text-xs text-slate-700 font-medium">
+<span class="material-symbols-outlined text-emerald-600 text-[16px]">verified</span>
+<span>معتمد من هيئة الزكاة والضريبة والجمارك</span>
+</div>
+<div class="flex items-center gap-1.5 px-3 py-1 rounded-lg bg-slate-50 border border-slate-200 text-xs text-slate-700 font-medium">
+<span class="material-symbols-outlined text-emerald-600 text-[16px]">account_balance</span>
+<span>بوابة دفع مرخصة من ساما</span>
+</div>
+</div>
+<!-- Payment Brands -->
+<div class="flex items-center gap-2">
+<div class="px-2.5 py-1 rounded-md bg-slate-50 border border-slate-200 text-slate-700 text-xs font-bold">مدى</div>
+<div class="px-2.5 py-1 rounded-md bg-slate-50 border border-slate-200 text-slate-700 text-xs font-bold">آبل باي</div>
+<div class="px-2.5 py-1 rounded-md bg-slate-50 border border-slate-200 text-slate-700 text-xs font-bold">فيزا</div>
+<div class="px-2.5 py-1 rounded-md bg-slate-50 border border-slate-200 text-slate-700 text-xs font-bold">ماستركارد</div>
+<div class="px-2.5 py-1 rounded-md bg-slate-50 border border-slate-200 text-slate-700 text-xs font-bold">تمارا</div>
+<div class="px-2.5 py-1 rounded-md bg-slate-50 border border-slate-200 text-slate-700 text-xs font-bold">تابي</div>
+</div>
+</div>
+<!-- Copyright Notice -->
+<div class="mt-6 pt-4 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-2 text-[11px] text-slate-400">
+<p>© ٢٠٢٥ سوق سعودية للمقتنيات الفاخرة. جميع الحقوق السيادية محفوظة. المملكة العربية السعودية.</p>
+<div class="flex items-center gap-4">
+<span class="hover:text-slate-600 transition-colors cursor-pointer">سياسة الخصوصية</span>
+<span class="hover:text-slate-600 transition-colors cursor-pointer">السجل التجاري: ١٠١٠٨٩٢٠١٩</span>
+<span class="hover:text-slate-600 transition-colors cursor-pointer">شروط البيع والاسترجاع</span>
+</div>
+</div>
+</div>
+</footer>
+<!-- Micro Interaction Script for Arabic Countdown -->
+<script>
+    (function initArabicCountdown() {
+      let hours = 8, minutes = 42, seconds = 19;
+      const hEl = document.getElementById('cdHours');
+      const mEl = document.getElementById('cdMinutes');
+      const sEl = document.getElementById('cdSeconds');
+
+      const toArabicDigits = (num) => {
+        const arabicMap = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];
+        const str = num < 10 ? '0' + num : '' + num;
+        return str.split('').map(d => arabicMap[parseInt(d)]).join('');
+      };
+
+      if (hEl && mEl && sEl) {
+        setInterval(() => {
+          if (seconds > 0) {
+            seconds--;
+          } else {
+            seconds = 59;
+            if (minutes > 0) {
+              minutes--;
+            } else {
+              minutes = 59;
+              if (hours > 0) hours--;
+            }
+          }
+          sEl.textContent = toArabicDigits(seconds);
+          mEl.textContent = toArabicDigits(minutes);
+          hEl.textContent = toArabicDigits(hours);
+        }, 1000);
+      }
+    })();
+  </script>
+</body></html>

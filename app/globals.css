@@ -1,26 +1,167 @@
 @import "tailwindcss";
 
+@theme {
+  --color-primary: #006948;
+  --color-primary-dark: #004d34;
+  --color-primary-light: #059669;
+  --color-primary-container: #00855d;
+  --color-gold: #c5a059;
+  --color-gold-light: #e6ca85;
+  --color-gold-dark: #9a7b38;
+  --color-emerald-accent: #10b981;
+  --color-teal-accent: #06b6d4;
+  --color-emerald-surface: #ecfdf5;
+  --color-surface-card: #ffffff;
+  --color-surface-canvas: #f8fafc;
+  --color-border-subtle: #e2e8f0;
+  --color-border-muted: #f1f5f9;
+  --color-text-primary: #0f172a;
+  --color-text-secondary: #475569;
+  --color-text-tertiary: #94a3b8;
+  --color-sand-warm: #fbf9f6;
+  --color-sand-border: #e8e2dc;
+  --color-secondary: #006398;
+  --color-error: #ba1a1a;
+  --color-badge-success-bg: #ecfdf5;
+  --color-badge-success-text: #047857;
+
+  --font-arabic: 'IBM Plex Sans Arabic', sans-serif;
+  --font-sans: 'IBM Plex Sans Arabic', sans-serif;
+
+  --shadow-moyasar: 0 4px 20px -2px rgba(15, 23, 42, 0.05);
+  --shadow-moyasar-hover: 0 12px 30px -4px rgba(15, 23, 42, 0.09);
+  --shadow-moyasar-glow: 0 0 25px rgba(16, 185, 129, 0.22);
+}
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #f8fafc;
+  --foreground: #0f172a;
+  --card: #ffffff;
+  --card-foreground: #0f172a;
+  --popover: #ffffff;
+  --popover-foreground: #0f172a;
+  --primary: #006948;
+  --primary-foreground: #ffffff;
+  --secondary: #f1f5f9;
+  --secondary-foreground: #0f172a;
+  --muted: #f8fafc;
+  --muted-foreground: #64748b;
+  --accent: #f1f5f9;
+  --accent-foreground: #0f172a;
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
+  --border: #e2e8f0;
+  --input: #e2e8f0;
+  --ring: #006948;
+  --radius: 0.875rem;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
-body {
-  background: var(--background);
+html, body {
+  margin: 0;
+  padding: 0;
+  font-family: 'IBM Plex Sans Arabic', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background-color: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  direction: rtl;
+  overflow-x: hidden;
+}
+
+/* Material Symbols Outlined font */
+.material-symbols-outlined {
+  font-family: 'Material Symbols Outlined';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-feature-settings: 'liga';
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Legacy helper aliases so older templates render cleanly */
+.px-gutter {
+  padding-left: 2rem;
+  padding-right: 2rem;
+}
+.px-gutter-sm {
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+.gap-space-sm {
+  gap: 0.75rem;
+}
+.gap-space-md {
+  gap: 1rem;
+}
+.gap-space-lg {
+  gap: 1.5rem;
+}
+.gap-space-xl {
+  gap: 2rem;
+}
+.py-space-xl {
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+}
+.pb-space-2xl {
+  padding-bottom: 4rem;
+}
+.font-headline-xl {
+  font-size: 1.875rem;
+  font-weight: 800;
+  line-height: 1.25;
+}
+.font-headline-lg {
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1.3;
+}
+.font-body-md {
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+.font-body-sm {
+  font-size: 0.75rem;
+  line-height: 1.4;
+}
+.font-label-md {
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+.font-label-sm {
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+.bg-sand-warm {
+  background-color: #fbf9f6;
+}
+.bg-surface-canvas {
+  background-color: #f8fafc;
+}
+.bg-surface-card {
+  background-color: #ffffff;
+}
+.border-border-subtle {
+  border-color: #e2e8f0;
 }
