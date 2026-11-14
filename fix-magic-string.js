@@ -2,16 +2,12 @@
 const fs = require('fs');
 const path = require('path');
 
-const src = path.join(__dirname, 'node_modules/magic-string');
-const dest = path.join(__dirname, 'node_modules/@tailwindcss/node/node_modules/magic-string');
+const nested = path.join(__dirname, 'node_modules/@tailwindcss/node/node_modules/magic-string');
 
-if (fs.existsSync(src) && fs.existsSync(path.dirname(dest))) {
+if (fs.existsSync(nested)) {
   try {
-    if (fs.existsSync(dest)) {
-      fs.rmSync(dest, { recursive: true, force: true });
-    }
-    fs.cpSync(src, dest, { recursive: true, force: true });
-    console.log('[fix-magic-string] Successfully synced magic-string 0.30.17 to nested @tailwindcss/node');
+    fs.rmSync(nested, { recursive: true, force: true });
+    console.log('[fix-magic-string] Successfully removed problematic nested ESM magic-string from @tailwindcss/node');
   } catch (err) {
     console.warn('[fix-magic-string] Warning:', err.message);
   }
