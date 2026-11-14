@@ -83,16 +83,26 @@ export default function OrderConfirmationPage({
           {/* Electronic Tax Invoice Card */}
           <div className="bg-white rounded-3xl border border-slate-200/80 shadow-md p-6 sm:p-10 space-y-8">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-6 border-b border-slate-100">
-              <div>
-                <span className="text-[10px] font-bold text-emerald-700 block uppercase">
-                  المملكة العربية السعودية • هيئة الزكاة والضريبة والجمارك
-                </span>
-                <h2 className="text-lg font-bold text-slate-900 mt-0.5">
-                  فاتورة ضريبية مبسطة (ZATCA Phase-2 Standard)
-                </h2>
-                <span className="text-xs text-slate-400 font-mono">
-                  UUID: {invoice?.uuid_zatca || orderId}
-                </span>
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-50 via-white to-emerald-100 border border-emerald-200 p-1.5 flex items-center justify-center shrink-0">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src="/logo-mark.png"
+                    alt="شعار شمال الحجاز"
+                    className="w-full h-full object-contain"
+                  />
+                </div>
+                <div>
+                  <span className="text-[10px] font-bold text-emerald-700 block uppercase">
+                    المملكة العربية السعودية • هيئة الزكاة والضريبة والجمارك
+                  </span>
+                  <h2 className="text-lg font-bold text-slate-900 mt-0.5">
+                    فاتورة ضريبية مبسطة (ZATCA Phase-2 Standard)
+                  </h2>
+                  <span className="text-xs text-slate-400 font-mono">
+                    UUID: {invoice?.uuid_zatca || orderId}
+                  </span>
+                </div>
               </div>
 
               <div className="flex items-center gap-3 p-3 rounded-2xl bg-slate-50 border border-slate-200">

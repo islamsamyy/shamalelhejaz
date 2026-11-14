@@ -130,8 +130,13 @@ export default function PlatformNavigator() {
           <div className="w-[360px] max-h-[80vh] overflow-y-auto bg-white/95 backdrop-blur-xl border border-slate-200 rounded-3xl shadow-2xl p-5 flex flex-col gap-4 text-start animate-in fade-in zoom-in-95 duration-150">
             <div className="flex items-center justify-between pb-3 border-b border-slate-100">
               <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-xl bg-[#006948] text-white flex items-center justify-center font-bold text-sm">
-                  ش
+                <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-emerald-50 via-white to-emerald-100 border border-emerald-200/90 p-1 flex items-center justify-center shadow-xs shrink-0">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src="/logo-mark.png"
+                    alt="شعار شمال الحجاز"
+                    className="w-full h-full object-contain"
+                  />
                 </div>
                 <div>
                   <h4 className="text-sm font-bold text-slate-900 leading-tight">منصة شمال الحجاز</h4>

@@ -127,8 +127,13 @@ export default function PortalsHubPage() {
       <header className="border-b border-slate-800/80 bg-slate-950/80 backdrop-blur-xl sticky top-0 z-40">
         <div className="max-w-[1400px] mx-auto px-4 lg:px-8 h-20 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-3 group">
-            <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-[#006948] via-[#005a3e] to-[#004d34] flex items-center justify-center text-white shadow-lg shadow-[#006948]/20 group-hover:scale-105 transition-transform">
-              <span className="material-symbols-outlined text-[26px]">account_balance</span>
+            <div className="w-11 h-11 rounded-2xl bg-slate-900 border border-emerald-500/30 p-1.5 flex items-center justify-center shadow-lg shadow-emerald-950/40 group-hover:scale-105 transition-transform shrink-0">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/logo-mark.png"
+                alt="شعار شمال الحجاز"
+                className="w-full h-full object-contain filter drop-shadow-[0_2px_8px_rgba(16,185,129,0.35)]"
+              />
             </div>
             <div className="flex flex-col text-start">
               <div className="flex items-center gap-2">

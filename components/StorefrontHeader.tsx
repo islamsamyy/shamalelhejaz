@@ -246,8 +246,13 @@ export default function StorefrontHeader() {
               <SheetContent side="right" className="w-[300px] p-6 flex flex-col justify-between">
                 <div>
                   <div className="flex items-center gap-3 pb-4 border-b border-slate-100">
-                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#006948] to-[#004d34] flex items-center justify-center text-white font-bold shadow-md">
-                      ش
+                    <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-emerald-50 via-white to-emerald-100 border border-emerald-200/80 p-1.5 flex items-center justify-center shadow-xs shrink-0">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src="/logo-mark.png"
+                        alt="شعار شمال الحجاز"
+                        className="w-full h-full object-contain"
+                      />
                     </div>
                     <div>
                       <h4 className="font-bold text-slate-900 text-base">شمال الحجاز</h4>
@@ -322,8 +327,13 @@ export default function StorefrontHeader() {
             </Sheet>
 
             <Link href="/" className="flex items-center gap-3 group">
-              <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-[#006948] via-[#005a3e] to-[#004d34] flex items-center justify-center text-white shadow-md shadow-[#006948]/20 group-hover:scale-105 transition-transform">
-                <Store className="w-6 h-6 text-white" />
+              <div className="relative w-11 h-11 rounded-2xl bg-gradient-to-br from-emerald-50 via-white to-emerald-100/70 border border-emerald-200/80 p-1.5 flex items-center justify-center shadow-xs group-hover:shadow-md group-hover:scale-105 transition-all shrink-0">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="/logo-mark.png"
+                  alt="شعار شمال الحجاز"
+                  className="w-full h-full object-contain"
+                />
               </div>
               <div className="flex flex-col text-start">
                 <div className="flex items-center gap-2">

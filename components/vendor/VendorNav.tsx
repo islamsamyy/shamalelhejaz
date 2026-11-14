@@ -66,8 +66,13 @@ export default function VendorNav() {
       <div className="bg-slate-900 text-white px-4 lg:px-8 py-2.5">
         <div className="max-w-[1400px] mx-auto flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center">
-              <Building className="w-4 h-4" />
+            <div className="w-8 h-8 rounded-lg bg-emerald-500/20 border border-emerald-500/30 p-1 flex items-center justify-center shrink-0">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/logo-mark.png"
+                alt="شعار شمال الحجاز"
+                className="w-full h-full object-contain"
+              />
             </div>
             <div>
               <div className="flex items-center gap-2">

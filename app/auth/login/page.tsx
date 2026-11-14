@@ -94,8 +94,13 @@ function LoginFormContent() {
   return (
     <div className="w-full max-w-lg mx-auto bg-white rounded-3xl border border-slate-200/80 shadow-2xl p-6 sm:p-8 space-y-6">
       <div className="text-center">
-        <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-[#006948] to-[#004d34] text-white flex items-center justify-center font-black text-xl shadow-lg mx-auto mb-3">
-          ش
+        <div className="w-16 h-16 rounded-3xl bg-gradient-to-br from-emerald-50 via-white to-emerald-100 border border-emerald-200/90 p-2.5 flex items-center justify-center shadow-lg mx-auto mb-3">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/logo-mark.png"
+            alt="شعار شمال الحجاز"
+            className="w-full h-full object-contain"
+          />
         </div>
         <Badge variant="sovereign" className="mb-2">
           بوابة الدخول الموحدة

@@ -29,8 +29,13 @@ export default function StorefrontFooter() {
           {/* Column 1: Brand Info */}
           <div className="lg:col-span-2 flex flex-col gap-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-[#006948] to-[#004d34] flex items-center justify-center text-white shadow-md shadow-[#006948]/20">
-                <Store className="w-5 h-5 text-white" />
+              <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-50 via-white to-emerald-100 border border-emerald-200/90 p-1.5 flex items-center justify-center shadow-xs shrink-0">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="/logo-mark.png"
+                  alt="شعار شمال الحجاز"
+                  className="w-full h-full object-contain"
+                />
               </div>
               <div className="flex flex-col">
                 <span className="text-xl font-black text-slate-900">شمال الحجاز</span>

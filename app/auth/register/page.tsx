@@ -56,6 +56,14 @@ export default function RegisterPage() {
       <main className="flex-1 pt-32 lg:pt-36 flex items-center justify-center p-4">
         <div className="w-full max-w-lg bg-white rounded-3xl border border-slate-200/80 shadow-2xl p-6 sm:p-8 space-y-6">
           <div className="text-center">
+            <div className="w-16 h-16 rounded-3xl bg-gradient-to-br from-emerald-50 via-white to-emerald-100 border border-emerald-200/90 p-2.5 flex items-center justify-center shadow-lg mx-auto mb-3">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/logo-mark.png"
+                alt="شعار شمال الحجاز"
+                className="w-full h-full object-contain"
+              />
+            </div>
             <Badge variant="sovereign" className="mb-2">
               حساب جديد
             </Badge>

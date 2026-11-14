@@ -86,8 +86,13 @@ export default function AdminSidebar() {
       {/* Brand & Crest Header */}
       <div className="p-5 border-b border-slate-800 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-[#006948] to-[#004d34] flex items-center justify-center text-white font-black text-lg shadow-lg border border-emerald-500/30">
-            ش
+          <div className="w-11 h-11 rounded-2xl bg-slate-900 border border-emerald-500/30 p-1.5 flex items-center justify-center shadow-lg shadow-emerald-950/40 shrink-0">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/logo-mark.png"
+              alt="شعار شمال الحجاز"
+              className="w-full h-full object-contain filter drop-shadow-[0_2px_8px_rgba(16,185,129,0.35)]"
+            />
           </div>
           <div>
             <h2 className="font-black text-sm text-white tracking-wide">
