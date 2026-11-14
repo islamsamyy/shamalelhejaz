@@ -10,7 +10,9 @@ import {
   StaggerContainer,
   StaggerItem,
   AnimatedCard,
+  AnimatedCounter,
 } from "@/components/ui/motion-primitives";
+import confetti from "canvas-confetti";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
@@ -22,6 +24,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
   DialogFooter,
 } from "@/components/ui/dialog";
 import { useCart } from "@/context/CartContext";
@@ -93,6 +96,7 @@ export default function HomePage() {
 
   // Reviews State
   const [reviews, setReviews] = useState(VERIFIED_BUYER_REVIEWS);
+  const [reviewRatingFilter, setReviewRatingFilter] = useState<number | "all">("all");
   const [isAddReviewOpen, setIsAddReviewOpen] = useState(false);
   const [newReviewName, setNewReviewName] = useState("");
   const [newReviewCity, setNewReviewCity] = useState("الرياض");
@@ -100,8 +104,10 @@ export default function HomePage() {
   const [newReviewRating, setNewReviewRating] = useState(5);
   const [newReviewComment, setNewReviewComment] = useState("");
 
-  // Live Flash Deal Countdown Timer (Hours, Mins, Secs)
+  // Live Flash Deal Countdown & Interactive Reservation
   const [timeLeft, setTimeLeft] = useState({ hours: 11, minutes: 28, seconds: 40 });
+  const [isReserveDealOpen, setIsReserveDealOpen] = useState(false);
+  const [dealQuantity, setDealQuantity] = useState(1);
 
   // Vendor Profit Calculator
   const [monthlySalesEstimate, setMonthlySalesEstimate] = useState(85000);
@@ -185,6 +191,27 @@ export default function HomePage() {
     setNewReviewComment("");
   };
 
+  const handleConfirmReservation = () => {
+    setIsReserveDealOpen(false);
+    try {
+      confetti({
+        particleCount: 80,
+        spread: 70,
+        origin: { y: 0.6 },
+      });
+    } catch (e) {
+      // safe fallback
+    }
+    toast.success("تم تأكيد حجزك الفوري بنجاح!", {
+      description: `رقم الحجز: #RSV-${Date.now().toString().slice(-6)} • الكمية: ${dealQuantity} • التوصيل مجاني ومضمون خلال ٢٤ ساعة.`,
+    });
+  };
+
+  const displayedReviews =
+    reviewRatingFilter === "all"
+      ? reviews
+      : reviews.filter((r) => r.rating === reviewRatingFilter);
+
   const filteredProducts =
     selectedCategory === "all"
       ? products
@@ -223,10 +250,16 @@ export default function HomePage() {
                   <Sparkles className="w-3.5 h-3.5 ms-1 text-emerald-400" />
                   منصة المتاجر والموردين المعتمدين بالمملكة
                 </Badge>
-                <span className="text-xs text-slate-300 font-mono flex items-center gap-1.5">
-                  <ShieldCheck className="w-4 h-4 text-emerald-400" />
-                  حسابات ضمان مالي Escrow معتمدة
-                </span>
+                <div className="flex items-center gap-3">
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-300 text-xs font-bold">
+                    <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                    <AnimatedCounter value={1428} duration={1200} prefix="+" suffix=" طلب اليوم" />
+                  </span>
+                  <span className="text-xs text-slate-300 font-mono hidden sm:flex items-center gap-1.5">
+                    <ShieldCheck className="w-4 h-4 text-emerald-400" />
+                    حسابات ضمان مالي Escrow معتمدة
+                  </span>
+                </div>
               </div>
 
               {/* Main Headline & SEO Copy */}
@@ -354,15 +387,26 @@ export default function HomePage() {
                   </div>
                 </div>
 
-                <Button
-                  variant="sovereign"
-                  size="sm"
-                  className="w-full mt-4 rounded-xl text-xs font-bold"
-                  onClick={() => addToCart(flashProduct)}
-                >
-                  <ShoppingBag className="w-4 h-4 ms-1.5" />
-                  أضف للسلة قبل نفاد الكمية
-                </Button>
+                <div className="grid grid-cols-2 gap-2 mt-4">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="w-full rounded-xl text-xs font-bold border-slate-700 text-slate-200 hover:bg-slate-800 hover:text-white"
+                    onClick={() => addToCart(flashProduct)}
+                  >
+                    <ShoppingBag className="w-3.5 h-3.5 ms-1" />
+                    أضف للسلة
+                  </Button>
+                  <Button
+                    variant="sovereign"
+                    size="sm"
+                    className="w-full rounded-xl text-xs font-bold bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-white shadow-md shadow-emerald-950/50"
+                    onClick={() => setIsReserveDealOpen(true)}
+                  >
+                    <Sparkles className="w-3.5 h-3.5 ms-1 text-amber-300" />
+                    احجز فورياً
+                  </Button>
+                </div>
               </motion.div>
 
               {/* Card 2: Vendor B2B Onboarding Showcase */}
@@ -913,60 +957,100 @@ export default function HomePage() {
             </div>
           </div>
 
-          {/* Testimonials Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {reviews.map((rev) => (
-              <div
-                key={rev.id}
-                className="p-6 rounded-3xl bg-white border border-slate-200/80 shadow-xs hover:border-emerald-300 hover:shadow-lg transition-all flex flex-col justify-between"
-              >
-                <div>
-                  {/* Top Rating */}
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="flex items-center gap-1 text-amber-400">
-                      {[...Array(rev.rating)].map((_, i) => (
-                        <Star key={i} className="w-4 h-4 fill-amber-400 text-amber-400" />
-                      ))}
-                    </div>
-                    <Badge variant="outline" className="text-[10px] bg-slate-50 text-slate-500 border-slate-200">
-                      {rev.date}
-                    </Badge>
-                  </div>
-
-                  {/* Review Text */}
-                  <p className="text-xs sm:text-sm text-slate-700 leading-relaxed font-normal mb-6">
-                    &ldquo;{rev.comment}&rdquo;
-                  </p>
-                </div>
-
-                {/* Bottom Verified Buyer Card */}
-                <div className="pt-4 border-t border-slate-100 flex items-center justify-between">
-                  <div>
-                    <div className="flex items-center gap-1.5">
-                      <span className="font-bold text-xs text-slate-900">{rev.name}</span>
-                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-                    </div>
-                    <span className="text-[10px] text-emerald-800 font-semibold block mt-0.5">
-                      {rev.title} • {rev.city}
-                    </span>
-                    <span className="text-[10px] text-slate-400 block line-clamp-1 max-w-[200px] mt-0.5">
-                      السلعة: {rev.item}
-                    </span>
-                  </div>
-
-                  {/* Helpful Button */}
-                  <button
-                    onClick={() => handleHelpfulVote(rev.id)}
-                    className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-slate-50 hover:bg-emerald-50 text-slate-600 hover:text-emerald-800 border border-slate-200/80 text-[11px] font-bold transition-colors cursor-pointer"
-                    title="هل كان هذا التقييم مفيداً؟"
+          {/* Reviews Interactive Filter Bar */}
+          <div className="flex flex-wrap items-center gap-2 mb-6">
+            <span className="text-xs font-bold text-slate-600 ms-2">تصفية التقييمات:</span>
+            {[
+              { id: "all", label: "جميع التقييمات", count: reviews.length },
+              { id: 5, label: "★★★★★ (٥ نجوم)", count: reviews.filter((r) => r.rating === 5).length },
+              { id: 4, label: "★★★★☆ (٤ نجوم)", count: reviews.filter((r) => r.rating === 4).length },
+            ].map((tab) => {
+              const active = reviewRatingFilter === tab.id;
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => setReviewRatingFilter(tab.id as any)}
+                  className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
+                    active
+                      ? "bg-emerald-700 text-white shadow-md shadow-emerald-700/20 scale-[1.02]"
+                      : "bg-white text-slate-600 border border-slate-200 hover:border-emerald-300 hover:bg-emerald-50/50"
+                  }`}
+                >
+                  <span>{tab.label}</span>
+                  <span
+                    className={`text-[10px] px-1.5 py-0.5 rounded-full ${
+                      active ? "bg-white/20 text-white font-mono" : "bg-slate-100 text-slate-500 font-mono"
+                    }`}
                   >
-                    <ThumbsUp className="w-3 h-3 text-emerald-600" />
-                    <span>{rev.helpfulCount}</span>
-                  </button>
-                </div>
-              </div>
-            ))}
+                    {tab.count}
+                  </span>
+                </button>
+              );
+            })}
           </div>
+
+          {/* Testimonials Grid with Smooth Animations */}
+          <motion.div layout className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <AnimatePresence mode="popLayout">
+              {displayedReviews.map((rev) => (
+                <motion.div
+                  key={rev.id}
+                  layout
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  transition={{ duration: 0.25 }}
+                  whileHover={{ y: -5 }}
+                  className="p-6 rounded-3xl bg-white border border-slate-200/80 shadow-xs hover:border-emerald-300 hover:shadow-lg transition-all flex flex-col justify-between"
+                >
+                  <div>
+                    {/* Top Rating */}
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="flex items-center gap-1 text-amber-400">
+                        {[...Array(rev.rating)].map((_, i) => (
+                          <Star key={i} className="w-4 h-4 fill-amber-400 text-amber-400" />
+                        ))}
+                      </div>
+                      <Badge variant="outline" className="text-[10px] bg-slate-50 text-slate-500 border-slate-200">
+                        {rev.date}
+                      </Badge>
+                    </div>
+
+                    {/* Review Text */}
+                    <p className="text-xs sm:text-sm text-slate-700 leading-relaxed font-normal mb-6">
+                      &ldquo;{rev.comment}&rdquo;
+                    </p>
+                  </div>
+
+                  {/* Bottom Verified Buyer Card */}
+                  <div className="pt-4 border-t border-slate-100 flex items-center justify-between">
+                    <div>
+                      <div className="flex items-center gap-1.5">
+                        <span className="font-bold text-xs text-slate-900">{rev.name}</span>
+                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                      </div>
+                      <span className="text-[10px] text-emerald-800 font-semibold block mt-0.5">
+                        {rev.title} • {rev.city}
+                      </span>
+                      <span className="text-[10px] text-slate-400 block line-clamp-1 max-w-[200px] mt-0.5">
+                        السلعة: {rev.item}
+                      </span>
+                    </div>
+
+                    {/* Helpful Button */}
+                    <button
+                      onClick={() => handleHelpfulVote(rev.id)}
+                      className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-slate-50 hover:bg-emerald-50 text-slate-600 hover:text-emerald-800 border border-slate-200/80 text-[11px] font-bold transition-colors cursor-pointer"
+                      title="هل كان هذا التقييم مفيداً؟"
+                    >
+                      <ThumbsUp className="w-3 h-3 text-emerald-600" />
+                      <span className="font-mono">{rev.helpfulCount}</span>
+                    </button>
+                  </div>
+                </motion.div>
+              ))}
+            </AnimatePresence>
+          </motion.div>
         </section>
 
         {/* 9. SOVEREIGN TRUST, ZATCA PHASE-2 & ESCROW VAULT */}
@@ -1117,6 +1201,138 @@ export default function HomePage() {
               </Button>
             </DialogFooter>
           </form>
+        </DialogContent>
+      </Dialog>
+
+      {/* Interactive Flash Deal Instant Reservation Modal */}
+      <Dialog open={isReserveDealOpen} onOpenChange={setIsReserveDealOpen}>
+        <DialogContent className="max-w-md bg-white rounded-3xl p-6 sm:p-8 border border-slate-100 shadow-2xl">
+          <DialogHeader>
+            <div className="flex items-center gap-2 mb-2">
+              <Badge variant="sovereign" className="bg-amber-500/10 text-amber-700 border-amber-300 text-xs">
+                ⚡ حجز فوري مؤكد
+              </Badge>
+              <Badge variant="outline" className="text-slate-500 text-xs">
+                كمية الصفقات محدودة
+              </Badge>
+            </div>
+            <DialogTitle className="text-xl font-black text-slate-900 leading-snug">
+              تأكيد حجز صفقات اليوم الموثقة
+            </DialogTitle>
+            <DialogDescription className="text-xs text-slate-500">
+              احجز قطعة اليوم بأقل سعر بالسوق مع ضمان استرداد فوري ودفع آمن عند الاستلام أو بمدى.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-4 my-2">
+            <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 flex items-center gap-4">
+              <img
+                src={flashProduct.image}
+                alt={flashProduct.title}
+                className="w-16 h-16 rounded-xl object-cover border border-slate-200 shrink-0"
+              />
+              <div className="flex-1 min-w-0">
+                <span className="text-[11px] font-bold text-emerald-700 block truncate">
+                  {flashProduct.vendor || "متجر معتمد"}
+                </span>
+                <h4 className="text-xs font-bold text-slate-900 line-clamp-2">
+                  {flashProduct.title}
+                </h4>
+                <div className="flex items-center gap-2 mt-1">
+                  <span className="text-sm font-black text-emerald-800 font-mono">
+                    {flashProduct.price.toLocaleString("ar-SA")} ر.س
+                  </span>
+                  {flashProduct.originalPrice && (
+                    <span className="text-xs text-slate-400 line-through font-mono">
+                      {flashProduct.originalPrice.toLocaleString("ar-SA")} ر.س
+                    </span>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* Quantity Selector */}
+            <div className="p-3.5 rounded-2xl bg-emerald-50/60 border border-emerald-100 flex items-center justify-between">
+              <div>
+                <span className="text-xs font-bold text-emerald-950 block">حدد الكمية المطلوبة</span>
+                <span className="text-[10px] text-emerald-700">بحد أقصى ٣ قطع لكل مشتري</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="icon"
+                  className="w-8 h-8 rounded-xl bg-white text-slate-700 border-slate-200 hover:bg-slate-100"
+                  onClick={() => setDealQuantity((q) => Math.max(1, q - 1))}
+                  disabled={dealQuantity <= 1}
+                >
+                  -
+                </Button>
+                <span className="w-8 text-center font-bold font-mono text-sm text-slate-900">
+                  {dealQuantity}
+                </span>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="icon"
+                  className="w-8 h-8 rounded-xl bg-white text-slate-700 border-slate-200 hover:bg-slate-100"
+                  onClick={() => setDealQuantity((q) => Math.min(3, q + 1))}
+                  disabled={dealQuantity >= 3}
+                >
+                  +
+                </Button>
+              </div>
+            </div>
+
+            {/* Total breakdown */}
+            <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-100 text-xs space-y-1.5">
+              <div className="flex justify-between text-slate-600">
+                <span>الإجمالي قبل الخصم:</span>
+                <span className="font-mono">
+                  {((flashProduct.originalPrice || flashProduct.price * 1.3) * dealQuantity).toLocaleString("ar-SA")} ر.س
+                </span>
+              </div>
+              <div className="flex justify-between text-emerald-700 font-bold">
+                <span>توفير العرض الحصري:</span>
+                <span className="font-mono">
+                  - {(((flashProduct.originalPrice || flashProduct.price * 1.3) - flashProduct.price) * dealQuantity).toLocaleString("ar-SA")} ر.س
+                </span>
+              </div>
+              <div className="flex justify-between text-slate-900 font-black text-sm pt-2 border-t border-slate-200">
+                <span>المبلغ النهائي للتأكيد:</span>
+                <span className="text-emerald-700 font-mono">
+                  {(flashProduct.price * dealQuantity).toLocaleString("ar-SA")} ر.س
+                </span>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2 text-[11px] text-slate-500">
+              <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0" />
+              <span>مضمون بحساب الضمان المالي Escrow • إمكانية الإرجاع خلال ١٤ يوماً</span>
+            </div>
+          </div>
+
+          <DialogFooter className="flex gap-2 sm:justify-start pt-2">
+            <Button
+              type="button"
+              variant="sovereign"
+              size="default"
+              className="w-full sm:w-auto rounded-xl font-bold text-xs bg-gradient-to-r from-emerald-600 to-teal-600"
+              onClick={handleConfirmReservation}
+            >
+              <Sparkles className="w-4 h-4 ms-1.5 text-amber-300" />
+              تأكيد الحجز الفوري الآن
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              size="default"
+              onClick={() => setIsReserveDealOpen(false)}
+              className="w-full sm:w-auto rounded-xl text-xs"
+            >
+              إلغاء
+            </Button>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
 

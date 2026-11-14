@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ArrowLeft, ChevronLeft, Sparkles, Layers, CheckCircle2, Store, RefreshCw, AlertCircle } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import { TOP_CATEGORIES, Category } from "@/lib/catalogData";
 import { fetchCategoriesFromSupabase } from "@/lib/supabase";
 
@@ -136,83 +137,91 @@ export default function CategoriesDirectoryPage() {
               </Button>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {displayedCategories.map((cat) => (
-                <div
-                  key={cat.id}
-                  className="group rounded-3xl bg-white border border-slate-200/80 hover:border-emerald-300 hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col justify-between"
-                >
-                  <div>
-                    {/* Category Image Banner */}
-                    <div className="relative aspect-[16/9] bg-slate-100 overflow-hidden">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
-                        src={cat.image}
-                        alt={cat.title}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-950/20 to-transparent" />
-                      <div className="absolute bottom-4 start-4 end-4 flex items-end justify-between text-white">
-                        <div>
-                          <Badge variant="sovereign" className="bg-white/20 backdrop-blur-md text-white border-white/30 text-[10px] mb-1">
-                            {cat.itemCount}
-                          </Badge>
-                          <h2 className="text-lg font-black text-white group-hover:text-emerald-300 transition-colors">
-                            {cat.title}
-                          </h2>
+            <motion.div layout className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              <AnimatePresence mode="popLayout">
+                {displayedCategories.map((cat, idx) => (
+                  <motion.div
+                    key={cat.id}
+                    layout
+                    initial={{ opacity: 0, y: 15 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
+                    transition={{ duration: 0.3, delay: Math.min(idx * 0.04, 0.3) }}
+                    whileHover={{ y: -6 }}
+                    className="group rounded-3xl bg-white border border-slate-200/80 hover:border-emerald-300 hover:shadow-xl transition-shadow duration-300 overflow-hidden flex flex-col justify-between"
+                  >
+                    <div>
+                      {/* Category Image Banner */}
+                      <div className="relative aspect-[16/9] bg-slate-100 overflow-hidden">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={cat.image}
+                          alt={cat.title}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-950/20 to-transparent" />
+                        <div className="absolute bottom-4 start-4 end-4 flex items-end justify-between text-white">
+                          <div>
+                            <Badge variant="sovereign" className="bg-white/20 backdrop-blur-md text-white border-white/30 text-[10px] mb-1">
+                              {cat.itemCount}
+                            </Badge>
+                            <h2 className="text-lg font-black text-white group-hover:text-emerald-300 transition-colors">
+                              {cat.title}
+                            </h2>
+                          </div>
                         </div>
+                      </div>
+
+                      {/* Body Content */}
+                      <div className="p-6">
+                        <p className="text-xs text-slate-500 leading-relaxed mb-5">
+                          {cat.subtitle}
+                        </p>
+
+                        {/* Subcategories List */}
+                        {cat.subcategories && cat.subcategories.length > 0 && (
+                          <div className="space-y-2">
+                            <span className="text-[11px] font-bold text-slate-700 block mb-2">
+                              التفريعات والمنتجات الأكثر طلباً:
+                            </span>
+                            {cat.subcategories.map((sub, sIdx) => (
+                              <Link
+                                key={sIdx}
+                                href={`/catalog?cat=${cat.id}&q=${encodeURIComponent(sub.name)}`}
+                                className="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 hover:bg-emerald-50 text-slate-700 hover:text-emerald-900 text-xs transition-colors group/sub"
+                              >
+                                <span className="flex items-center gap-2">
+                                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-600"></span>
+                                  <span className="font-medium group-hover/sub:font-bold">{sub.name}</span>
+                                  {sub.popular && (
+                                    <span className="text-[9px] bg-emerald-100 text-emerald-800 font-bold px-1.5 py-0.5 rounded-md">
+                                      الأكثر رواجاً
+                                    </span>
+                                  )}
+                                </span>
+                                <span className="text-[10px] font-mono text-slate-400 group-hover/sub:text-emerald-700">
+                                  {sub.count}
+                                </span>
+                              </Link>
+                            ))}
+                          </div>
+                        )}
                       </div>
                     </div>
 
-                    {/* Body Content */}
-                    <div className="p-6">
-                      <p className="text-xs text-slate-500 leading-relaxed mb-5">
-                        {cat.subtitle}
-                      </p>
-
-                      {/* Subcategories List */}
-                      {cat.subcategories && cat.subcategories.length > 0 && (
-                        <div className="space-y-2">
-                          <span className="text-[11px] font-bold text-slate-700 block mb-2">
-                            التفريعات والمنتجات الأكثر طلباً:
-                          </span>
-                          {cat.subcategories.map((sub, sIdx) => (
-                            <Link
-                              key={sIdx}
-                              href={`/catalog?cat=${cat.id}&q=${encodeURIComponent(sub.name)}`}
-                              className="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 hover:bg-emerald-50 text-slate-700 hover:text-emerald-900 text-xs transition-colors group/sub"
-                            >
-                              <span className="flex items-center gap-2">
-                                <span className="w-1.5 h-1.5 rounded-full bg-emerald-600"></span>
-                                <span className="font-medium group-hover/sub:font-bold">{sub.name}</span>
-                                {sub.popular && (
-                                  <span className="text-[9px] bg-emerald-100 text-emerald-800 font-bold px-1.5 py-0.5 rounded-md">
-                                    الأكثر رواجاً
-                                  </span>
-                                )}
-                              </span>
-                              <span className="text-[10px] font-mono text-slate-400 group-hover/sub:text-emerald-700">
-                                {sub.count}
-                              </span>
-                            </Link>
-                          ))}
-                        </div>
-                      )}
+                    {/* Footer Action */}
+                    <div className="p-6 pt-0">
+                      <Button asChild variant="outline" className="w-full rounded-xl text-xs font-bold border-slate-200 hover:bg-[#006948] hover:text-white transition-colors h-10">
+                        <Link href={`/catalog?cat=${cat.id}`} className="flex items-center justify-center gap-2">
+                          <span>استكشف عروض قسم {cat.title}</span>
+                          <ArrowLeft className="w-3.5 h-3.5" />
+                        </Link>
+                      </Button>
                     </div>
-                  </div>
-
-                  {/* Footer Action */}
-                  <div className="p-6 pt-0">
-                    <Button asChild variant="outline" className="w-full rounded-xl text-xs font-bold border-slate-200 hover:bg-[#006948] hover:text-white transition-colors h-10">
-                      <Link href={`/catalog?cat=${cat.id}`} className="flex items-center justify-center gap-2">
-                        <span>استكشف عروض قسم {cat.title}</span>
-                        <ArrowLeft className="w-3.5 h-3.5" />
-                      </Link>
-                    </Button>
-                  </div>
-                </div>
-              ))}
-            </div>
+                  </motion.div>
+                ))}
+              </AnimatePresence>
+            </motion.div>
           )}
         </section>
       </main>

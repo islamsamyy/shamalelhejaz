@@ -36,10 +36,14 @@ import {
   Info,
   Lock,
   Globe,
+  X,
 } from "lucide-react";
 import { formatSAR } from "@/lib/utils";
 import { notify } from "@/lib/notify";
 import { fetchClientRole, signOutClient, Role } from "@/lib/rbac";
+import { ALL_PRODUCTS, Product } from "@/lib/catalogData";
+import { matchesSearch } from "@/lib/search";
+import { fetchProductsFromSupabase } from "@/lib/supabase";
 
 export default function StorefrontHeader() {
   const pathname = usePathname();
@@ -47,6 +51,8 @@ export default function StorefrontHeader() {
   const { cartCount, total, wishlist, setIsCartDrawerOpen } = useCart();
   const [searchQuery, setSearchQuery] = useState("");
   const [isSearchFocused, setIsSearchFocused] = useState(false);
+  const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
+  const [catalogProducts, setCatalogProducts] = useState<Product[]>(ALL_PRODUCTS);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [currentRole, setCurrentRole] = useState<Role | null>(null);
   const [isScrolled, setIsScrolled] = useState(false);
@@ -54,19 +60,36 @@ export default function StorefrontHeader() {
 
   useEffect(() => {
     fetchClientRole().then(setCurrentRole);
+    fetchProductsFromSupabase().then((dbProducts) => {
+      if (dbProducts && dbProducts.length > 0) {
+        const dbIds = new Set(dbProducts.map((p) => p.id));
+        setCatalogProducts([...dbProducts, ...ALL_PRODUCTS.filter((p) => !dbIds.has(p.id))]);
+      }
+    });
     const handleScroll = () => setIsScrolled(window.scrollY > 16);
     handleScroll();
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const handleSearchSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSearchSubmit = (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    setIsSearchFocused(false);
+    setIsMobileSearchOpen(false);
     if (searchQuery.trim()) {
-      setIsSearchFocused(false);
       router.push(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+    } else {
+      router.push("/catalog");
     }
   };
+
+  const liveSearchResults = searchQuery.trim()
+    ? catalogProducts.filter((item) => matchesSearch(item, searchQuery)).slice(0, 5)
+    : [];
+
+  const totalMatchesCount = searchQuery.trim()
+    ? catalogProducts.filter((item) => matchesSearch(item, searchQuery)).length
+    : 0;
 
   const trendingSearches = [
     "سماعات سوني WH-1000XM5",
@@ -222,7 +245,7 @@ export default function StorefrontHeader() {
               </SheetTrigger>
               <SheetContent side="right" className="w-[300px] p-6 flex flex-col justify-between">
                 <div>
-                  <div className="flex items-center gap-3 pb-6 border-b border-slate-100">
+                  <div className="flex items-center gap-3 pb-4 border-b border-slate-100">
                     <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#006948] to-[#004d34] flex items-center justify-center text-white font-bold shadow-md">
                       ش
                     </div>
@@ -231,6 +254,33 @@ export default function StorefrontHeader() {
                       <p className="text-[11px] text-emerald-700 font-medium">منصة المتاجر والموردين</p>
                     </div>
                   </div>
+
+                  {/* Mobile Drawer Quick Search */}
+                  <form
+                    onSubmit={(e) => {
+                      e.preventDefault();
+                      setMobileMenuOpen(false);
+                      handleSearchSubmit();
+                    }}
+                    className="relative flex items-center mt-3 mb-2"
+                  >
+                    <input
+                      type="text"
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      placeholder="ابحث عن منتج، ماركة، أو تصنيف..."
+                      className="w-full h-10 pe-9 ps-20 bg-slate-100 rounded-xl text-xs text-slate-800 border border-slate-200 focus:outline-none focus:bg-white focus:border-[#006948]"
+                    />
+                    <Search className="absolute end-3 text-slate-400 w-4 h-4 pointer-events-none" />
+                    <Button
+                      type="submit"
+                      variant="sovereign"
+                      size="sm"
+                      className="absolute start-1.5 h-7 px-3 rounded-lg text-xs font-bold"
+                    >
+                      بحث
+                    </Button>
+                  </form>
                   <nav className="flex flex-col gap-2 pt-6">
                     {navLinks.map((link) => (
                       <Link
@@ -296,19 +346,32 @@ export default function StorefrontHeader() {
             <form onSubmit={handleSearchSubmit} className="relative flex items-center w-full">
               <Search className="absolute end-4 text-slate-400 w-4 h-4 pointer-events-none" />
               <input
-                type="search"
+                type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onFocus={() => setIsSearchFocused(true)}
-                onBlur={() => setTimeout(() => setIsSearchFocused(false), 200)}
+                onBlur={() => setTimeout(() => setIsSearchFocused(false), 250)}
                 placeholder="ابحث عن المنتجات الأكثر مبيعاً، سماعات، قلايات، هواتف، كوب ستانلي..."
-                className="w-full h-11 pe-11 ps-28 bg-slate-50 hover:bg-slate-100/80 focus:bg-white rounded-full border border-slate-200 text-slate-800 text-xs placeholder:text-slate-400 focus:outline-none focus:border-[#006948] focus:ring-2 focus:ring-[#006948]/10 transition-all shadow-inner"
+                className="w-full h-11 pe-12 ps-28 bg-slate-50 hover:bg-slate-100/80 focus:bg-white rounded-full border border-slate-200 text-slate-800 text-xs placeholder:text-slate-400 focus:outline-none focus:border-[#006948] focus:ring-2 focus:ring-[#006948]/10 transition-all shadow-inner"
               />
+              {searchQuery && (
+                <button
+                  type="button"
+                  onMouseDown={(e) => {
+                    e.preventDefault();
+                    setSearchQuery("");
+                  }}
+                  className="absolute end-10 text-slate-400 hover:text-slate-600 p-1 cursor-pointer"
+                  aria-label="مسح البحث"
+                >
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              )}
               <Button
                 type="submit"
                 variant="sovereign"
                 size="sm"
-                className="absolute start-1.5 h-8 px-4 rounded-full text-xs font-bold"
+                className="absolute start-1.5 h-8 px-4 rounded-full text-xs font-bold cursor-pointer"
               >
                 بحث في المتاجر
               </Button>
@@ -316,35 +379,126 @@ export default function StorefrontHeader() {
 
             {/* Autocomplete Dropdown Popover */}
             {isSearchFocused && (
-              <div className="absolute top-12 inset-x-0 bg-white border border-slate-200 rounded-3xl shadow-2xl p-4 z-50 animate-in fade-in-0 zoom-in-95">
-                <div className="flex items-center justify-between pb-2 mb-2 border-b border-slate-100">
-                  <span className="text-[11px] font-bold text-slate-400 flex items-center gap-1.5">
-                    <Clock className="w-3 h-3" />
-                    المنتجات الأكثر بحثاً الآن
-                  </span>
-                  <span className="text-[10px] text-emerald-700 font-semibold">تحديث حي</span>
-                </div>
-                <div className="flex flex-wrap gap-2">
-                  {trendingSearches.map((term) => (
-                    <button
-                      key={term}
-                      type="button"
-                      onClick={() => {
-                        setSearchQuery(term);
-                        router.push(`/search?q=${encodeURIComponent(term)}`);
-                      }}
-                      className="px-3 py-1.5 rounded-full bg-slate-50 hover:bg-emerald-50 text-slate-700 hover:text-emerald-800 text-xs font-medium border border-slate-200/80 transition-colors text-start"
-                    >
-                      {term}
-                    </button>
-                  ))}
-                </div>
+              <div className="absolute top-12 inset-x-0 bg-white border border-slate-200 rounded-3xl shadow-2xl p-4 z-50 animate-in fade-in-0 zoom-in-95 max-h-[420px] overflow-y-auto">
+                {searchQuery.trim() ? (
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between pb-2 border-b border-slate-100">
+                      <span className="text-[11px] font-bold text-slate-500">
+                        نتائج البحث المقترحة ({totalMatchesCount} منتج)
+                      </span>
+                      <span className="text-[10px] text-emerald-700 font-bold">تطابق فوري</span>
+                    </div>
+
+                    {liveSearchResults.length > 0 ? (
+                      <div className="space-y-1.5">
+                        {liveSearchResults.map((p) => (
+                          <button
+                            key={p.id}
+                            type="button"
+                            onMouseDown={(e) => {
+                              e.preventDefault();
+                              setIsSearchFocused(false);
+                              router.push(`/products/${p.id}`);
+                            }}
+                            className="w-full flex items-center justify-between gap-3 p-2 rounded-2xl hover:bg-slate-50 transition-colors text-start group cursor-pointer"
+                          >
+                            <div className="flex items-center gap-2.5 overflow-hidden">
+                              {/* eslint-disable-next-line @next/next/no-img-element */}
+                              <img
+                                src={p.image}
+                                alt={p.title}
+                                className="w-10 h-10 rounded-xl object-cover border border-slate-200 shrink-0"
+                              />
+                              <div className="overflow-hidden">
+                                <p className="text-xs font-bold text-slate-900 group-hover:text-[#006948] transition-colors truncate">
+                                  {p.title}
+                                </p>
+                                <p className="text-[10px] text-slate-400">
+                                  {p.vendor} • {p.category}
+                                </p>
+                              </div>
+                            </div>
+                            <span className="text-xs font-black text-[#006948] shrink-0 font-mono">
+                              {formatSAR(p.price)}
+                            </span>
+                          </button>
+                        ))}
+
+                        <button
+                          type="button"
+                          onMouseDown={(e) => {
+                            e.preventDefault();
+                            handleSearchSubmit();
+                          }}
+                          className="w-full py-2.5 mt-2 rounded-xl bg-slate-50 hover:bg-[#006948] hover:text-white text-[#006948] text-xs font-bold transition-all text-center block cursor-pointer"
+                        >
+                          عرض كافة النتائج لـ &quot;{searchQuery}&quot; ({totalMatchesCount} منتج) ←
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="py-6 text-center text-slate-500">
+                        <p className="text-xs font-bold mb-1">لم نجد منتجات تطابق &quot;{searchQuery}&quot;</p>
+                        <p className="text-[11px] text-slate-400 mb-3">
+                          جرب كلمات أخرى أو اضغط على الزر أدناه للانتقال للكتالوج
+                        </p>
+                        <button
+                          type="button"
+                          onMouseDown={(e) => {
+                            e.preventDefault();
+                            setIsSearchFocused(false);
+                            router.push("/catalog");
+                          }}
+                          className="text-xs font-bold text-[#006948] hover:underline cursor-pointer"
+                        >
+                          استعراض كتالوج المنتجات بالكامل ←
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <div>
+                    <div className="flex items-center justify-between pb-2 mb-2 border-b border-slate-100">
+                      <span className="text-[11px] font-bold text-slate-400 flex items-center gap-1.5">
+                        <Clock className="w-3 h-3" />
+                        المنتجات الأكثر بحثاً الآن
+                      </span>
+                      <span className="text-[10px] text-emerald-700 font-semibold">تحديث حي</span>
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      {trendingSearches.map((term) => (
+                        <button
+                          key={term}
+                          type="button"
+                          onMouseDown={(e) => {
+                            e.preventDefault();
+                            setSearchQuery(term);
+                            setIsSearchFocused(false);
+                            router.push(`/search?q=${encodeURIComponent(term)}`);
+                          }}
+                          className="px-3 py-1.5 rounded-full bg-slate-50 hover:bg-emerald-50 text-slate-700 hover:text-emerald-800 text-xs font-medium border border-slate-200/80 transition-colors text-start cursor-pointer"
+                        >
+                          {term}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             )}
           </div>
 
           {/* User Actions & Utility Buttons */}
           <div className="flex items-center gap-2.5 shrink-0">
+            {/* Mobile Search Toggle */}
+            <button
+              type="button"
+              onClick={() => setIsMobileSearchOpen(!isMobileSearchOpen)}
+              className="lg:hidden p-2.5 rounded-2xl bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200/80 transition-all cursor-pointer"
+              aria-label="البحث"
+            >
+              <Search className="w-5 h-5" />
+            </button>
+
             {/* Wishlist Button */}
             <Tooltip>
               <TooltipTrigger asChild>
@@ -531,6 +685,31 @@ export default function StorefrontHeader() {
             </DropdownMenu>
           </div>
         </div>
+
+        {/* Mobile Search Collapsible Input */}
+        {isMobileSearchOpen && (
+          <div className="lg:hidden w-full bg-slate-50/95 border-t border-slate-200 px-4 py-2.5 shadow-xs">
+            <form onSubmit={handleSearchSubmit} className="relative flex items-center w-full">
+              <Search className="absolute end-3 text-slate-400 w-4 h-4 pointer-events-none" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="ابحث عن منتج، متجر، أو تصنيف..."
+                className="w-full h-10 pe-9 ps-20 bg-white rounded-full text-xs text-slate-800 placeholder:text-slate-400 border border-slate-200 focus:outline-none focus:border-[#006948]"
+                autoFocus
+              />
+              <Button
+                type="submit"
+                variant="sovereign"
+                size="sm"
+                className="absolute start-1 h-8 px-3 rounded-full text-xs font-bold"
+              >
+                بحث
+              </Button>
+            </form>
+          </div>
+        )}
 
         {/* Secondary Subnav (Desktop) */}
         <div className="w-full border-t border-slate-100 bg-white hidden lg:block">
