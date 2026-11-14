@@ -2,6 +2,7 @@
 
 import React, { createContext, useContext, useState } from "react";
 import { toast } from "sonner";
+import { supabase } from "@/lib/supabase";
 
 export interface CartItem {
   id: string;
@@ -151,10 +152,28 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       });
       return true;
     } else {
-      toast.error("رمز القسيمة غير صالح أو منتهي الصلاحية", {
-        description: "يرجى التحقق من صحة الرمز والمحاولة مجدداً.",
-      });
-      return false;
+      // Lookup real coupons from Supabase database
+      supabase
+        .from("coupons")
+        .select("*")
+        .eq("code", normalized)
+        .eq("is_active", true)
+        .maybeSingle()
+        .then(({ data, error }) => {
+          if (data && !error) {
+            const val = Number(data.discount_value || 10);
+            setCouponCode(normalized);
+            setDiscountPercent(val);
+            toast.success(`تم تفعيل كود الخصم (${normalized}) بنجاح!`, {
+              description: `تم تطبيق خصم ${val}% على إجمالي سلة المشتريات.`,
+            });
+          } else {
+            toast.error("رمز القسيمة غير صالح أو منتهي الصلاحية", {
+              description: "يرجى التحقق من صحة الرمز والمحاولة مجدداً.",
+            });
+          }
+        });
+      return true;
     }
   };
 
