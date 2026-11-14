@@ -8,7 +8,7 @@ import StorefrontFooter from "@/components/StorefrontFooter";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { ShieldCheck, User, Store, Mail, KeyRound } from "lucide-react";
+import { ShieldCheck, User, Store, Mail, KeyRound, Eye, EyeOff, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 import { signInWithCredentials, Role } from "@/lib/rbac";
 
@@ -29,8 +29,23 @@ function LoginFormContent() {
 
   const [role, setRole] = useState<Tab>(initialRole);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  const DEMO_ACCOUNTS = {
+    admin: { email: "admin@souq.sa", pass: "Admin@123", name: "المشرف العام (Admin)" },
+    vendor: { email: "vendor@souq.sa", pass: "Vendor@123", name: "تاجر B2B (Vendor)" },
+    client: { email: "customer@souq.sa", pass: "Customer@123", name: "مشتري VIP (Customer)" },
+  };
+
+  const fillDemoAccount = (targetRole: Tab) => {
+    const creds = DEMO_ACCOUNTS[targetRole];
+    setRole(targetRole);
+    setEmail(creds.email);
+    setPassword(creds.pass);
+    toast.info(`تم ملء بيانات ${creds.name} تلقائياً. انقر على "تسجيل الدخول".`);
+  };
 
   const redirectParam = safeRedirect(searchParams.get("redirect"));
   const errorParam = searchParams.get("error");
@@ -128,16 +143,72 @@ function LoginFormContent() {
           <label className="text-xs font-bold text-slate-700 block mb-1">كلمة المرور</label>
           <div className="relative">
             <Input
-              type="password"
+              type={showPassword ? "text" : "password"}
               autoComplete="current-password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••"
               dir="ltr"
-              className="text-start font-mono ps-9"
+              className="text-start font-mono ps-9 pe-10"
               required
             />
             <KeyRound className="w-4 h-4 text-slate-400 absolute start-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute end-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors p-1"
+              aria-label={showPassword ? "إخفاء كلمة المرور" : "إظهار كلمة المرور"}
+            >
+              {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+            </button>
+          </div>
+        </div>
+
+        {/* حسابات تجريبية سريعة بنقرة واحدة */}
+        <div className="rounded-2xl border border-dashed border-slate-300 bg-slate-50/80 p-3 space-y-2">
+          <div className="flex items-center justify-between text-[11px] font-bold text-slate-600">
+            <span className="flex items-center gap-1.5 text-slate-800">
+              <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+              تعبئة سريعة للحسابات التجريبية:
+            </span>
+          </div>
+          <div className="grid grid-cols-3 gap-1.5 text-[11px]">
+            <button
+              type="button"
+              onClick={() => fillDemoAccount("admin")}
+              className={`p-2 rounded-xl border text-center transition-all cursor-pointer font-bold ${
+                role === "admin"
+                  ? "border-slate-800 bg-slate-900 text-white shadow-sm"
+                  : "border-slate-200 bg-white text-slate-700 hover:border-slate-400"
+              }`}
+            >
+              <div className="text-[10px]">المسؤول 👑</div>
+              <div className="text-[9px] font-mono opacity-80 truncate">admin@souq.sa</div>
+            </button>
+            <button
+              type="button"
+              onClick={() => fillDemoAccount("vendor")}
+              className={`p-2 rounded-xl border text-center transition-all cursor-pointer font-bold ${
+                role === "vendor"
+                  ? "border-[#006948] bg-[#006948] text-white shadow-sm"
+                  : "border-slate-200 bg-white text-slate-700 hover:border-slate-400"
+              }`}
+            >
+              <div className="text-[10px]">التاجر 🏬</div>
+              <div className="text-[9px] font-mono opacity-80 truncate">vendor@souq.sa</div>
+            </button>
+            <button
+              type="button"
+              onClick={() => fillDemoAccount("client")}
+              className={`p-2 rounded-xl border text-center transition-all cursor-pointer font-bold ${
+                role === "client"
+                  ? "border-emerald-600 bg-emerald-600 text-white shadow-sm"
+                  : "border-slate-200 bg-white text-slate-700 hover:border-slate-400"
+              }`}
+            >
+              <div className="text-[10px]">المشتري 🛍️</div>
+              <div className="text-[9px] font-mono opacity-80 truncate">customer@souq.sa</div>
+            </button>
           </div>
         </div>
 

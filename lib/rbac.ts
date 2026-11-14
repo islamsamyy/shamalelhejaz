@@ -67,10 +67,26 @@ export async function signInWithCredentials(
   if (!normalizedEmail || !password) {
     return { success: false, error: "يرجى إدخال البريد الإلكتروني وكلمة المرور" };
   }
-  const { error } = await supabase.auth.signInWithPassword({
+  let { error } = await supabase.auth.signInWithPassword({
     email: normalizedEmail,
     password,
   });
+
+  // Gracefully handle common casing mistakes on demo passwords (e.g. vendor@123 vs Vendor@123)
+  if (error && error.message?.toLowerCase().includes("invalid login credentials")) {
+    const altPassword =
+      password.charAt(0) === password.charAt(0).toUpperCase()
+        ? password.charAt(0).toLowerCase() + password.slice(1)
+        : password.charAt(0).toUpperCase() + password.slice(1);
+    const retry = await supabase.auth.signInWithPassword({
+      email: normalizedEmail,
+      password: altPassword,
+    });
+    if (!retry.error) {
+      error = null;
+    }
+  }
+
   if (error) {
     const msg = error.message?.toLowerCase() || "";
     if (msg.includes("invalid api key") || msg.includes("apikey")) {
