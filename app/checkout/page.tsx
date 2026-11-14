@@ -53,8 +53,9 @@ export default function CheckoutPage() {
   // Step 2: Shipping Option
   const [shippingMethod, setShippingMethod] = useState("express-2h");
 
-  // Step 3: Payment Method
-  const [paymentMethod, setPaymentMethod] = useState("mada");
+  // Step 3: Payment Method (codes match public.payment_gateways.code)
+  const [paymentMethod, setPaymentMethod] = useState<"cod" | "wallet" | "moyasar" | "hyperpay" | "tap" | "stripe">("cod");
+  const [couponCode, setCouponCode] = useState("");
 
   const steps = [
     { number: 1, title: "العنوان الوطني (SPL)" },
@@ -78,37 +79,35 @@ export default function CheckoutPage() {
   };
 
   const handleConfirmOrder = async () => {
+    if (cart.length === 0) {
+      toast.error("سلة المشتريات فارغة.");
+      return;
+    }
     setIsProcessing(true);
-    toast.info("جاري التحقق البنكي والربط مع قاعدة بيانات Supabase وفاتورة زاتكا...");
+    toast.info("جاري التحقق البنكي وإنشاء الطلب في قاعدة بيانات Supabase...");
 
     try {
-      const orderItems = cart.map((c) => ({
-        id: c.id,
-        title: c.title,
-        price: c.price,
-        quantity: c.quantity,
-        image: c.image,
-      }));
-
-      await createOrderInSupabase({
-        items: orderItems,
-        total,
-        subtotal,
-        tax: taxAmount,
-        discount,
-        currency: "SAR",
-        shipping_address: address,
-        payment_method: paymentMethod,
-        payment_status: "paid",
+      const res = await fetch("/api/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          items: cart.map((c) => ({ product_id: c.id, quantity: c.quantity })),
+          address,
+          gateway: paymentMethod,
+          coupon: couponCode.trim() || null,
+        }),
       });
-    } catch (e) {
-      console.warn("Notice during order sync to Supabase:", e);
-    }
+      const json = await res.json();
+      if (!res.ok || !json.orderId) {
+        if (res.status === 401) {
+          toast.error("يرجى تسجيل الدخول أولاً لإتمام الطلب.");
+          router.push("/auth/login?redirect=/checkout");
+          return;
+        }
+        toast.error(json.error || "تعذر إتمام الطلب.");
+        return;
+      }
 
-    setTimeout(() => {
-      setIsProcessing(false);
-
-      // Trigger Confetti Celebration
       confetti({
         particleCount: 120,
         spread: 80,
@@ -117,12 +116,16 @@ export default function CheckoutPage() {
       });
 
       notify.zatca(
-        "تم تأكيد الدفع السيادي بنجاح وإصدار فاتورة زاتكا!",
-        "تم توثيق الطلب وحجز المبلغ في حساب الضمان Escrow."
+        "تم تأكيد الطلب بنجاح وإصدار فاتورة زاتكا!",
+        `تم توثيق الطلب رقم ${json.orderId} في قاعدة البيانات.`
       );
       clearCart();
-      router.push("/orders/SQ-94281/confirmation");
-    }, 1200);
+      router.push(`/orders/${json.orderId}/confirmation`);
+    } catch (e: any) {
+      toast.error(e?.message || "حدث خطأ غير متوقع أثناء إنشاء الطلب.");
+    } finally {
+      setIsProcessing(false);
+    }
   };
 
   return (
@@ -393,39 +396,45 @@ export default function CheckoutPage() {
                   <div className="space-y-3">
                     {[
                       {
-                        id: "mada",
-                        title: "بطاقة مدى البنكية (mada)",
-                        desc: "الدفع الفوري المباشر عبر الشبكة السعودية للمدفوعات بدون أي رسوم إضافية.",
-                        badge: "الخيار الوطني الموصى به",
+                        id: "cod",
+                        title: "الدفع عند الاستلام (Cash on Delivery)",
+                        desc: "ادفع نقداً أو بالبطاقة عند استلام الطلب من مندوب التوصيل.",
+                        badge: "مفعل وجاهز",
                       },
                       {
-                        id: "apple-pay",
-                        title: "Apple Pay",
-                        desc: "الدفع بلمسة واحدة عبر محفظة أبل المشفرة وبأعلى معايير الأمان.",
-                        badge: "دفع سريع وفوري",
+                        id: "wallet",
+                        title: "محفظة شمال الحجاز السيادية (Souq Wallet)",
+                        desc: "خصم فوري من رصيد محفظتك النشط مع إصدار فاتورة ضريبية فورية.",
+                        badge: "دفع فوري",
                       },
                       {
-                        id: "tabby",
-                        title: "تابي (Tabby) - قسّمها على ٤ دفعات بدون فوائد",
-                        desc: `ادفع ربع القيمة اليوم (${formatSAR(Math.round(total / 4))}) والباقي على ٣ أشهر متتالية.`,
-                        badge: "متوافق مع الشريعة",
+                        id: "moyasar",
+                        title: "بوابة مُيسر (مدى / Apple Pay / البطاقات)",
+                        desc: "الدفع الإلكتروني عبر شبكة مدى البنكية أو Apple Pay عبر Moyasar.",
+                        badge: "Moyasar",
                       },
                       {
-                        id: "tamara",
-                        title: "تمارا (Tamara) - قسّم فاتورتك بسهولة",
-                        desc: `قسّم الدفع على دفعات شهرية بدون أي فوائد أو رسوم خفية.`,
-                        badge: "مرخص من ساما",
+                        id: "tap",
+                        title: "بوابة تاب للمدفوعات (Tap Payments)",
+                        desc: "دفع إلكتروني سريع ومشفر لجميع بطاقات الخليج.",
+                        badge: "Tap",
                       },
                       {
-                        id: "card",
-                        title: "البطاقات الائتمانية (Visa / Mastercard)",
-                        desc: "قبول عالمي لجميع البطاقات المصرفية مع تشفير 3D Secure.",
-                        badge: "حماية دولية",
+                        id: "hyperpay",
+                        title: "بوابة هايبر باي (HyperPay)",
+                        desc: "معالجة مصرفية مباشرة ومعتمدة من البنك المركزي السعودي.",
+                        badge: "HyperPay",
+                      },
+                      {
+                        id: "stripe",
+                        title: "البطاقات الدولية (Stripe)",
+                        desc: "قبول عالمي لجميع بطاقات Visa و Mastercard مع حماية 3D Secure.",
+                        badge: "Stripe",
                       },
                     ].map((p) => (
                       <label
                         key={p.id}
-                        onClick={() => setPaymentMethod(p.id)}
+                        onClick={() => setPaymentMethod(p.id as typeof paymentMethod)}
                         className={`p-4 rounded-2xl border transition-all flex items-center justify-between cursor-pointer ${
                           paymentMethod === p.id
                             ? "border-[#006948] bg-emerald-50/60 ring-2 ring-[#006948]/20"
@@ -437,7 +446,7 @@ export default function CheckoutPage() {
                             type="radio"
                             name="payment"
                             checked={paymentMethod === p.id}
-                            onChange={() => setPaymentMethod(p.id)}
+                            onChange={() => setPaymentMethod(p.id as typeof paymentMethod)}
                             className="w-4 h-4 mt-1 accent-[#006948]"
                           />
                           <div>

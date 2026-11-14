@@ -414,14 +414,14 @@ export default function StorefrontHeader() {
               <DropdownMenuTrigger asChild>
                 <button className="flex items-center gap-2.5 p-1.5 sm:px-3 sm:py-1.5 rounded-2xl hover:bg-slate-100 transition-colors cursor-pointer border border-transparent hover:border-slate-200">
                   <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-emerald-100 to-teal-50 border border-emerald-200 text-emerald-800 flex items-center justify-center font-bold text-xs ring-2 ring-emerald-500/20">
-                    م
+                    {currentRole === "admin" ? "إ" : currentRole === "vendor" ? "ت" : currentRole === "customer" ? "ع" : "د"}
                   </div>
                   <div className="hidden xl:flex flex-col text-start">
                     <span className="text-xs font-bold text-slate-900 leading-none">
-                      حساب المشتري
+                      {currentRole === "admin" ? "لوحة الإدارة" : currentRole === "vendor" ? "بوابة التاجر" : currentRole === "customer" ? "حساب العميل" : "تسجيل الدخول"}
                     </span>
                     <span className="text-[10px] text-emerald-700 font-semibold mt-0.5">
-                      عضو موثق عبر نفاذ
+                      {currentRole ? "جلسة موثقة" : "دخول المنظومة"}
                     </span>
                   </div>
                   <ChevronDown className="w-3.5 h-3.5 text-slate-400 hidden xl:block" />

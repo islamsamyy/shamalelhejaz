@@ -1,11 +1,11 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { fetchProductsFromSupabase } from "@/lib/supabase";
+import { supabase } from "@/lib/supabase";
 import {
   Dialog,
   DialogContent,
@@ -16,7 +16,6 @@ import {
 import {
   CheckSquare,
   Search,
-  Filter,
   CheckCircle2,
   XCircle,
   Eye,
@@ -24,18 +23,22 @@ import {
   Building,
   AlertTriangle,
   FileText,
+  PlusCircle,
+  Trash2,
 } from "lucide-react";
 import { formatSAR } from "@/lib/utils";
 import { toast } from "sonner";
 
-interface PendingProduct {
+interface AdminProductRow {
   id: string;
   sku: string;
   title: string;
   category: string;
+  categorySlug: string;
   vendor: string;
-  vendorCr: string;
+  vendorId: string | null;
   price: number;
+  stockQty: number;
   submittedAt: string;
   certificateType: string;
   status: "pending" | "approved" | "rejected";
@@ -43,145 +46,195 @@ interface PendingProduct {
   rejectionReason?: string;
 }
 
-const mockProducts: PendingProduct[] = [
-  {
-    id: "MOD-819",
-    sku: "SQ-MOD-01",
-    title: "خنجر نجراني مذهب بنقش الصقر الملكي وحزام حرير طبيعي",
-    category: "التحف والمقتنيات التراثية",
-    vendor: "صاغة الجنوب التراثية",
-    vendorCr: "5900018291",
-    price: 18500,
-    submittedAt: "اليوم، 11:20 ص",
-    certificateType: "شهادة مطابقة المعادن الثمينة - مختبر معتمد",
-    status: "pending",
-    image: "https://images.unsplash.com/photo-1589782182703-2aaa69037b5b?w=600&auto=format&fit=crop&q=80",
-  },
-  {
-    id: "MOD-820",
-    sku: "SQ-MOD-02",
-    title: "تولة دهن عود تراد حطب قديم غابات تايلاند معتق 25 سنة",
-    category: "دهن العود والبخور الفاخر",
-    vendor: "بيت العود المعتق",
-    vendorCr: "1010394821",
-    price: 7400,
-    submittedAt: "اليوم، 10:05 ص",
-    certificateType: "فحص نقاء وخلو من الإضافات الكيميائية (SASO)",
-    status: "pending",
-    image: "https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?w=600&auto=format&fit=crop&q=80",
-  },
-  {
-    id: "MOD-821",
-    sku: "SQ-MOD-03",
-    title: "بشت ملكي وبر إبل وبار نخب أول دقة ملكية زري ألماني 24K",
-    category: "البشوت والمشالح الملكية",
-    vendor: "مشالح الأحساء التاريخية",
-    vendorCr: "2251029481",
-    price: 26000,
-    submittedAt: "أمس، 04:40 م",
-    certificateType: "وثيقة حِرفة يدوية وطنية موثقة من هيئة التراث",
-    status: "pending",
-    image: "https://images.unsplash.com/photo-1578932750294-f5075e85f44a?w=600&auto=format&fit=crop&q=80",
-  },
-  {
-    id: "MOD-822",
-    sku: "SQ-MOD-04",
-    title: "ساعة الكرونوغراف KSA-02 مصفوفة التيتانيوم إصدار طويق",
-    category: "الساعات والكرونوغراف",
-    vendor: "دار الصائغ الملكية",
-    vendorCr: "1010482910",
-    price: 54000,
-    submittedAt: "أمس، 02:15 م",
-    certificateType: "شهادة المنشأ السويسرية والضمان السيادي",
-    status: "pending",
-    image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600&auto=format&fit=crop&q=80",
-  },
-  {
-    id: "MOD-823",
-    sku: "SQ-MOD-05",
-    title: "قلادة الذهب النجدي المرصعة باللؤلؤ الحر الخليجي الطبيعي",
-    category: "المجوهرات والحلي الملكية",
-    vendor: "مجوهرات اليمامة التراثية",
-    vendorCr: "1010294822",
-    price: 42000,
-    submittedAt: "أمس، 11:00 ص",
-    certificateType: "تقرير فحص اللؤلؤ الطبيعي (مختبر الأحجار الكريمة)",
-    status: "pending",
-    image: "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=600&auto=format&fit=crop&q=80",
-  },
-];
-
 export default function CatalogModerationPage() {
-  const [products, setProducts] = useState<PendingProduct[]>(mockProducts);
-  const [activeTab, setActiveTab] = useState<"pending" | "approved" | "rejected">("pending");
+  const [products, setProducts] = useState<AdminProductRow[]>([]);
+  const [categories, setCategories] = useState<{ id: string; title: string; slug: string }[]>([]);
+  const [vendors, setVendors] = useState<{ id: string; name: string }[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState<"approved" | "pending" | "rejected">("approved");
   const [search, setSearch] = useState("");
-  
+
   // Modals state
-  const [previewItem, setPreviewItem] = useState<PendingProduct | null>(null);
-  const [rejectingItem, setRejectingItem] = useState<PendingProduct | null>(null);
+  const [previewItem, setPreviewItem] = useState<AdminProductRow | null>(null);
+  const [rejectingItem, setRejectingItem] = useState<AdminProductRow | null>(null);
   const [rejectionNotes, setRejectionNotes] = useState("");
 
-  useEffect(() => {
-    async function loadDbProducts() {
-      try {
-        const dbProducts = await fetchProductsFromSupabase();
-        if (dbProducts && dbProducts.length > 0) {
-          const mapped: PendingProduct[] = dbProducts.map((p) => ({
-            id: p.id,
-            sku: `SQ-${p.id.slice(0, 6).toUpperCase()}`,
-            title: p.title,
-            category: p.category,
-            vendor: p.vendor || "سوق السعودية",
-            vendorCr: "1010829102",
-            price: p.price,
-            submittedAt: "مؤخراً",
-            certificateType: "مطابقة هيئة المواصفات والمقاييس SASO",
-            status: "approved",
-            image: p.image,
-          }));
-          setProducts([...mockProducts, ...mapped]);
+  // Add Product modal state
+  const [isAddOpen, setIsAddOpen] = useState(false);
+  const [newProduct, setNewProduct] = useState({
+    title: "",
+    price: 1500,
+    stockQty: 10,
+    categorySlug: "",
+    vendorId: "",
+    image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600&auto=format&fit=crop&q=80",
+    description: "",
+    certificateType: "مطابقة هيئة المواصفات والمقاييس SASO",
+  });
+
+  const loadData = useCallback(async () => {
+    setLoading(true);
+    try {
+      const [prodRes, catRes, venRes] = await Promise.all([
+        supabase.from("products").select("*").order("created_at", { ascending: false }),
+        supabase.from("categories").select("id, title, slug").order("title", { ascending: true }),
+        supabase.from("vendors").select("id, name").order("name", { ascending: true }),
+      ]);
+
+      if (catRes.data) {
+        setCategories(catRes.data);
+        if (!newProduct.categorySlug && catRes.data[0]) {
+          setNewProduct((prev) => ({ ...prev, categorySlug: catRes.data![0].slug }));
         }
-      } catch (e) {
-        console.warn("Could not load dynamic products:", e);
       }
+      if (venRes.data) {
+        setVendors(venRes.data);
+        if (!newProduct.vendorId && venRes.data[0]) {
+          setNewProduct((prev) => ({ ...prev, vendorId: venRes.data![0].id }));
+        }
+      }
+
+      if (prodRes.data) {
+        const mapped: AdminProductRow[] = prodRes.data.map((p: any) => ({
+          id: p.id,
+          sku: p.sku || `SQ-${String(p.id).slice(0, 6).toUpperCase()}`,
+          title: p.title,
+          category: p.category,
+          categorySlug: p.category_slug,
+          vendor: p.vendor || "سوق السعودية",
+          vendorId: p.vendor_id,
+          price: Number(p.price),
+          stockQty: Number(p.stock_qty ?? 0),
+          submittedAt: p.created_at ? new Date(p.created_at).toLocaleDateString("ar-SA") : "الآن",
+          certificateType: p.certificate_type || "مطابقة هيئة المواصفات والمقاييس SASO",
+          status:
+            p.moderation_status === "pending" || p.moderation_status === "rejected"
+              ? p.moderation_status
+              : p.is_active === false
+              ? "rejected"
+              : "approved",
+          image: p.image,
+          rejectionReason: p.rejection_reason || undefined,
+        }));
+        setProducts(mapped);
+      }
+    } finally {
+      setLoading(false);
     }
-    loadDbProducts();
-  }, []);
+  }, [newProduct.categorySlug, newProduct.vendorId]);
+
+  useEffect(() => {
+    loadData();
+  }, [loadData]);
 
   const filtered = products.filter((p) => {
     const matchesTab = p.status === activeTab;
     const matchesSearch =
-      p.title.includes(search) || p.vendor.includes(search) || p.sku.toLowerCase().includes(search.toLowerCase());
+      p.title.includes(search) ||
+      p.vendor.includes(search) ||
+      p.sku.toLowerCase().includes(search.toLowerCase());
     return matchesTab && matchesSearch;
   });
 
-  const handleApprove = (id: string, title: string) => {
+  const handleApprove = async (id: string, title: string) => {
+    const { error } = await supabase
+      .from("products")
+      .update({ moderation_status: "approved", is_active: true, rejection_reason: null })
+      .eq("id", id);
+
+    if (error) {
+      toast.error(`تعذر اعتماد المنتج: ${error.message}`);
+      return;
+    }
     setProducts((prev) =>
       prev.map((item) => (item.id === id ? { ...item, status: "approved" } : item))
     );
-    toast.success(`تم اعتماد "${title}" ونشره فورياً في الكتالوج المعتمد ZATCA Phase-2!`);
+    toast.success(`تم اعتماد "${title}" ونشره فورياً في الكتالوج!`);
   };
 
-  const handleOpenReject = (item: PendingProduct) => {
-    setRejectingItem(item);
-    setRejectionNotes("");
-  };
-
-  const handleConfirmReject = () => {
+  const handleConfirmReject = async () => {
     if (!rejectingItem) return;
     if (!rejectionNotes.trim()) {
       toast.error("يرجى تدوين سبب الرفض لتوجيه التاجر بتصحيح الملف");
       return;
     }
+    const { error } = await supabase
+      .from("products")
+      .update({
+        moderation_status: "rejected",
+        is_active: false,
+        rejection_reason: rejectionNotes.trim(),
+      })
+      .eq("id", rejectingItem.id);
+
+    if (error) {
+      toast.error(`تعذر رفض المنتج: ${error.message}`);
+      return;
+    }
+
     setProducts((prev) =>
       prev.map((item) =>
         item.id === rejectingItem.id
-          ? { ...item, status: "rejected", rejectionReason: rejectionNotes }
+          ? { ...item, status: "rejected", rejectionReason: rejectionNotes.trim() }
           : item
       )
     );
-    toast.error(`تم رفض "${rejectingItem.title}" وإشعار التاجر بملاحظات التدقيق.`);
+    toast.error(`تم رفض "${rejectingItem.title}" وحفظ السبب في قاعدة البيانات.`);
     setRejectingItem(null);
+  };
+
+  const handleDeleteProduct = async (id: string, title: string) => {
+    const { error } = await supabase.from("products").delete().eq("id", id);
+    if (error) {
+      toast.error(`تعذر حذف المنتج: ${error.message}`);
+      return;
+    }
+    setProducts((prev) => prev.filter((item) => item.id !== id));
+    toast.success(`تم حذف "${title}" من قاعدة البيانات.`);
+  };
+
+  const handleCreateProduct = async () => {
+    if (!newProduct.title.trim()) {
+      toast.error("يرجى إدخال اسم المنتج");
+      return;
+    }
+    const cat = categories.find((c) => c.slug === newProduct.categorySlug) || categories[0];
+    const ven = vendors.find((v) => v.id === newProduct.vendorId) || vendors[0];
+    const id = `prd-${Date.now()}`;
+    const sku = `SQ-${String(Date.now()).slice(-6)}`;
+
+    const { error } = await supabase.from("products").insert([
+      {
+        id,
+        sku,
+        title: newProduct.title.trim(),
+        price: Number(newProduct.price),
+        stock_qty: Number(newProduct.stockQty),
+        stock_status: Number(newProduct.stockQty) > 0 ? "in_stock" : "out_of_stock",
+        image: newProduct.image.trim(),
+        images: [newProduct.image.trim()],
+        category: cat?.title || "عام",
+        category_slug: cat?.slug || "general",
+        vendor: ven?.name || "شمال الحجاز",
+        vendor_id: ven?.id || null,
+        vendor_verified: true,
+        description: newProduct.description.trim(),
+        certificate_type: newProduct.certificateType.trim(),
+        moderation_status: "approved",
+        is_active: true,
+      },
+    ]);
+
+    if (error) {
+      toast.error(`تعذر إضافة المنتج: ${error.message}`);
+      return;
+    }
+
+    toast.success(`تمت إضافة "${newProduct.title}" وحفظه في قاعدة البيانات!`);
+    setIsAddOpen(false);
+    setNewProduct((prev) => ({ ...prev, title: "", description: "" }));
+    setActiveTab("approved");
+    loadData();
   };
 
   return (
@@ -191,18 +244,23 @@ export default function CatalogModerationPage() {
         <div>
           <h1 className="text-2xl font-black text-slate-900 flex items-center gap-2.5">
             <CheckSquare className="w-7 h-7 text-[#006948]" />
-            طابور تدقيق واعتماد منتجات الكتالوج
+            إدارة وتدقيق منتجات الكتالوج
           </h1>
           <p className="text-xs text-slate-500 mt-1">
-            فحص الجودة والتأكد من شهادات الأصالة وامتثال التسعير لضريبة القيمة المضافة 15% قبل النشر في المتجر الوطني.
+            إضافة واعتماد المنتجات مباشرة في قاعدة بيانات Supabase مع تطبيق سياسات RLS.
           </p>
         </div>
 
         <div className="flex items-center gap-2">
-          <Badge variant="outline" className="bg-emerald-50 text-emerald-800 border-emerald-300 font-mono text-xs">
-            <ShieldCheck className="w-3.5 h-3.5 ml-1 text-emerald-600" />
-            معايير الأصالة: نشطة
-          </Badge>
+          <Button
+            variant="sovereign"
+            size="sm"
+            onClick={() => setIsAddOpen(true)}
+            className="rounded-xl font-bold text-xs"
+          >
+            <PlusCircle className="w-4 h-4 ml-1.5" />
+            إضافة منتج جديد للكتالوج
+          </Button>
         </div>
       </div>
 
@@ -214,7 +272,7 @@ export default function CatalogModerationPage() {
             <Input
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="ابحث باسم المقتنى، التاجر، أو السجل..."
+              placeholder="ابحث باسم المقتنى، التاجر، أو رمز SKU..."
               className="pr-10 rounded-2xl border-slate-200 text-xs h-10 w-full"
             />
           </div>
@@ -222,9 +280,9 @@ export default function CatalogModerationPage() {
 
         <div className="flex items-center gap-2 w-full md:w-auto overflow-x-auto">
           {[
-            { id: "pending", label: "بانتظار التدقيق", count: products.filter((p) => p.status === "pending").length },
             { id: "approved", label: "معتمد ومنشور", count: products.filter((p) => p.status === "approved").length },
-            { id: "rejected", label: "مرفوض ومُعاد", count: products.filter((p) => p.status === "rejected").length },
+            { id: "pending", label: "بانتظار التدقيق", count: products.filter((p) => p.status === "pending").length },
+            { id: "rejected", label: "مرفوض ومخفي", count: products.filter((p) => p.status === "rejected").length },
           ].map((tab) => (
             <button
               key={tab.id}
@@ -236,9 +294,11 @@ export default function CatalogModerationPage() {
               }`}
             >
               <span>{tab.label}</span>
-              <span className={`text-[10px] px-1.5 py-0.2 rounded-full ${
-                activeTab === tab.id ? "bg-white/20 text-white" : "bg-slate-200 text-slate-700"
-              }`}>
+              <span
+                className={`text-[10px] px-1.5 py-0.2 rounded-full ${
+                  activeTab === tab.id ? "bg-white/20 text-white" : "bg-slate-200 text-slate-700"
+                }`}
+              >
                 {tab.count}
               </span>
             </button>
@@ -254,9 +314,9 @@ export default function CatalogModerationPage() {
               <tr>
                 <th className="p-4">المقتنى والتصنيف</th>
                 <th className="p-4">التاجر والمنشأة</th>
-                <th className="p-4">السعر شامل الضريبة</th>
+                <th className="p-4">السعر والمخزون</th>
                 <th className="p-4">شهادة الأصالة والاعتماد</th>
-                <th className="p-4">وقت التقديم</th>
+                <th className="p-4">تاريخ الإدراج</th>
                 <th className="p-4 text-center">قرار المشرف</th>
               </tr>
             </thead>
@@ -288,14 +348,15 @@ export default function CatalogModerationPage() {
                       <Building className="w-3.5 h-3.5 text-slate-400" />
                       <div>
                         <span className="font-bold text-slate-800 block">{item.vendor}</span>
-                        <span className="text-[10px] text-slate-400 font-mono">س.ت: {item.vendorCr}</span>
                       </div>
                     </div>
                   </td>
 
                   <td className="p-4">
                     <span className="font-black text-slate-900 block">{formatSAR(item.price)}</span>
-                    <span className="text-[10px] text-emerald-700 font-semibold">ضريبة زاتكا 15% متضمنة</span>
+                    <span className="text-[10px] text-emerald-700 font-semibold">
+                      المخزون: {item.stockQty} قطعة
+                    </span>
                   </td>
 
                   <td className="p-4">
@@ -305,9 +366,7 @@ export default function CatalogModerationPage() {
                     </span>
                   </td>
 
-                  <td className="p-4 text-slate-500 font-medium">
-                    {item.submittedAt}
-                  </td>
+                  <td className="p-4 text-slate-500 font-medium">{item.submittedAt}</td>
 
                   <td className="p-4">
                     <div className="flex items-center justify-center gap-1.5">
@@ -315,57 +374,57 @@ export default function CatalogModerationPage() {
                         variant="outline"
                         size="sm"
                         onClick={() => setPreviewItem(item)}
-                        title="معاينة الملف الكامل"
                         className="h-8 px-2.5 rounded-xl border-slate-200 text-slate-700 text-xs"
                       >
                         <Eye className="w-3.5 h-3.5 ml-1 text-slate-500" />
                         معاينة
                       </Button>
 
-                      {item.status === "pending" && (
-                        <>
-                          <Button
-                            variant="sovereign"
-                            size="sm"
-                            onClick={() => handleApprove(item.id, item.title)}
-                            className="h-8 px-3 rounded-xl font-bold text-xs"
-                          >
-                            <CheckCircle2 className="w-3.5 h-3.5 ml-1" />
-                            اعتماد
-                          </Button>
-
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => handleOpenReject(item)}
-                            className="h-8 px-3 rounded-xl border-rose-200 text-rose-700 hover:bg-rose-50 text-xs font-bold"
-                          >
-                            <XCircle className="w-3.5 h-3.5 ml-1" />
-                            رفض
-                          </Button>
-                        </>
+                      {item.status !== "approved" && (
+                        <Button
+                          variant="sovereign"
+                          size="sm"
+                          onClick={() => handleApprove(item.id, item.title)}
+                          className="h-8 px-3 rounded-xl font-bold text-xs"
+                        >
+                          <CheckCircle2 className="w-3.5 h-3.5 ml-1" />
+                          اعتماد
+                        </Button>
                       )}
 
-                      {item.status === "approved" && (
-                        <Badge variant="outline" className="bg-emerald-50 text-emerald-800 border-emerald-300">
-                          معتمد ومنشور
-                        </Badge>
+                      {item.status !== "rejected" && (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => {
+                            setRejectingItem(item);
+                            setRejectionNotes("");
+                          }}
+                          className="h-8 px-3 rounded-xl border-rose-200 text-rose-700 hover:bg-rose-50 text-xs font-bold"
+                        >
+                          <XCircle className="w-3.5 h-3.5 ml-1" />
+                          إخفاء/رفض
+                        </Button>
                       )}
 
-                      {item.status === "rejected" && (
-                        <Badge variant="outline" className="bg-rose-50 text-rose-800 border-rose-300">
-                          مرفوض
-                        </Badge>
-                      )}
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleDeleteProduct(item.id, item.title)}
+                        className="h-8 px-2.5 rounded-xl border-slate-200 text-rose-600 hover:bg-rose-50 text-xs"
+                        title="حذف نهائي"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </Button>
                     </div>
                   </td>
                 </tr>
               ))}
 
-              {filtered.length === 0 && (
+              {!loading && filtered.length === 0 && (
                 <tr>
                   <td colSpan={6} className="text-center py-12 text-slate-400">
-                    لا توجد منتجات في هذه القائمة حالياً.
+                    لا توجد منتجات في هذه القائمة حالياً. يمكنك إضافة منتج جديد من الزر أعلاه.
                   </td>
                 </tr>
               )}
@@ -373,6 +432,121 @@ export default function CatalogModerationPage() {
           </table>
         </div>
       </div>
+
+      {/* Add Product Modal */}
+      <Dialog open={isAddOpen} onOpenChange={setIsAddOpen}>
+        <DialogContent className="max-w-lg rounded-3xl p-6">
+          <DialogHeader>
+            <DialogTitle className="text-base font-bold text-slate-900 flex items-center gap-2">
+              <PlusCircle className="w-5 h-5 text-[#006948]" />
+              إضافة منتج جديد إلى قاعدة البيانات
+            </DialogTitle>
+          </DialogHeader>
+
+          <div className="space-y-3 my-2 text-xs">
+            <div>
+              <label className="font-bold text-slate-700 block mb-1">اسم المنتج:</label>
+              <Input
+                value={newProduct.title}
+                onChange={(e) => setNewProduct({ ...newProduct, title: e.target.value })}
+                placeholder="مثال: ساعة الكرونوغراف الملكية إصدار طويق"
+                className="rounded-xl text-xs"
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="font-bold text-slate-700 block mb-1">السعر (ر.س):</label>
+                <Input
+                  type="number"
+                  value={newProduct.price}
+                  onChange={(e) => setNewProduct({ ...newProduct, price: Number(e.target.value) })}
+                  className="rounded-xl text-xs font-mono"
+                />
+              </div>
+              <div>
+                <label className="font-bold text-slate-700 block mb-1">الكمية المتوفرة:</label>
+                <Input
+                  type="number"
+                  value={newProduct.stockQty}
+                  onChange={(e) => setNewProduct({ ...newProduct, stockQty: Number(e.target.value) })}
+                  className="rounded-xl text-xs font-mono"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="font-bold text-slate-700 block mb-1">القسم:</label>
+                <select
+                  value={newProduct.categorySlug}
+                  onChange={(e) => setNewProduct({ ...newProduct, categorySlug: e.target.value })}
+                  className="w-full rounded-xl border border-slate-200 bg-slate-50 p-2 text-xs font-bold"
+                >
+                  {categories.map((c) => (
+                    <option key={c.id} value={c.slug}>
+                      {c.title}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="font-bold text-slate-700 block mb-1">المتجر / التاجر:</label>
+                <select
+                  value={newProduct.vendorId}
+                  onChange={(e) => setNewProduct({ ...newProduct, vendorId: e.target.value })}
+                  className="w-full rounded-xl border border-slate-200 bg-slate-50 p-2 text-xs font-bold"
+                >
+                  {vendors.map((v) => (
+                    <option key={v.id} value={v.id}>
+                      {v.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            <div>
+              <label className="font-bold text-slate-700 block mb-1">رابط الصورة:</label>
+              <Input
+                value={newProduct.image}
+                onChange={(e) => setNewProduct({ ...newProduct, image: e.target.value })}
+                dir="ltr"
+                className="rounded-xl text-xs font-mono"
+              />
+            </div>
+
+            <div>
+              <label className="font-bold text-slate-700 block mb-1">وصف المنتج:</label>
+              <Textarea
+                value={newProduct.description}
+                onChange={(e) => setNewProduct({ ...newProduct, description: e.target.value })}
+                placeholder="وصف تفصيلي للمنتج والمواصفات..."
+                className="rounded-xl text-xs min-h-[70px]"
+              />
+            </div>
+          </div>
+
+          <DialogFooter className="flex gap-2 sm:justify-start">
+            <Button
+              variant="sovereign"
+              size="sm"
+              onClick={handleCreateProduct}
+              className="rounded-xl font-bold text-xs"
+            >
+              حفظ ونشر في المتجر
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setIsAddOpen(false)}
+              className="rounded-xl text-xs"
+            >
+              إلغاء
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       {/* Full Preview Modal */}
       <Dialog open={!!previewItem} onOpenChange={() => setPreviewItem(null)}>
@@ -405,8 +579,8 @@ export default function CatalogModerationPage() {
                     <span className="font-black text-[#006948] text-sm">{formatSAR(previewItem.price)}</span>
                   </div>
                   <div>
-                    <span className="text-slate-400 block text-[10px]">السجل التجاري:</span>
-                    <span className="font-mono text-slate-700">{previewItem.vendorCr}</span>
+                    <span className="text-slate-400 block text-[10px]">المخزون الفعلي:</span>
+                    <span className="font-mono text-slate-700">{previewItem.stockQty}</span>
                   </div>
                   <div>
                     <span className="text-slate-400 block text-[10px]">شهادة الاعتماد:</span>
@@ -418,7 +592,7 @@ export default function CatalogModerationPage() {
           )}
 
           <DialogFooter className="flex gap-2 sm:justify-start">
-            {previewItem?.status === "pending" && (
+            {previewItem?.status !== "approved" && (
               <Button
                 variant="sovereign"
                 size="sm"
@@ -449,14 +623,14 @@ export default function CatalogModerationPage() {
           <DialogHeader>
             <DialogTitle className="text-base font-bold text-rose-700 flex items-center gap-2">
               <AlertTriangle className="w-4 h-4 text-rose-600" />
-              ملاحظات رفض إدراج المقتنى
+              ملاحظات رفض أو إخفاء المقتنى
             </DialogTitle>
           </DialogHeader>
 
           {rejectingItem && (
             <div className="space-y-3 my-2 text-xs">
               <p className="text-slate-600">
-                يرجى كتابة سبب عدم اعتماد المقتنى بدقة (مثل: نقص وثيقة العيار، جودة الصور، أو خطأ في احتساب ضريبة زاتكا) ليتم إشعار التاجر:
+                يرجى كتابة سبب عدم اعتماد المقتنى ليتم حفظه في قاعدة البيانات وإشعار التاجر:
               </p>
               <Textarea
                 value={rejectionNotes}
@@ -474,7 +648,7 @@ export default function CatalogModerationPage() {
               onClick={handleConfirmReject}
               className="rounded-xl bg-rose-600 text-white hover:bg-rose-700 font-bold text-xs"
             >
-              تأكيد الرفض وإشعار المنشأة
+              تأكيد الرفض والحفظ
             </Button>
             <Button
               variant="outline"
@@ -490,4 +664,3 @@ export default function CatalogModerationPage() {
     </div>
   );
 }
-

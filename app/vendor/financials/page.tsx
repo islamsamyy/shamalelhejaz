@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import VendorNav from "@/components/vendor/VendorNav";
 import StorefrontFooter from "@/components/StorefrontFooter";
@@ -28,29 +28,137 @@ import {
 } from "lucide-react";
 import { formatSAR } from "@/lib/utils";
 import { toast } from "sonner";
+import { supabase } from "@/lib/supabase";
+
+interface TransactionRow {
+  id: string;
+  orderId: string;
+  type: string;
+  amount: number;
+  status: string;
+  date: string;
+}
 
 export default function VendorFinancialsPage() {
   const [isPayoutModalOpen, setIsPayoutModalOpen] = useState(false);
-  const [availableBalance, setAvailableBalance] = useState(399800);
-  const [payoutAmount, setPayoutAmount] = useState(50000);
-  const [pendingEscrow, setPendingEscrow] = useState(85200);
+  const [availableBalance, setAvailableBalance] = useState(0);
+  const [payoutAmount, setPayoutAmount] = useState(1000);
+  const [pendingEscrow, setPendingEscrow] = useState(0);
+  const [totalSales, setTotalSales] = useState(0);
+  const [iban, setIban] = useState("SA4210000001234567890123");
+  const [vendorId, setVendorId] = useState("modern-tech");
+  const [transactions, setTransactions] = useState<TransactionRow[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const transactions = [
-    { id: "TX-9104", orderId: "SQ-94281", type: "حجز ضمان (Escrow)", amount: 48500, status: "معلق حتى الفحص", date: "٩ نوفمبر ٢٠٢٦" },
-    { id: "TX-8921", orderId: "SQ-89104", type: "تحويل أرباح معتمد", amount: 11500, status: "تم التحويل لحساب SNB", date: "٢٨ أكتوبر ٢٠٢٦" },
-    { id: "TX-8840", orderId: "SQ-88120", type: "تحويل أرباح معتمد", amount: 24200, status: "تم التحويل لحساب SNB", date: "٢٢ أكتوبر ٢٠٢٦" },
-    { id: "TX-8701", orderId: "SQ-87490", type: "تسوية ضريبية ZATCA", amount: 3630, status: "مخصوم ومعتمد", date: "١٥ أكتوبر ٢٠٢٦" },
-  ];
+  const loadFinancials = async () => {
+    setIsLoading(true);
+    try {
+      const { data: authData } = await supabase.auth.getUser();
+      const user = authData?.user;
 
-  const handleRequestPayout = (e: React.FormEvent) => {
+      let vId = "modern-tech";
+      if (user) {
+        const { data: v } = await supabase
+          .from("vendors")
+          .select("id, iban")
+          .eq("owner_id", user.id)
+          .maybeSingle();
+        if (v) {
+          vId = v.id;
+          setVendorId(v.id);
+          if (v.iban) setIban(v.iban);
+        }
+      }
+
+      // Fetch payouts
+      const { data: payouts } = await supabase
+        .from("vendor_payouts")
+        .select("*")
+        .eq("vendor_id", vId)
+        .order("created_at", { ascending: false });
+
+      // Fetch orders to compute escrow & balance
+      const { data: orders } = await supabase
+        .from("orders")
+        .select("id, total, status, payment_status, created_at")
+        .order("created_at", { ascending: false });
+
+      const allOrders = orders || [];
+      const gmv = allOrders.reduce((sum, o) => sum + (Number(o.total) || 0), 0);
+      const paidEscrow = allOrders
+        .filter((o) => o.status !== "delivered" && (o.payment_status === "paid" || o.status === "confirmed"))
+        .reduce((sum, o) => sum + (Number(o.total) || 0), 0);
+      const deliveredGmv = allOrders
+        .filter((o) => o.status === "delivered")
+        .reduce((sum, o) => sum + (Number(o.total) || 0), 0);
+
+      const totalPaidOut = (payouts || [])
+        .filter((p) => p.status === "paid")
+        .reduce((sum, p) => sum + (Number(p.amount) || 0), 0);
+
+      const netAvailable = Math.max(0, Math.round(deliveredGmv * 0.92) - totalPaidOut);
+
+      setTotalSales(gmv);
+      setPendingEscrow(Math.round(paidEscrow * 0.92));
+      setAvailableBalance(netAvailable);
+
+      // Map payouts and orders to ledger
+      const txs: TransactionRow[] = [];
+      (payouts || []).forEach((p) => {
+        txs.push({
+          id: `PO-${p.id.slice(0, 8).toUpperCase()}`,
+          orderId: "-",
+          type: "تحويل أرباح معتمد (سريع)",
+          amount: Number(p.amount),
+          status: p.status === "paid" ? "تم التحويل لحساب SNB" : "قيد المراجعة والتحويل",
+          date: new Date(p.created_at).toLocaleDateString("ar-SA"),
+        });
+      });
+      allOrders.forEach((o) => {
+        txs.push({
+          id: `TX-${o.id.slice(0, 8).toUpperCase()}`,
+          orderId: o.id.slice(0, 8),
+          type: o.status === "delivered" ? "تسوية طلب مكتمل" : "حجز ضمان (Escrow)",
+          amount: Math.round((Number(o.total) || 0) * 0.92),
+          status: o.status === "delivered" ? "مفرج عنه بالمحفظة" : "معلق حتى التسليم",
+          date: new Date(o.created_at).toLocaleDateString("ar-SA"),
+        });
+      });
+
+      setTransactions(txs);
+    } catch (err: any) {
+      console.error("Error loading financials:", err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadFinancials();
+  }, []);
+
+  const handleRequestPayout = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (payoutAmount > availableBalance) {
+    if (payoutAmount > availableBalance && availableBalance > 0) {
       toast.error("المبلغ المطلوب أكبر من الرصيد المتاح للتحويل.");
       return;
     }
-    setAvailableBalance((prev) => prev - Number(payoutAmount));
+    const { error } = await supabase.from("vendor_payouts").insert([
+      {
+        vendor_id: vendorId,
+        amount: Number(payoutAmount),
+        status: "pending",
+        currency: "SAR",
+      },
+    ]);
+    if (error) {
+      toast.error("فشل تقديم طلب التحويل: " + error.message);
+      return;
+    }
+    setAvailableBalance((prev) => Math.max(0, prev - Number(payoutAmount)));
     setIsPayoutModalOpen(false);
-    toast.success(`تم إرسال طلب تحويل أرباح بمبلغ ${formatSAR(Number(payoutAmount))} لحساب SNB بنجاح عبر نظام سريع!`);
+    toast.success(`تم إرسال طلب تحويل أرباح بمبلغ ${formatSAR(Number(payoutAmount))} لحساب المنشأة البنكي في Supabase بنجاح!`);
+    loadFinancials();
   };
 
   const handleDownloadTaxReport = () => {
@@ -74,7 +182,7 @@ export default function VendorFinancialsPage() {
               <div>
                 <div className="flex items-center gap-2 mb-1">
                   <Badge variant="sovereign">حساب الضمان البنكي ساما (SAMA ESCROW)</Badge>
-                  <span className="text-xs text-slate-400">الآيبان: SA4210000001234567890123</span>
+                  <span className="text-xs text-slate-400">الآيبان: {iban}</span>
                 </div>
                 <h1 className="text-2xl sm:text-3xl font-black text-slate-900">
                   اللوحة المالية والتسويات والتقارير الضريبية
@@ -111,7 +219,7 @@ export default function VendorFinancialsPage() {
 
             <div className="p-6 rounded-3xl bg-white border border-slate-200/80 shadow-md">
               <span className="text-xs font-bold text-slate-500 block mb-1">إجمالي المبيعات المحققة</span>
-              <span className="text-3xl font-black text-slate-900">{formatSAR(485000)}</span>
+              <span className="text-3xl font-black text-slate-900">{formatSAR(totalSales)}</span>
               <span className="text-[10px] text-emerald-700 block mt-1 font-bold">شامل ضريبة زاتكا 15%</span>
             </div>
           </div>

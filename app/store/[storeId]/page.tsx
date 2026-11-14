@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, use } from "react";
+import React, { useState, useEffect, use } from "react";
 import Link from "next/link";
 import StorefrontHeader from "@/components/StorefrontHeader";
 import StorefrontFooter from "@/components/StorefrontFooter";
@@ -24,6 +24,7 @@ import {
 import { formatSAR } from "@/lib/utils";
 import { toast } from "sonner";
 import { VENDOR_STORES, ALL_PRODUCTS, Product } from "@/lib/catalogData";
+import { supabase, mapDbProductToProduct } from "@/lib/supabase";
 
 export default function BrandStorePage({
   params,
@@ -34,28 +35,79 @@ export default function BrandStorePage({
   const storeId = unwrappedParams.storeId || "modern-tech";
   const { addToCart, toggleWishlist, isWishlisted } = useCart();
 
-  const foundStore = VENDOR_STORES.find((s) => s.id === storeId);
-  const store = foundStore || {
+  const [store, setStore] = useState<any>({
     id: storeId,
-    name: "متجر الموزع المعتمد",
+    name: "شركة آفاق التقنية للتجارة",
     category: "إلكترونيات وأجهزة ذكية",
-    rating: 4.92,
+    rating: 4.95,
     reviewsCount: 3240,
     city: "الرياض • المملكة العربية السعودية",
-    cr: "1010849201",
+    cr: "1010884920",
     zatca: "310192847200003",
     badge: "تاجر معتمد موثق (KYB)",
-    logoLetter: "س",
+    logoLetter: "ش",
     banner: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=1600&auto=format&fit=crop&q=80",
     description:
       "متجر رسمي معتمد وموثق في منصة واثق ونظام النفاذ الوطني. جميع المنتجات أصلية ١٠٠٪ ومغطاة بضمان الوكلاء المعتمدين مع شحن فوري وحماية المشتري عبر حساب الضمان Escrow.",
-  };
+  });
 
-  // Find products associated with this vendor, or fallback to first 4 products
-  const storeProducts = ALL_PRODUCTS.filter(
-    (p) => p.vendorId === store.id || p.vendor.includes(store.name)
-  );
-  const displayProducts = storeProducts.length > 0 ? storeProducts : ALL_PRODUCTS.slice(0, 4);
+  const [displayProducts, setDisplayProducts] = useState<Product[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    async function loadStore() {
+      setIsLoading(true);
+      try {
+        // Query vendor
+        const { data: vData } = await supabase
+          .from("vendors")
+          .select("*")
+          .or(`id.eq.${storeId},slug.eq.${storeId}`)
+          .maybeSingle();
+
+        if (vData) {
+          setStore({
+            id: vData.id,
+            name: vData.name,
+            category: vData.categories?.[0] || "إلكترونيات وأجهزة ذكية",
+            rating: Number(vData.rating) || 4.95,
+            reviewsCount: Number(vData.reviews_count) || 420,
+            city: vData.location || "الرياض • المملكة العربية السعودية",
+            cr: vData.cr_number || "1010884920",
+            zatca: vData.vat_number || "310192847200003",
+            badge: vData.verified ? "تاجر معتمد موثق (KYB)" : "شريك معتمد",
+            logoLetter: vData.name ? vData.name.charAt(0) : "م",
+            banner: vData.banner || "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=1600&auto=format&fit=crop&q=80",
+            description: vData.bio || "متجر رسمي معتمد وموثق في منصة واثق ونظام النفاذ الوطني.",
+          });
+        }
+
+        // Query products
+        const { data: pData } = await supabase
+          .from("products")
+          .select("*")
+          .or(`vendor_id.eq.${storeId},vendor.ilike.%${vData?.name || storeId}%`)
+          .order("created_at", { ascending: false });
+
+        if (pData && pData.length > 0) {
+          setDisplayProducts(pData.map(mapDbProductToProduct));
+        } else {
+          // If none specifically linked, show all products
+          const { data: anyProds } = await supabase.from("products").select("*").limit(4);
+          if (anyProds && anyProds.length > 0) {
+            setDisplayProducts(anyProds.map(mapDbProductToProduct));
+          } else {
+            setDisplayProducts(ALL_PRODUCTS.slice(0, 4));
+          }
+        }
+      } catch (err) {
+        console.error("Error loading store:", err);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    loadStore();
+  }, [storeId]);
 
   return (
     <div className="min-h-screen bg-[#f8fafc] text-slate-900 flex flex-col font-sans">

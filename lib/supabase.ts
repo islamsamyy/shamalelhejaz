@@ -1,14 +1,20 @@
 import { createBrowserClient } from "@supabase/ssr";
 import { Product, Category } from "./catalogData";
 
-const supabaseUrl =
-  process.env.NEXT_PUBLIC_SUPABASE_URL || "https://lazleotmwyxglqgqwyrq.supabase.co";
+export const SUPABASE_PROJECT_REF = "lazleotmwyxglqgqwyrq";
+export const DEFAULT_SUPABASE_URL = "https://lazleotmwyxglqgqwyrq.supabase.co";
+
+const rawUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
+export const supabaseUrl = rawUrl.includes(SUPABASE_PROJECT_REF)
+  ? rawUrl
+  : DEFAULT_SUPABASE_URL;
+
 // Prefer the valid publishable key; fallback ensures Vercel works even if an older invalid NEXT_PUBLIC_SUPABASE_ANON_KEY is still set in Vercel Env Vars.
 const rawKey =
   process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ||
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
   "";
-const supabaseAnonKey = rawKey.startsWith("sb_publishable_")
+export const supabaseAnonKey = rawKey.startsWith("sb_publishable_")
   ? rawKey
   : "sb_publishable_eCNgYI7EbhYU7t2yVovEdg_xROl387f";
 

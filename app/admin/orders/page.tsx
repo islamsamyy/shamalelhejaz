@@ -1,10 +1,10 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { fetchOrdersFromSupabase } from "@/lib/supabase";
+import { supabase } from "@/lib/supabase";
 import {
   Dialog,
   DialogContent,
@@ -15,16 +15,10 @@ import {
 import {
   Truck,
   Search,
-  Filter,
   CheckCircle2,
   AlertTriangle,
   Scale,
-  RefreshCw,
-  ExternalLink,
   MapPin,
-  Clock,
-  Building,
-  User,
 } from "lucide-react";
 import { formatSAR } from "@/lib/utils";
 import { toast } from "sonner";
@@ -40,121 +34,77 @@ interface AdminOrder {
   amount: number;
   carrier: string;
   waybill: string;
+  dbStatus: string;
   status: "delivered" | "shipping" | "dispute" | "returned";
   disputeReason?: string;
   escrowStatus: "held" | "released" | "refunded";
 }
 
-const mockOrders: AdminOrder[] = [
-  {
-    id: "SQ-94281",
-    date: "اليوم، 09:30 ص",
-    customerName: "سعادة الدكتور فهد آل سعود",
-    customerPhone: "+966 50 123 4567",
-    city: "الرياض - حي حطين",
-    vendor: "دار الصائغ الملكية",
-    items: "ساعة الصقر الكرونوغراف KSA-01 (قطعة واحدة)",
-    amount: 48500,
-    carrier: "SPL Express (سبل)",
-    waybill: "SPL-81920491",
-    status: "shipping",
-    escrowStatus: "held",
-  },
-  {
-    id: "SQ-94280",
-    date: "أمس، 05:15 م",
-    customerName: "الأستاذ سلطان العتيبي",
-    customerPhone: "+966 55 987 6543",
-    city: "جدة - حي الشاطئ",
-    vendor: "مشالح الأحساء التاريخية",
-    items: "بشت حساوي ملكي غاط ياباني ملوكي",
-    amount: 18500,
-    carrier: "SMSA Express",
-    waybill: "SMSA-9920192",
-    status: "dispute",
-    disputeReason: "تأخر المندوب في تسليم الشحنة وعدم مطابقة مقاس الطول المطلوب (طلب استبدال)",
-    escrowStatus: "held",
-  },
-  {
-    id: "SQ-94279",
-    date: "أمس، 02:40 م",
-    customerName: "الأستاذة سارة الشمري",
-    customerPhone: "+966 53 444 3322",
-    city: "الخبر - الكورنيش",
-    vendor: "بيت العود المعتق",
-    items: "دهن عود كلمنتان غابات ملكي 40 عاماً",
-    amount: 9200,
-    carrier: "SPL Express (سبل)",
-    waybill: "SPL-81920488",
-    status: "delivered",
-    escrowStatus: "released",
-  },
-  {
-    id: "SQ-94278",
-    date: "٧ نوفمبر ٢٠٢٦",
-    customerName: "المهندس بندر القحطاني",
-    customerPhone: "+966 54 888 7766",
-    city: "الرياض - الياسمين",
-    vendor: "صاغة الجنوب التراثية",
-    items: "خنجر نجدي ناصري مقبض زراف",
-    amount: 36000,
-    carrier: "SPL Express (سبل)",
-    waybill: "SPL-81920475",
-    status: "dispute",
-    disputeReason: "العميل يطلب فحص إضافي لشهادة الياقوت الطبيعي قبل الإفراج عن المبلغ",
-    escrowStatus: "held",
-  },
-  {
-    id: "SQ-94277",
-    date: "٦ نوفمبر ٢٠٢٦",
-    customerName: "عبدالرحمن بن ناصر",
-    customerPhone: "+966 56 112 2334",
-    city: "الدمام - الشاطئ",
-    vendor: "لوازم الفروسية الملكية",
-    items: "سرج خيل عربي أصيل مطرز بالفضة",
-    amount: 24500,
-    carrier: "SMSA Express",
-    waybill: "SMSA-9920150",
-    status: "delivered",
-    escrowStatus: "released",
-  },
-];
-
 export default function OrderOperationsPage() {
-  const [orders, setOrders] = useState<AdminOrder[]>(mockOrders);
+  const [orders, setOrders] = useState<AdminOrder[]>([]);
+  const [loading, setLoading] = useState(true);
   const [filterStatus, setFilterStatus] = useState<string>("all");
   const [search, setSearch] = useState("");
-  
-  // Dispute Modal State
-  const [selectedDispute, setSelectedDispute] = useState<AdminOrder | null>(null);
+  const [selectedOrder, setSelectedOrder] = useState<AdminOrder | null>(null);
+
+  const loadOrders = useCallback(async () => {
+    setLoading(true);
+    try {
+      const { data, error } = await supabase
+        .from("orders")
+        .select("*, order_items(title, quantity, vendor_id)")
+        .order("created_at", { ascending: false });
+
+      if (error) {
+        console.warn("Could not load orders:", error.message);
+        return;
+      }
+
+      const mapped: AdminOrder[] = (data || []).map((o: any) => {
+        const orderItems = Array.isArray(o.order_items) && o.order_items.length > 0 ? o.order_items : o.items || [];
+        const itemsSummary =
+          orderItems.map((it: any) => `${it.title} (${it.quantity})`).join("، ") || "طلب مشتريات";
+        const uiStatus: AdminOrder["status"] =
+          o.status === "delivered"
+            ? "delivered"
+            : o.status === "returned"
+            ? "returned"
+            : o.status === "cancelled"
+            ? "dispute"
+            : "shipping";
+        const escrowStatus: AdminOrder["escrowStatus"] =
+          o.status === "delivered"
+            ? "released"
+            : o.payment_status === "refunded" || o.status === "returned"
+            ? "refunded"
+            : "held";
+
+        return {
+          id: o.id,
+          date: o.created_at ? new Date(o.created_at).toLocaleDateString("ar-SA") : "",
+          customerName: o.shipping_address?.full_name || o.shipping_address?.fullName || "مشتري موثق",
+          customerPhone: o.shipping_address?.phone || "+966 50 000 0000",
+          city: o.shipping_address?.city || "الرياض",
+          vendor: orderItems[0]?.vendor_id || "سوق شمال الحجاز",
+          items: itemsSummary,
+          amount: Number(o.total || 0),
+          carrier: "SPL Express (سبل)",
+          waybill: o.tracking_number || `SPL-${String(o.id).slice(-8)}`,
+          dbStatus: o.status,
+          status: uiStatus,
+          disputeReason: o.notes || "مراجعة حالة التسليم والضمان",
+          escrowStatus,
+        };
+      });
+      setOrders(mapped);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
   useEffect(() => {
-    async function loadDbOrders() {
-      try {
-        const dbOrders = await fetchOrdersFromSupabase();
-        if (dbOrders && dbOrders.length > 0) {
-          const mapped: AdminOrder[] = dbOrders.map((o: any) => ({
-            id: o.id,
-            date: new Date(o.created_at).toLocaleDateString("ar-SA"),
-            customerName: o.shipping_address?.fullName || "مشتري موثق",
-            customerPhone: o.shipping_address?.phone || "+966 50 000 0000",
-            city: o.shipping_address?.city || "الرياض",
-            vendor: o.items?.[0]?.vendor || "سوق السعودية",
-            items: o.items?.map((it: any) => `${it.title} (${it.quantity})`).join(", ") || "طلب مشتريات",
-            amount: Number(o.total),
-            carrier: "SPL Express (سبل)",
-            waybill: `SPL-${o.id.replace(/\D/g, "").slice(0, 8) || "81920491"}`,
-            status: o.status === "confirmed" ? "shipping" : o.status === "delivered" ? "delivered" : "shipping",
-            escrowStatus: "held",
-          }));
-          setOrders([...mapped, ...mockOrders]);
-        }
-      } catch (e) {
-        console.warn("Could not load dynamic orders:", e);
-      }
-    }
-    loadDbOrders();
-  }, []);
+    loadOrders();
+  }, [loadOrders]);
 
   const filteredOrders = orders.filter((o) => {
     const matchesStatus = filterStatus === "all" || o.status === filterStatus;
@@ -166,32 +116,22 @@ export default function OrderOperationsPage() {
     return matchesStatus && matchesSearch;
   });
 
-  const handleResolveDispute = (action: "release_vendor" | "refund_customer") => {
-    if (!selectedDispute) return;
-    if (action === "release_vendor") {
-      setOrders((prev) =>
-        prev.map((ord) =>
-          ord.id === selectedDispute.id
-            ? { ...ord, status: "delivered", escrowStatus: "released" }
-            : ord
-        )
-      );
-      toast.success(`تم التحكيم لصالح المنشأة وتحرير مبلغ ${formatSAR(selectedDispute.amount)} للتاجر!`);
-    } else {
-      setOrders((prev) =>
-        prev.map((ord) =>
-          ord.id === selectedDispute.id
-            ? { ...ord, status: "returned", escrowStatus: "refunded" }
-            : ord
-        )
-      );
-      toast.success(`تم استرجاع مبلغ ${formatSAR(selectedDispute.amount)} إلى محفظة المقتني فورياً!`);
-    }
-    setSelectedDispute(null);
-  };
+  const handleUpdateOrderStatus = async (
+    order: AdminOrder,
+    nextDbStatus: "shipped" | "delivered" | "returned" | "cancelled",
+    nextPaymentStatus?: "paid" | "refunded"
+  ) => {
+    const updates: Record<string, any> = { status: nextDbStatus };
+    if (nextPaymentStatus) updates.payment_status = nextPaymentStatus;
 
-  const handleResendOtp = (id: string, phone: string) => {
-    toast.success(`تمت إعادة توليد وإرسال رمز التسليم السري (OTP) إلى هاتف المقتني ${phone}`);
+    const { error } = await supabase.from("orders").update(updates).eq("id", order.id);
+    if (error) {
+      toast.error(`تعذر تحديث الطلب: ${error.message}`);
+      return;
+    }
+    toast.success(`تم تحديث حالة الطلب ${order.id} في قاعدة البيانات بنجاح.`);
+    setSelectedOrder(null);
+    loadOrders();
   };
 
   return (
@@ -204,13 +144,13 @@ export default function OrderOperationsPage() {
             إدارة العمليات اللوجستية والنزاعات
           </h1>
           <p className="text-xs text-slate-500 mt-1">
-            رقابة لحظية على حركة الشحنات عبر سبل وسمسا، وفض النزاعات والتحكم بأرصدة الضمان (SAMA Escrow).
+            متابعة وتحديث حالات الطلبات الفعلية وأرصدة الضمان مباشرة في قاعدة البيانات.
           </p>
         </div>
 
         <div className="flex items-center gap-2">
           <Badge variant="outline" className="bg-emerald-50 text-emerald-800 border-emerald-300 font-mono text-xs">
-            الربط اللوجستي: SPL / SMSA نشط
+            إجمالي الطلبات: {orders.length}
           </Badge>
         </div>
       </div>
@@ -232,7 +172,7 @@ export default function OrderOperationsPage() {
             { id: "all", label: "كافة الشحنات" },
             { id: "shipping", label: "جاري الشحن" },
             { id: "delivered", label: "تم التسليم" },
-            { id: "dispute", label: "نزاع مفتوح" },
+            { id: "dispute", label: "نزاع / ملغى" },
             { id: "returned", label: "مسترجع" },
           ].map((tab) => (
             <button
@@ -262,7 +202,7 @@ export default function OrderOperationsPage() {
                 <th className="p-4">القيمة والضمان</th>
                 <th className="p-4">الناقل وبوليصة التتبع</th>
                 <th className="p-4">حالة الشحنة</th>
-                <th className="p-4 text-center">التحكيم والتدخل</th>
+                <th className="p-4 text-center">التحكم بالطلب</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
@@ -319,7 +259,7 @@ export default function OrderOperationsPage() {
                     {ord.status === "shipping" && (
                       <Badge variant="outline" className="bg-blue-50 text-blue-800 border-blue-300">
                         <Truck className="w-3 h-3 ml-1 text-blue-600" />
-                        جاري الشحن
+                        جاري الشحن ({ord.dbStatus})
                       </Badge>
                     )}
                     {ord.status === "delivered" && (
@@ -329,9 +269,9 @@ export default function OrderOperationsPage() {
                       </Badge>
                     )}
                     {ord.status === "dispute" && (
-                      <Badge variant="outline" className="bg-rose-50 text-rose-800 border-rose-300 animate-pulse">
+                      <Badge variant="outline" className="bg-rose-50 text-rose-800 border-rose-300">
                         <AlertTriangle className="w-3 h-3 ml-1 text-rose-600" />
-                        نزاع معلق
+                        نزاع / ملغى
                       </Badge>
                     )}
                     {ord.status === "returned" && (
@@ -343,75 +283,61 @@ export default function OrderOperationsPage() {
 
                   <td className="p-4">
                     <div className="flex items-center justify-center gap-1.5">
-                      {ord.status === "dispute" ? (
-                        <Button
-                          variant="sovereign"
-                          size="sm"
-                          onClick={() => setSelectedDispute(ord)}
-                          className="h-8 px-3 rounded-xl font-black text-xs bg-rose-600 hover:bg-rose-700"
-                        >
-                          <Scale className="w-3.5 h-3.5 ml-1" />
-                          فض النزاع
-                        </Button>
-                      ) : (
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => handleResendOtp(ord.id, ord.customerPhone)}
-                          title="إعادة إرسال كود الاستلام OTP"
-                          className="h-8 px-2.5 rounded-xl border-slate-200 text-slate-700 text-xs"
-                        >
-                          <RefreshCw className="w-3 h-3 ml-1 text-slate-400" />
-                          إعادة OTP
-                        </Button>
-                      )}
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setSelectedOrder(ord)}
+                        className="h-8 px-3 rounded-xl font-bold text-xs border-slate-200"
+                      >
+                        <Scale className="w-3.5 h-3.5 ml-1" />
+                        تحديث الحالة
+                      </Button>
                     </div>
                   </td>
                 </tr>
               ))}
+
+              {!loading && filteredOrders.length === 0 && (
+                <tr>
+                  <td colSpan={7} className="text-center py-12 text-slate-400">
+                    لا توجد طلبات مطابقة حالياً في قاعدة البيانات.
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>
       </div>
 
-      {/* Dispute Resolution Modal */}
-      <Dialog open={!!selectedDispute} onOpenChange={() => setSelectedDispute(null)}>
+      {/* Order Action & Dispute Resolution Modal */}
+      <Dialog open={!!selectedOrder} onOpenChange={() => setSelectedOrder(null)}>
         <DialogContent className="max-w-md rounded-3xl p-6">
           <DialogHeader>
             <DialogTitle className="text-base font-bold text-slate-900 flex items-center gap-2">
               <Scale className="w-5 h-5 text-[#006948]" />
-              لجنة التحكيم وفض النزاعات السيادية
+              إدارة حالة الطلب وتسوية الضمان
             </DialogTitle>
           </DialogHeader>
 
-          {selectedDispute && (
+          {selectedOrder && (
             <div className="space-y-4 my-2 text-xs">
-              <div className="p-4 bg-rose-50 border border-rose-200 rounded-2xl">
-                <span className="font-bold text-rose-900 block mb-1">سبب البلاغ المرفوع من المقتني:</span>
-                <p className="text-rose-800 leading-relaxed">{selectedDispute.disputeReason}</p>
-              </div>
-
               <div className="grid grid-cols-2 gap-3 p-3 bg-slate-50 rounded-2xl border border-slate-100">
                 <div>
                   <span className="text-slate-400 text-[10px] block">رقم الطلب:</span>
-                  <span className="font-mono font-bold text-slate-900">{selectedDispute.id}</span>
+                  <span className="font-mono font-bold text-slate-900">{selectedOrder.id}</span>
                 </div>
                 <div>
-                  <span className="text-slate-400 text-[10px] block">المبلغ المتنازع عليه:</span>
-                  <span className="font-black text-[#006948]">{formatSAR(selectedDispute.amount)}</span>
+                  <span className="text-slate-400 text-[10px] block">إجمالي الطلب:</span>
+                  <span className="font-black text-[#006948]">{formatSAR(selectedOrder.amount)}</span>
                 </div>
                 <div>
                   <span className="text-slate-400 text-[10px] block">اسم المقتني:</span>
-                  <span className="font-bold text-slate-800">{selectedDispute.customerName}</span>
+                  <span className="font-bold text-slate-800">{selectedOrder.customerName}</span>
                 </div>
                 <div>
-                  <span className="text-slate-400 text-[10px] block">المنشأة التاجرة:</span>
-                  <span className="font-bold text-slate-800">{selectedDispute.vendor}</span>
+                  <span className="text-slate-400 text-[10px] block">الحالة الحالية:</span>
+                  <span className="font-bold text-slate-800">{selectedOrder.dbStatus}</span>
                 </div>
-              </div>
-
-              <div className="p-3 bg-amber-50 border border-amber-200 rounded-2xl text-[11px] text-amber-900">
-                <span>تنبيه: قرار التحكيم نهائي وسيترتب عليه تسوية رصيد الضمان فورياً عبر شبكة ساما.</span>
               </div>
             </div>
           )}
@@ -420,18 +346,18 @@ export default function OrderOperationsPage() {
             <Button
               variant="sovereign"
               size="sm"
-              onClick={() => handleResolveDispute("release_vendor")}
+              onClick={() => selectedOrder && handleUpdateOrderStatus(selectedOrder, "delivered", "paid")}
               className="rounded-xl font-bold text-xs flex-1"
             >
-              تحرير الضمان للتاجر
+              تأكيد التسليم وتحرير الضمان
             </Button>
             <Button
               variant="outline"
               size="sm"
-              onClick={() => handleResolveDispute("refund_customer")}
+              onClick={() => selectedOrder && handleUpdateOrderStatus(selectedOrder, "returned", "refunded")}
               className="rounded-xl border-rose-200 text-rose-700 hover:bg-rose-50 font-bold text-xs flex-1"
             >
-              استرجاع كامل للمقتني
+              استرجاع الطلب للعميل
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -439,4 +365,3 @@ export default function OrderOperationsPage() {
     </div>
   );
 }
-

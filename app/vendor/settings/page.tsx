@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import VendorNav from "@/components/vendor/VendorNav";
 import StorefrontFooter from "@/components/StorefrontFooter";
@@ -10,16 +10,76 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Store, ShieldCheck, Clock, Truck, ChevronLeft, CheckCircle2 } from "lucide-react";
 import { toast } from "sonner";
+import { supabase } from "@/lib/supabase";
 
 export default function VendorStoreSettingsPage() {
-  const [storeName, setStoreName] = useState("دار الروضة للعطور والعود الفاخر");
-  const [bio, setBio] = useState("بيت العود المعتق المتخصص في أندر أخشاب الكلمنتان والورد الطائفي السيادي.");
+  const [vendorId, setVendorId] = useState("modern-tech");
+  const [storeName, setStoreName] = useState("شركة آفاق التقنية للتجارة");
+  const [bio, setBio] = useState("الموزع المعتمد لأحدث الأجهزة الذكية والإلكترونيات الأصلية بالمملكة.");
   const [operatingHours, setOperatingHours] = useState("٩:٠٠ ص - ١١:٠٠ م (طوال أيام الأسبوع)");
+  const [location, setLocation] = useState("الرياض • المملكة العربية السعودية");
+  const [iban, setIban] = useState("SA4210000001234567890123");
   const [expressDeliveryActive, setExpressDeliveryActive] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
 
-  const handleSave = (e: React.FormEvent) => {
+  useEffect(() => {
+    async function loadVendor() {
+      const { data: authData } = await supabase.auth.getUser();
+      const user = authData?.user;
+
+      if (user) {
+        const { data: v } = await supabase
+          .from("vendors")
+          .select("*")
+          .eq("owner_id", user.id)
+          .maybeSingle();
+
+        if (v) {
+          setVendorId(v.id);
+          if (v.name) setStoreName(v.name);
+          if (v.bio) setBio(v.bio);
+          if (v.location) setLocation(v.location);
+          if (v.iban) setIban(v.iban);
+          return;
+        }
+      }
+
+      const { data: anyV } = await supabase.from("vendors").select("*").limit(1).maybeSingle();
+      if (anyV) {
+        setVendorId(anyV.id);
+        if (anyV.name) setStoreName(anyV.name);
+        if (anyV.bio) setBio(anyV.bio);
+        if (anyV.location) setLocation(anyV.location);
+        if (anyV.iban) setIban(anyV.iban);
+      }
+    }
+    loadVendor();
+  }, []);
+
+  const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
-    toast.success("تم حفظ وتحديث إعدادات المتجر وسياسات الشحن بنجاح!");
+    setIsSaving(true);
+    try {
+      const { error } = await supabase
+        .from("vendors")
+        .update({
+          name: storeName.trim(),
+          bio: bio.trim(),
+          location: location.trim(),
+          iban: iban.trim(),
+        })
+        .eq("id", vendorId);
+
+      if (error) {
+        toast.error("فشل حفظ التعديلات: " + error.message);
+        return;
+      }
+      toast.success("تم حفظ وتحديث إعدادات المتجر في Supabase بنجاح!");
+    } catch (err: any) {
+      toast.error("خطأ: " + err?.message);
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   return (

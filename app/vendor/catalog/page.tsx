@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import VendorNav from "@/components/vendor/VendorNav";
 import StorefrontFooter from "@/components/StorefrontFooter";
@@ -33,6 +33,7 @@ import {
 } from "lucide-react";
 import { formatSAR } from "@/lib/utils";
 import { toast } from "sonner";
+import { supabase } from "@/lib/supabase";
 
 interface CatalogProduct {
   id: string;
@@ -48,89 +49,9 @@ interface CatalogProduct {
   rating: number;
 }
 
-const initialProducts: CatalogProduct[] = [
-  {
-    id: "sony-wh1000xm5",
-    sku: "SQ-TECH-001",
-    title: "سماعات رأس لاسلكية سوني WH-1000XM5 عازلة للضوضاء النشطة ANC",
-    category: "الإلكترونيات والأجهزة الذكية",
-    price: 1399,
-    originalPrice: 1699,
-    stock: 45,
-    status: "active",
-    image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=600&auto=format&fit=crop&q=80",
-    salesCount: 1540,
-    rating: 4.9,
-  },
-  {
-    id: "apple-watch-ultra-2",
-    sku: "SQ-WAT-002",
-    title: "ساعة أبل واتش ألترا 2 هيكل تيتانيوم مقاس 49 ملم مع حزام رياضي",
-    category: "الإلكترونيات والأجهزة الذكية",
-    price: 3199,
-    originalPrice: 3499,
-    stock: 18,
-    status: "active",
-    image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600&auto=format&fit=crop&q=80",
-    salesCount: 890,
-    rating: 4.95,
-  },
-  {
-    id: "ninja-dualzone-airfryer",
-    sku: "SQ-KIT-014",
-    title: "قلاية هوائية رقمية ذكية نينجا دوال زون سعة 9.5 لتر بحجرتين",
-    category: "المنزل الذكي والمطبخ العصري",
-    price: 799,
-    originalPrice: 1099,
-    stock: 65,
-    status: "active",
-    image: "https://images.unsplash.com/photo-1588854337236-6889d631faa8?w=600&auto=format&fit=crop&q=80",
-    salesCount: 2410,
-    rating: 4.9,
-  },
-  {
-    id: "stanley-quencher-tumbler-40oz",
-    sku: "SQ-SPT-088",
-    title: "كوب ستانلي كوينشر H2.0 الحراري العازل 40 أونصة مع ماصة",
-    category: "اللياقة البدنية والأنشطة الخارجية",
-    price: 219,
-    originalPrice: 289,
-    stock: 120,
-    status: "active",
-    image: "https://images.unsplash.com/photo-1602143407151-7111542de6e8?w=600&auto=format&fit=crop&q=80",
-    salesCount: 3800,
-    rating: 4.9,
-  },
-  {
-    id: "dyson-airwrap-complete",
-    sku: "SQ-BEA-102",
-    title: "مصفف ومجفف شعر دايسون إير راب ملتي ستايلر كامل متعدد الرؤوس",
-    category: "الصحة والجمال والعناية الشخصية",
-    price: 2499,
-    originalPrice: 2899,
-    stock: 12,
-    status: "low_stock",
-    image: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=600&auto=format&fit=crop&q=80",
-    salesCount: 1820,
-    rating: 4.9,
-  },
-  {
-    id: "anker-powerbank-737",
-    sku: "SQ-MOB-204",
-    title: "بطارية متنقلة أنكر باور بنك 737 سعة 24,000 مللي أمبير 140 واط",
-    category: "الهواتف الذكية وملحقاتها",
-    price: 479,
-    originalPrice: 599,
-    stock: 35,
-    status: "active",
-    image: "https://images.unsplash.com/photo-1609081219094-979a04081e47?w=600&auto=format&fit=crop&q=80",
-    salesCount: 1680,
-    rating: 4.9,
-  },
-];
-
 export default function VendorCatalogPage() {
-  const [products, setProducts] = useState<CatalogProduct[]>(initialProducts);
+  const [products, setProducts] = useState<CatalogProduct[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [selectedStatus, setSelectedStatus] = useState<string>("all");
@@ -141,12 +62,57 @@ export default function VendorCatalogPage() {
   const [newPrice, setNewPrice] = useState<number>(0);
   const [newStock, setNewStock] = useState<number>(0);
 
+  const loadProducts = async () => {
+    setIsLoading(true);
+    try {
+      const { data, error } = await supabase
+        .from("products")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+      if (error) {
+        toast.error("فشل تحميل المنتجات: " + error.message);
+        return;
+      }
+
+      const mapped: CatalogProduct[] = (data || []).map((row: any) => ({
+        id: row.id,
+        sku: row.sku || `SQ-${row.id.slice(0, 8).toUpperCase()}`,
+        title: row.title,
+        category: row.category,
+        price: Number(row.price),
+        originalPrice: row.original_price ? Number(row.original_price) : undefined,
+        stock: Number(row.stock_qty ?? 10),
+        status: !row.is_active
+          ? "inactive"
+          : row.moderation_status === "pending"
+          ? "pending"
+          : Number(row.stock_qty ?? 10) <= 2
+          ? "low_stock"
+          : "active",
+        image: row.image || "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=600",
+        salesCount: parseInt(String(row.sales_count).replace(/[^0-9]/g, "")) || 0,
+        rating: Number(row.rating || 5),
+      }));
+      setProducts(mapped);
+    } catch (err: any) {
+      console.error("Error loading vendor products:", err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadProducts();
+  }, []);
+
   const categories = [
-    "الساعات والكرونوغراف",
-    "البشوت والمشالح الملكية",
-    "دهن العود والبخور الفاخر",
-    "التحف والمقتنيات التراثية",
-    "لوازم الفروسية والصقارة",
+    "الإلكترونيات والأجهزة الذكية",
+    "المنزل الذكي والمطبخ العصري",
+    "الهواتف الذكية وملحقاتها",
+    "الصحة والجمال والعناية الشخصية",
+    "اللياقة البدنية والأنشطة الخارجية",
+    "الأزياء والموضة والأحذية الرياضية",
   ];
 
   const filteredProducts = products.filter((p) => {
@@ -179,38 +145,81 @@ export default function VendorCatalogPage() {
     setNewStock(p.stock);
   };
 
-  const handleSaveEdit = () => {
+  const handleSaveEdit = async () => {
     if (!editingProduct) return;
+    const updatedPrice = Number(newPrice);
+    const updatedStock = Number(newStock);
+
+    const { error } = await supabase
+      .from("products")
+      .update({
+        price: updatedPrice,
+        stock_qty: updatedStock,
+        stock_status: updatedStock === 0 ? "out_of_stock" : updatedStock <= 2 ? "low_stock" : "in_stock",
+      })
+      .eq("id", editingProduct.id);
+
+    if (error) {
+      toast.error("فشل حفظ التعديل: " + error.message);
+      return;
+    }
+
     setProducts((prev) =>
       prev.map((item) =>
         item.id === editingProduct.id
           ? {
               ...item,
-              price: Number(newPrice),
-              stock: Number(newStock),
-              status: Number(newStock) <= 2 ? "low_stock" : item.status === "low_stock" ? "active" : item.status,
+              price: updatedPrice,
+              stock: updatedStock,
+              status: updatedStock <= 2 ? "low_stock" : item.status === "low_stock" ? "active" : item.status,
             }
           : item
       )
     );
-    toast.success(`تم تحديث بيانات المقتنى "${editingProduct.title}" بنجاح!`);
+    toast.success(`تم تحديث بيانات المقتنى "${editingProduct.title}" في Supabase بنجاح!`);
     setEditingProduct(null);
   };
 
-  const handleDeleteProduct = (id: string, title: string) => {
+  const handleDeleteProduct = async (id: string, title: string) => {
+    if (!confirm(`هل أنت متأكد من حذف "${title}"؟`)) return;
+    const { error } = await supabase.from("products").delete().eq("id", id);
+    if (error) {
+      toast.error("فشل حذف المنتج: " + error.message);
+      return;
+    }
     setProducts((prev) => prev.filter((item) => item.id !== id));
-    toast.success(`تم حذف "${title}" من الكتالوج`);
+    toast.success(`تم حذف "${title}" من الكتالوج بنجاح`);
   };
 
   const handleExportCSV = () => {
+    const csvContent = "data:text/csv;charset=utf-8," +
+      "ID,SKU,Title,Category,Price,Stock,Status\n" +
+      products.map(p => `"${p.id}","${p.sku}","${p.title}","${p.category}",${p.price},${p.stock},"${p.status}"`).join("\n");
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", `souq_catalog_${Date.now()}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
     toast.success("تم تصدير ملف الكتالوج بصيغة CSV المتوافقة مع معايير ZATCA");
   };
 
-  const handleBulkActivate = () => {
+  const handleBulkActivate = async () => {
     if (selectedProductIds.length === 0) {
       toast.error("يرجى تحديد قطعة واحدة على الأقل");
       return;
     }
+    const { error } = await supabase
+      .from("products")
+      .update({ is_active: true, moderation_status: "approved" })
+      .in("id", selectedProductIds);
+
+    if (error) {
+      toast.error("فشل التفعيل الجماعي: " + error.message);
+      return;
+    }
+
     setProducts((prev) =>
       prev.map((p) => (selectedProductIds.includes(p.id) ? { ...p, status: "active" } : p))
     );

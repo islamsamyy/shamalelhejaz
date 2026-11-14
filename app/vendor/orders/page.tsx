@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import VendorNav from "@/components/vendor/VendorNav";
 import StorefrontFooter from "@/components/StorefrontFooter";
@@ -23,9 +23,11 @@ import {
   Search,
   QrCode,
   ShieldCheck,
+  RefreshCw,
 } from "lucide-react";
 import { formatSAR } from "@/lib/utils";
 import { toast } from "sonner";
+import { supabase } from "@/lib/supabase";
 
 interface VendorOrder {
   id: string;
@@ -41,48 +43,67 @@ interface VendorOrder {
 
 export default function VendorOrdersPage() {
   const [selectedWaybillOrder, setSelectedWaybillOrder] = useState<VendorOrder | null>(null);
+  const [orders, setOrders] = useState<VendorOrder[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const [orders, setOrders] = useState<VendorOrder[]>([
-    {
-      id: "SQ-94281",
-      buyer: "صاحب السمو الأمير فهد آل سعود",
-      item: "ساعة الصقر الكرونوغراف KSA-01",
-      date: "٩ نوفمبر ٢٠٢٦",
-      amount: 48500,
-      carrier: "SPL Express (سبل)",
-      waybillNumber: "SPL-94821038",
-      status: "جاري التجهيز",
-      destination: "الرياض - حي السفارات",
-    },
-    {
-      id: "SQ-94280",
-      buyer: "معالي د. عبد الرحمن القحطاني",
-      item: "دهن عود ملكي معتق ٦٠ عاماً",
-      date: "٨ نوفمبر ٢٠٢٦",
-      amount: 12500,
-      carrier: "SMSA Express (سمسا)",
-      waybillNumber: "SMSA-7429184",
-      status: "بانتظار الشحن",
-      destination: "جدة - حي الشاطئ",
-    },
-    {
-      id: "SQ-94279",
-      buyer: "سعادة الأستاذ محمد بن خالد",
-      item: "خاتم نيوم من التيتانيوم الفضائي",
-      date: "٧ نوفمبر ٢٠٢٦",
-      amount: 15600,
-      carrier: "SPL Express (سبل)",
-      waybillNumber: "SPL-81920491",
-      status: "تم التسليم للناقل",
-      destination: "الدمام - الشاطئ الشرقي",
-    },
-  ]);
+  const loadOrders = async () => {
+    setIsLoading(true);
+    try {
+      const { data, error } = await supabase
+        .from("orders")
+        .select("*")
+        .order("created_at", { ascending: false });
 
-  const handleUpdateStatus = (id: string, newStatus: string) => {
+      if (error) {
+        toast.error("فشل تحميل الطلبات: " + error.message);
+        return;
+      }
+
+      const mapped: VendorOrder[] = (data || []).map((ord: any) => {
+        const firstItem = Array.isArray(ord.items) && ord.items.length > 0 ? ord.items[0] : null;
+        const buyerName =
+          ord.shipping_address?.full_name ||
+          ord.shipping_address?.name ||
+          "عميل موثق عبر نفاذ";
+        const city = ord.shipping_address?.city || "الرياض";
+        const district = ord.shipping_address?.district || "المملكة العربية السعودية";
+
+        return {
+          id: ord.id,
+          buyer: buyerName,
+          item: firstItem?.title || "مقتنيات متعددة",
+          date: new Date(ord.created_at).toLocaleDateString("ar-SA"),
+          amount: Number(ord.total) || 0,
+          carrier: ord.shipping_fee === 0 ? "SMSA Express (سمسا)" : "SPL Express (سبل)",
+          waybillNumber: ord.tracking_number || `SPL-${ord.id.slice(0, 8).toUpperCase()}`,
+          status: ord.status === "delivered" ? "تم التسليم" : ord.status === "shipped" ? "تم التسليم للناقل" : "جاري التجهيز",
+          destination: `${city} - ${district}`,
+        };
+      });
+
+      setOrders(mapped);
+    } catch (err: any) {
+      console.error("Error loading vendor orders:", err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadOrders();
+  }, []);
+
+  const handleUpdateStatus = async (id: string, newStatus: string) => {
+    const dbStatus = newStatus === "تم التسليم للناقل" ? "shipped" : "processing";
+    const { error } = await supabase.from("orders").update({ status: dbStatus }).eq("id", id);
+    if (error) {
+      toast.error("فشل تحديث حالة الطلب: " + error.message);
+      return;
+    }
     setOrders((prev) =>
       prev.map((ord) => (ord.id === id ? { ...ord, status: newStatus } : ord))
     );
-    toast.success(`تم تحديث حالة الطلب ${id} إلى "${newStatus}" وإشعار المقتني!`);
+    toast.success(`تم تحديث حالة الطلب ${id} إلى "${newStatus}" في Supabase بنجاح!`);
   };
 
   const handlePrintWaybill = () => {

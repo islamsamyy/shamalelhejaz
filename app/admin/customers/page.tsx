@@ -1,9 +1,10 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { supabase } from "@/lib/supabase";
 import {
   Dialog,
   DialogContent,
@@ -16,11 +17,7 @@ import {
   Search,
   Wallet,
   Crown,
-  History,
-  Phone,
-  Mail,
   MapPin,
-  CheckCircle2,
   PlusCircle,
 } from "lucide-react";
 import { formatSAR } from "@/lib/utils";
@@ -32,6 +29,7 @@ interface CustomerRecord {
   phone: string;
   email: string;
   city: string;
+  role: "admin" | "vendor" | "customer";
   tier: "VIP Sovereign" | "Corporate" | "Individual";
   totalSpent: number;
   ordersCount: number;
@@ -39,71 +37,9 @@ interface CustomerRecord {
   joinedDate: string;
 }
 
-const mockCustomers: CustomerRecord[] = [
-  {
-    id: "CST-01",
-    name: "سعادة الدكتور فهد آل سعود",
-    phone: "+966 50 123 4567",
-    email: "fahad.alsaud@vip.sa",
-    city: "الرياض",
-    tier: "VIP Sovereign",
-    totalSpent: 485000,
-    ordersCount: 9,
-    walletBalance: 25000,
-    joinedDate: "يناير ٢٠٢٥",
-  },
-  {
-    id: "CST-02",
-    name: "مجموعة العليان القابضة (مشتريات)",
-    phone: "+966 11 472 8192",
-    email: "procurement@olayan.sa",
-    city: "الخبر",
-    tier: "Corporate",
-    totalSpent: 320000,
-    ordersCount: 14,
-    walletBalance: 12000,
-    joinedDate: "مارس ٢٠٢٥",
-  },
-  {
-    id: "CST-03",
-    name: "الأستاذ سلطان العتيبي",
-    phone: "+966 55 987 6543",
-    email: "sultan.otaibi@gmail.com",
-    city: "جدة",
-    tier: "Individual",
-    totalSpent: 64200,
-    ordersCount: 4,
-    walletBalance: 1500,
-    joinedDate: "يونيو ٢٠٢٥",
-  },
-  {
-    id: "CST-04",
-    name: "الأستاذة سارة الشمري",
-    phone: "+966 53 444 3322",
-    email: "sara.alshammari@outlook.sa",
-    city: "الرياض",
-    tier: "Individual",
-    totalSpent: 42800,
-    ordersCount: 5,
-    walletBalance: 850,
-    joinedDate: "أغسطس ٢٠٢٥",
-  },
-  {
-    id: "CST-05",
-    name: "سعادة المهندس بندر القحطاني",
-    phone: "+966 54 888 7766",
-    email: "bandar.qahtani@aramco.sa",
-    city: "الظهران",
-    tier: "VIP Sovereign",
-    totalSpent: 198000,
-    ordersCount: 7,
-    walletBalance: 8400,
-    joinedDate: "فبراير ٢٠٢٥",
-  },
-];
-
 export default function CustomerCrmPage() {
-  const [customers, setCustomers] = useState<CustomerRecord[]>(mockCustomers);
+  const [customers, setCustomers] = useState<CustomerRecord[]>([]);
+  const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [filterTier, setFilterTier] = useState<string>("all");
 
@@ -112,24 +48,103 @@ export default function CustomerCrmPage() {
   const [creditAmount, setCreditAmount] = useState<number>(1000);
   const [adjustmentReason, setAdjustmentReason] = useState("مكافأة ولاء سيادية");
 
+  const loadCustomers = useCallback(async () => {
+    setLoading(true);
+    try {
+      const [profRes, walRes, ordRes] = await Promise.all([
+        supabase.from("profiles").select("*").order("created_at", { ascending: false }),
+        supabase.from("wallets").select("user_id, balance"),
+        supabase.from("orders").select("user_id, total"),
+      ]);
+
+      const walletsByUser = new Map<string, number>();
+      (walRes.data || []).forEach((w: any) => walletsByUser.set(w.user_id, Number(w.balance || 0)));
+
+      const spentByUser = new Map<string, { total: number; count: number }>();
+      (ordRes.data || []).forEach((o: any) => {
+        if (!o.user_id) return;
+        const curr = spentByUser.get(o.user_id) || { total: 0, count: 0 };
+        curr.total += Number(o.total || 0);
+        curr.count += 1;
+        spentByUser.set(o.user_id, curr);
+      });
+
+      const mapped: CustomerRecord[] = (profRes.data || []).map((p: any) => {
+        const stats = spentByUser.get(p.id) || { total: 0, count: 0 };
+        const tier: CustomerRecord["tier"] =
+          p.tier === "VIP Sovereign" || p.tier === "Corporate"
+            ? p.tier
+            : p.role === "vendor"
+            ? "Corporate"
+            : stats.total >= 50000
+            ? "VIP Sovereign"
+            : "Individual";
+
+        return {
+          id: p.id,
+          name: p.full_name || p.email?.split("@")[0] || "مستخدم مسجل",
+          phone: p.phone || "—",
+          email: p.email || "—",
+          city: p.city || "الرياض",
+          role: p.role || "customer",
+          tier,
+          totalSpent: stats.total,
+          ordersCount: stats.count,
+          walletBalance: walletsByUser.get(p.id) || 0,
+          joinedDate: p.created_at ? new Date(p.created_at).toLocaleDateString("ar-SA") : "—",
+        };
+      });
+
+      setCustomers(mapped);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    loadCustomers();
+  }, [loadCustomers]);
+
   const filtered = customers.filter((c) => {
     const matchesTier = filterTier === "all" || c.tier === filterTier;
     const matchesSearch =
-      c.name.includes(search) || c.phone.includes(search) || c.city.includes(search);
+      c.name.includes(search) ||
+      c.phone.includes(search) ||
+      c.email.toLowerCase().includes(search.toLowerCase()) ||
+      c.city.includes(search);
     return matchesTier && matchesSearch;
   });
 
-  const handleAdjustWallet = () => {
+  const totalWalletBalance = customers.reduce((acc, c) => acc + c.walletBalance, 0);
+
+  const handleAdjustWallet = async () => {
     if (!adjustingCustomer) return;
+    const amount = Number(creditAmount);
+    if (!amount) {
+      toast.error("يرجى إدخال قيمة صحيحة");
+      return;
+    }
+
+    const { data: newBalance, error } = await supabase.rpc("admin_credit_wallet", {
+      p_user_id: adjustingCustomer.id,
+      p_amount: amount,
+      p_reason: adjustmentReason,
+    });
+
+    if (error) {
+      toast.error(`تعذر تعديل المحفظة: ${error.message}`);
+      return;
+    }
+
     setCustomers((prev) =>
       prev.map((c) =>
         c.id === adjustingCustomer.id
-          ? { ...c, walletBalance: c.walletBalance + Number(creditAmount) }
+          ? { ...c, walletBalance: Number(newBalance ?? c.walletBalance + amount) }
           : c
       )
     );
     toast.success(
-      `تم إيداع ${formatSAR(Number(creditAmount))} في محفظة "${adjustingCustomer.name}" بنجاح!`
+      `تم إيداع ${formatSAR(amount)} في محفظة "${adjustingCustomer.name}" وتسجيل الحركة في قاعدة البيانات!`
     );
     setAdjustingCustomer(null);
   };
@@ -144,13 +159,13 @@ export default function CustomerCrmPage() {
             سجل المقتنين والعملاء وإدارة المحافظ
           </h1>
           <p className="text-xs text-slate-500 mt-1">
-            إدارة شرائح العملاء VIP، تاريخ المشتريات، وإيداع الرصيد الترويجي أو التعويضي في المحفظة.
+            إدارة حسابات المستخدمين المسجلين فعلياً في Supabase وأرصدة محافظهم ({customers.length} حساب).
           </p>
         </div>
 
         <div className="flex items-center gap-2">
           <Badge variant="outline" className="bg-emerald-50 text-emerald-800 border-emerald-300 font-mono text-xs">
-            إجمالي رصيد المحافظ: {formatSAR(47750)}
+            إجمالي رصيد المحافظ: {formatSAR(totalWalletBalance)}
           </Badge>
         </div>
       </div>
@@ -162,16 +177,16 @@ export default function CustomerCrmPage() {
           <Input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="ابحث باسم المقتني، الجوال، أو المدينة..."
+            placeholder="ابحث باسم المقتني، البريد الإلكتروني، الجوال، أو المدينة..."
             className="pr-10 rounded-2xl border-slate-200 text-xs h-10 w-full"
           />
         </div>
 
         <div className="flex items-center gap-1.5 overflow-x-auto w-full md:w-auto pb-1 md:pb-0">
           {[
-            { id: "all", label: "كافة العملاء" },
+            { id: "all", label: "كافة الحسابات" },
             { id: "VIP Sovereign", label: "VIP ملكي" },
-            { id: "Corporate", label: "شركات ومنشآت" },
+            { id: "Corporate", label: "شركات وتجار" },
             { id: "Individual", label: "أفراد" },
           ].map((tab) => (
             <button
@@ -195,9 +210,9 @@ export default function CustomerCrmPage() {
           <table className="w-full text-right text-xs">
             <thead className="bg-slate-50 text-slate-600 font-bold border-b border-slate-200">
               <tr>
-                <th className="p-4">اسم المقتني والمدينة</th>
+                <th className="p-4">اسم الحساب والمدينة</th>
                 <th className="p-4">بيانات التواصل</th>
-                <th className="p-4">شريحة العضوية</th>
+                <th className="p-4">الدور والشريحة</th>
                 <th className="p-4">إجمالي المشتريات</th>
                 <th className="p-4">رصيد المحفظة النشط</th>
                 <th className="p-4 text-center">إدارة المحفظة</th>
@@ -228,24 +243,24 @@ export default function CustomerCrmPage() {
                     )}
                     {c.tier === "Corporate" && (
                       <Badge variant="outline" className="bg-blue-50 text-blue-900 border-blue-300 font-bold">
-                        حساب شركات
+                        حساب تاجر / شركات
                       </Badge>
                     )}
                     {c.tier === "Individual" && (
                       <Badge variant="outline" className="bg-slate-100 text-slate-700 border-slate-200">
-                        مقتني فردي
+                        {c.role === "admin" ? "مشرف نظام (Admin)" : "مقتني فردي"}
                       </Badge>
                     )}
                   </td>
 
                   <td className="p-4">
                     <span className="font-black text-slate-900 block">{formatSAR(c.totalSpent)}</span>
-                    <span className="text-[10px] text-slate-400 font-semibold">{c.ordersCount} طلبات معتمدة</span>
+                    <span className="text-[10px] text-slate-400 font-semibold">{c.ordersCount} طلبات</span>
                   </td>
 
                   <td className="p-4">
                     <span className="font-black text-[#006948] text-sm block">{formatSAR(c.walletBalance)}</span>
-                    <span className="text-[10px] text-emerald-700">رصيد جاهز للشراء الفوري</span>
+                    <span className="text-[10px] text-emerald-700">رصيد فعلي في wallets</span>
                   </td>
 
                   <td className="p-4">
@@ -266,6 +281,14 @@ export default function CustomerCrmPage() {
                   </td>
                 </tr>
               ))}
+
+              {!loading && filtered.length === 0 && (
+                <tr>
+                  <td colSpan={6} className="text-center py-12 text-slate-400">
+                    لا توجد حسابات مطابقة حالياً.
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>
@@ -277,7 +300,7 @@ export default function CustomerCrmPage() {
           <DialogHeader>
             <DialogTitle className="text-base font-bold text-slate-900 flex items-center gap-2">
               <Wallet className="w-5 h-5 text-[#006948]" />
-              إيداع رصيد ترويجي في محفظة المقتني
+              إيداع رصيد في محفظة المستخدم (Supabase RPC)
             </DialogTitle>
           </DialogHeader>
 
@@ -286,7 +309,7 @@ export default function CustomerCrmPage() {
               <div className="p-3 bg-slate-50 rounded-2xl flex items-center justify-between border border-slate-200/80">
                 <div>
                   <span className="font-bold text-slate-900 block">{adjustingCustomer.name}</span>
-                  <span className="font-mono text-slate-500 text-[10px]">{adjustingCustomer.phone}</span>
+                  <span className="font-mono text-slate-500 text-[10px]">{adjustingCustomer.email}</span>
                 </div>
                 <div className="text-left">
                   <span className="text-slate-400 text-[10px] block">الرصيد الحالي:</span>
@@ -342,4 +365,3 @@ export default function CustomerCrmPage() {
     </div>
   );
 }
-

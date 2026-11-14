@@ -1,10 +1,11 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Slider } from "@/components/ui/slider";
+import { supabase } from "@/lib/supabase";
 import {
   Dialog,
   DialogContent,
@@ -16,14 +17,11 @@ import {
   Building2,
   Search,
   CheckCircle2,
-  XCircle,
   FileText,
   Percent,
-  AlertTriangle,
   Building,
   ShieldCheck,
   Ban,
-  ExternalLink,
 } from "lucide-react";
 import { formatSAR } from "@/lib/utils";
 import { toast } from "sonner";
@@ -36,95 +34,15 @@ interface VendorRecord {
   vatNumber: string;
   iban: string;
   city: string;
-  commissionRate: number; // e.g. 8%
+  commissionRate: number;
   lifetimeGmv: number;
   activeProducts: number;
   kybStatus: "verified" | "pending_review" | "suspended";
 }
 
-const mockVendors: VendorRecord[] = [
-  {
-    id: "VND-101",
-    name: "دار الصائغ الملكية للمقتنيات",
-    ownerName: "الشيخ عبدالعزيز الصائغ",
-    crNumber: "1010482910",
-    vatNumber: "310029384910003",
-    iban: "SA4480000201608010192841",
-    city: "الرياض",
-    commissionRate: 8,
-    lifetimeGmv: 18450000,
-    activeProducts: 24,
-    kybStatus: "verified",
-  },
-  {
-    id: "VND-102",
-    name: "مشالح الأحساء التاريخية",
-    ownerName: "الحاج إبراهيم بو حليقة",
-    crNumber: "2251029481",
-    vatNumber: "300182940192831",
-    iban: "SA0380000192847291029381",
-    city: "الأحساء • الهفوف",
-    commissionRate: 9,
-    lifetimeGmv: 9240000,
-    activeProducts: 18,
-    kybStatus: "verified",
-  },
-  {
-    id: "VND-103",
-    name: "صاغة الجنوب والمشغولات الفضية",
-    ownerName: "صالح بن علي الغامدي",
-    crNumber: "5900018291",
-    vatNumber: "310293849102938",
-    iban: "SA9280000192847291029382",
-    city: "نجران",
-    commissionRate: 7,
-    lifetimeGmv: 4210000,
-    activeProducts: 12,
-    kybStatus: "pending_review",
-  },
-  {
-    id: "VND-104",
-    name: "بيت العود المعتق والمقطرات",
-    ownerName: "خالد بن فهد الدوسري",
-    crNumber: "1010394821",
-    vatNumber: "300928374819203",
-    iban: "SA1180000192847291029383",
-    city: "الرياض",
-    commissionRate: 10,
-    lifetimeGmv: 6890000,
-    activeProducts: 31,
-    kybStatus: "verified",
-  },
-  {
-    id: "VND-105",
-    name: "مرابط الصافنات للوازم الفروسية",
-    ownerName: "محمد بن سلطان القحطاني",
-    crNumber: "5850029182",
-    vatNumber: "310029384910005",
-    iban: "SA5580000192847291029384",
-    city: "الدرعية",
-    commissionRate: 8,
-    lifetimeGmv: 3400000,
-    activeProducts: 15,
-    kybStatus: "pending_review",
-  },
-  {
-    id: "VND-106",
-    name: "مجوهرات اليمامة القديمة",
-    ownerName: "تركي بن سعد العتيبي",
-    crNumber: "1010294822",
-    vatNumber: "300192847192834",
-    iban: "SA7780000192847291029385",
-    city: "الرياض",
-    commissionRate: 12,
-    lifetimeGmv: 1280000,
-    activeProducts: 9,
-    kybStatus: "suspended",
-  },
-];
-
 export default function VendorManagementPage() {
-  const [vendors, setVendors] = useState<VendorRecord[]>(mockVendors);
+  const [vendors, setVendors] = useState<VendorRecord[]>([]);
+  const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [filterStatus, setFilterStatus] = useState<string>("all");
 
@@ -132,6 +50,56 @@ export default function VendorManagementPage() {
   const [auditingVendor, setAuditingVendor] = useState<VendorRecord | null>(null);
   const [editingCommissionVendor, setEditingCommissionVendor] = useState<VendorRecord | null>(null);
   const [commissionValue, setCommissionValue] = useState<number>(8);
+
+  const loadVendors = useCallback(async () => {
+    setLoading(true);
+    try {
+      const [vRes, pRes, oiRes] = await Promise.all([
+        supabase.from("vendors").select("*").order("created_at", { ascending: false }),
+        supabase.from("products").select("id, vendor_id, is_active"),
+        supabase.from("order_items").select("vendor_id, line_total"),
+      ]);
+
+      const prods = pRes.data || [];
+      const orderItems = oiRes.data || [];
+
+      const mapped: VendorRecord[] = (vRes.data || []).map((v: any) => {
+        const activeProducts = prods.filter((p) => p.vendor_id === v.id && p.is_active).length;
+        const lifetimeGmv = orderItems
+          .filter((oi) => oi.vendor_id === v.id)
+          .reduce((acc, oi) => acc + Number(oi.line_total || 0), 0);
+
+        const kybStatus: VendorRecord["kybStatus"] =
+          v.status === "suspended"
+            ? "suspended"
+            : v.status === "approved" || v.verified
+            ? "verified"
+            : "pending_review";
+
+        return {
+          id: v.id,
+          name: v.name,
+          ownerName: v.owner_name || "منشأة تجارية مسجلة",
+          crNumber: v.cr_number || "—",
+          vatNumber: v.vat_number || "—",
+          iban: v.iban || "SA0000000000000000000000",
+          city: v.location || "الرياض",
+          commissionRate: Number(v.commission_rate ?? 8),
+          lifetimeGmv,
+          activeProducts,
+          kybStatus,
+        };
+      });
+
+      setVendors(mapped);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    loadVendors();
+  }, [loadVendors]);
 
   const filtered = vendors.filter((v) => {
     const matchesStatus = filterStatus === "all" || v.kybStatus === filterStatus;
@@ -143,7 +111,17 @@ export default function VendorManagementPage() {
     return matchesStatus && matchesSearch;
   });
 
-  const handleVerifyKyb = (id: string, name: string) => {
+  const handleVerifyKyb = async (id: string, name: string) => {
+    const { error } = await supabase
+      .from("vendors")
+      .update({ verified: true, status: "approved" })
+      .eq("id", id);
+
+    if (error) {
+      toast.error(`تعذر اعتماد المنشأة: ${error.message}`);
+      return;
+    }
+
     setVendors((prev) =>
       prev.map((v) => (v.id === id ? { ...v, kybStatus: "verified" } : v))
     );
@@ -151,20 +129,43 @@ export default function VendorManagementPage() {
     setAuditingVendor(null);
   };
 
-  const handleToggleSuspend = (id: string, currentStatus: string, name: string) => {
-    const nextStatus = currentStatus === "suspended" ? "verified" : "suspended";
+  const handleToggleSuspend = async (id: string, currentStatus: string, name: string) => {
+    const isSuspended = currentStatus === "suspended";
+    const nextDbStatus = isSuspended ? "approved" : "suspended";
+    const nextUiStatus: VendorRecord["kybStatus"] = isSuspended ? "verified" : "suspended";
+
+    const { error } = await supabase
+      .from("vendors")
+      .update({ status: nextDbStatus, verified: isSuspended })
+      .eq("id", id);
+
+    if (error) {
+      toast.error(`تعذر تحديث حالة المنشأة: ${error.message}`);
+      return;
+    }
+
     setVendors((prev) =>
-      prev.map((v) => (v.id === id ? { ...v, kybStatus: nextStatus } : v))
+      prev.map((v) => (v.id === id ? { ...v, kybStatus: nextUiStatus } : v))
     );
-    if (nextStatus === "suspended") {
-      toast.error(`تم تعليق حساب منشأة "${name}" وإخفاء منتجاتها مؤقتاً.`);
+    if (nextUiStatus === "suspended") {
+      toast.error(`تم تعليق حساب منشأة "${name}" في قاعدة البيانات.`);
     } else {
       toast.success(`تم فك تعليق منشأة "${name}" وإعادة تنشيط متجرها.`);
     }
   };
 
-  const handleSaveCommission = () => {
+  const handleSaveCommission = async () => {
     if (!editingCommissionVendor) return;
+    const { error } = await supabase
+      .from("vendors")
+      .update({ commission_rate: commissionValue })
+      .eq("id", editingCommissionVendor.id);
+
+    if (error) {
+      toast.error(`تعذر تحديث العمولة: ${error.message}`);
+      return;
+    }
+
     setVendors((prev) =>
       prev.map((v) =>
         v.id === editingCommissionVendor.id ? { ...v, commissionRate: commissionValue } : v
@@ -190,7 +191,7 @@ export default function VendorManagementPage() {
 
         <div className="flex items-center gap-2">
           <Badge variant="outline" className="bg-emerald-50 text-emerald-800 border-emerald-300 font-mono text-xs">
-            الربط مع وزارة التجارة: نشط
+            إجمالي المنشآت: {vendors.length}
           </Badge>
         </div>
       </div>
@@ -327,6 +328,14 @@ export default function VendorManagementPage() {
                   </td>
                 </tr>
               ))}
+
+              {!loading && filtered.length === 0 && (
+                <tr>
+                  <td colSpan={6} className="text-center py-12 text-slate-400">
+                    لا توجد منشآت مطابقة حالياً.
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>
@@ -390,7 +399,7 @@ export default function VendorManagementPage() {
           )}
 
           <DialogFooter className="flex gap-2 sm:justify-start">
-            {auditingVendor?.kybStatus === "pending_review" && (
+            {auditingVendor?.kybStatus !== "verified" && (
               <Button
                 variant="sovereign"
                 size="sm"
@@ -481,4 +490,3 @@ export default function VendorManagementPage() {
     </div>
   );
 }
-

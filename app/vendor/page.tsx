@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import VendorNav from "@/components/vendor/VendorNav";
 import VendorAuthGuard from "@/components/vendor/VendorAuthGuard";
@@ -42,30 +42,138 @@ import {
   Truck,
   Download,
   CheckCircle2,
+  RefreshCw,
 } from "lucide-react";
 import { formatSAR } from "@/lib/utils";
+import { supabase } from "@/lib/supabase";
+
+interface VendorInfo {
+  id: string;
+  name: string;
+  cr_number: string | null;
+  vat_number: string | null;
+  status: string;
+  verified: boolean;
+  commission_rate?: number;
+}
+
+interface PendingOrderRow {
+  id: string;
+  buyer: string;
+  item: string;
+  amount: number;
+  status: string;
+  carrier: string;
+}
 
 export default function VendorHubPage() {
   const [activeTab, setActiveTab] = useState<"landing" | "dashboard">("dashboard");
   const [monthlySalesEstimate, setMonthlySalesEstimate] = useState(150000);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const [vendor, setVendor] = useState<VendorInfo>({
+    id: "modern-tech",
+    name: "شركة آفاق التقنية للتجارة",
+    cr_number: "1010884920",
+    vat_number: "310192847200003",
+    status: "approved",
+    verified: true,
+  });
+
+  const [stats, setStats] = useState({
+    gmv: 0,
+    ordersCount: 0,
+    pendingEscrow: 0,
+    availableBalance: 0,
+    activeListings: 0,
+  });
+
+  const [pendingOrders, setPendingOrders] = useState<PendingOrderRow[]>([]);
 
   // Revenue calculator logic: 92% vendor payout, 8% sovereign platform fee
   const estimatedPayout = Math.round(monthlySalesEstimate * 0.92);
   const platformFee = Math.round(monthlySalesEstimate * 0.08);
 
-  const vendorStats = {
-    gmv: 485000,
-    ordersCount: 38,
-    pendingEscrow: 85200,
-    availableBalance: 399800,
-    activeListings: 19,
+  const loadVendorDashboard = async () => {
+    setIsLoading(true);
+    try {
+      const { data: authData } = await supabase.auth.getUser();
+      const user = authData?.user;
+
+      // 1. Get vendor profile
+      if (user) {
+        const { data: vData } = await supabase
+          .from("vendors")
+          .select("*")
+          .eq("owner_id", user.id)
+          .maybeSingle();
+
+        if (vData) {
+          setVendor(vData);
+        } else {
+          // Fallback to first vendor or default
+          const { data: anyVendor } = await supabase.from("vendors").select("*").limit(1).maybeSingle();
+          if (anyVendor) setVendor(anyVendor);
+        }
+      }
+
+      // 2. Count active products
+      const { count: productCount } = await supabase
+        .from("products")
+        .select("id", { count: "exact", head: true })
+        .eq("is_active", true);
+
+      // 3. Get orders
+      const { data: orders } = await supabase
+        .from("orders")
+        .select("id, total, status, payment_status, items, shipping_address, created_at")
+        .order("created_at", { ascending: false });
+
+      const allOrders = orders || [];
+      const gmvTotal = allOrders.reduce((sum, o) => sum + (Number(o.total) || 0), 0);
+      const paidOrders = allOrders.filter(
+        (o) => o.payment_status === "paid" || o.status === "confirmed" || o.status === "processing"
+      );
+      const pendingTotal = paidOrders.reduce((sum, o) => sum + (Number(o.total) || 0), 0);
+      const completedTotal = allOrders
+        .filter((o) => o.status === "delivered")
+        .reduce((sum, o) => sum + (Number(o.total) || 0), 0);
+
+      setStats({
+        gmv: gmvTotal,
+        ordersCount: allOrders.length,
+        pendingEscrow: Math.round(pendingTotal * 0.92),
+        availableBalance: Math.round(completedTotal * 0.92),
+        activeListings: productCount || 0,
+      });
+
+      // 4. Pending orders table
+      const formatted = allOrders.slice(0, 5).map((ord) => {
+        const firstItem = Array.isArray(ord.items) && ord.items.length > 0 ? ord.items[0] : null;
+        const buyerName =
+          ord.shipping_address?.full_name ||
+          ord.shipping_address?.name ||
+          "عميل موثق عبر نفاذ";
+        return {
+          id: ord.id.startsWith("SQ-") ? ord.id : `SQ-${ord.id.slice(0, 8)}`,
+          buyer: buyerName,
+          item: firstItem?.title || "سلة مقتنيات متعددة",
+          amount: Number(ord.total) || 0,
+          status: ord.status === "delivered" ? "تم التسليم" : "جاري التجهيز والشحن",
+          carrier: "SPL Express (سبل)",
+        };
+      });
+      setPendingOrders(formatted);
+    } catch (err) {
+      console.error("Failed to load vendor dashboard:", err);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const pendingOrders = [
-    { id: "SQ-94281", buyer: "صاحب السمو الأمير فهد آل سعود", item: "ساعة الصقر الكرونوغراف KSA-01", amount: 48500, status: "جاري التجهيز", carrier: "SPL Express" },
-    { id: "SQ-94280", buyer: "معالي د. عبد الرحمن القحطاني", item: "دهن عود ملكي معتق ٦٠ عاماً", amount: 12500, status: "بانتظار الشحن", carrier: "SMSA Express" },
-    { id: "SQ-94279", buyer: "سعادة الأستاذ محمد بن خالد", item: "خاتم نيوم من التيتانيوم الفضائي", amount: 15600, status: "بانتظار التأكيد", carrier: "SPL Express" },
-  ];
+  useEffect(() => {
+    loadVendorDashboard();
+  }, []);
 
   return (
     <TooltipProvider delayDuration={180}>
@@ -86,10 +194,10 @@ export default function VendorHubPage() {
                   <h1 className="text-lg font-black text-slate-900">
                     بوابة التجار واستوديو الحرفيين (Vendor B2B)
                   </h1>
-                  <Badge variant="sovereign">دار الروضة للعطور • شريك بلاتيني</Badge>
+                  <Badge variant="sovereign">{vendor.name} • {vendor.verified ? "شريك موثق" : "قيد المراجعة"}</Badge>
                 </div>
                 <p className="text-xs text-slate-500">
-                  السجل التجاري: 1010884920 • الربط الضريبي ZATCA Phase 2: نشط
+                  السجل التجاري: {vendor.cr_number || "1010884920"} • الرقم الضريبي ZATCA: {vendor.vat_number || "310192847200003"}
                 </p>
               </div>
             </div>
@@ -175,7 +283,7 @@ export default function VendorHubPage() {
                       <TrendingUp className="w-4 h-4 text-emerald-600" />
                     </div>
                     <span className="text-2xl font-black text-slate-900 block">
-                      <AnimatedCounter value={vendorStats.gmv} formatter={formatSAR} />
+                      <AnimatedCounter value={stats.gmv} formatter={formatSAR} />
                     </span>
                     <span className="text-[10px] text-emerald-700 block mt-1 font-bold">+١٨% مقارنة بالشهر السابق</span>
                   </Card>
@@ -190,7 +298,7 @@ export default function VendorHubPage() {
                       <DollarSign className="w-4 h-4 text-[#006948]" />
                     </div>
                     <span className="text-2xl font-black text-[#006948] block">
-                      <AnimatedCounter value={vendorStats.availableBalance} formatter={formatSAR} />
+                      <AnimatedCounter value={stats.availableBalance} formatter={formatSAR} />
                     </span>
                     <span className="text-[10px] text-slate-400 block mt-1">تحويل فوري عبر نظام سريع</span>
                   </Card>
@@ -205,7 +313,7 @@ export default function VendorHubPage() {
                       <ShieldCheck className="w-4 h-4 text-amber-500" />
                     </div>
                     <span className="text-2xl font-black text-amber-600 block">
-                      <AnimatedCounter value={vendorStats.pendingEscrow} formatter={formatSAR} />
+                      <AnimatedCounter value={stats.pendingEscrow} formatter={formatSAR} />
                     </span>
                     <span className="text-[10px] text-slate-400 block mt-1">تُفرج تلقائياً بعد استلام المقتني</span>
                   </Card>
@@ -220,7 +328,7 @@ export default function VendorHubPage() {
                       <Package className="w-4 h-4 text-emerald-600" />
                     </div>
                     <span className="text-2xl font-black text-slate-900 block">
-                      <AnimatedCounter value={vendorStats.activeListings} suffix=" قطعة" />
+                      <AnimatedCounter value={stats.activeListings} suffix=" قطعة" />
                     </span>
                     <span className="text-[10px] text-emerald-700 block mt-1 font-bold">جميعها موثقة في زاتكا</span>
                   </Card>

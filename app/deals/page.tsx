@@ -11,24 +11,52 @@ import { useCart } from "@/context/CartContext";
 import { Zap, Copy, Check, Clock, ShoppingBag, ArrowLeft, ChevronLeft, ShieldCheck, Store } from "lucide-react";
 import { formatSAR } from "@/lib/utils";
 import { toast } from "sonner";
-import { ALL_PRODUCTS } from "@/lib/catalogData";
+import { ALL_PRODUCTS, Product } from "@/lib/catalogData";
+import { supabase, mapDbProductToProduct } from "@/lib/supabase";
 
 export default function DealsHubPage() {
   const { addToCart } = useCart();
   const [copiedCode, setCopiedCode] = useState<string | null>(null);
+  const [dealProducts, setDealProducts] = useState<Product[]>([]);
+  const [coupons, setCoupons] = useState([
+    { code: "SOUQ10", discount: "خصم 10%", desc: "خصم إضافي على أول طلب من كبار الموردين والمتاجر المعتمدة" },
+    { code: "TECH15", discount: "خصم 15%", desc: "خصم خاص على الإلكترونيات والسماعات اللاسلكية الأصلية" },
+    { code: "FREESHIP", discount: "شحن مجاني", desc: "توصيل سريع مجاني لكافة الطلبات فوق ١٥٠ ر.س" },
+  ]);
 
   const [timeLeft, setTimeLeft] = useState({ hours: 9, minutes: 42, seconds: 15 });
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      setTimeLeft((prev) => {
-        if (prev.seconds > 0) return { ...prev, seconds: prev.seconds - 1 };
-        if (prev.minutes > 0) return { ...prev, minutes: prev.minutes - 1, seconds: 59 };
-        if (prev.hours > 0) return { hours: prev.hours - 1, minutes: 59, seconds: 59 };
-        return { hours: 24, minutes: 0, seconds: 0 };
-      });
-    }, 1000);
-    return () => clearInterval(timer);
+    async function loadDeals() {
+      try {
+        const { data: pData } = await supabase
+          .from("products")
+          .select("*")
+          .not("original_price", "is", null)
+          .order("price", { ascending: true });
+
+        if (pData && pData.length > 0) {
+          setDealProducts((pData as any[]).map(mapDbProductToProduct));
+        } else {
+          setDealProducts(ALL_PRODUCTS.filter((p) => p.originalPrice));
+        }
+
+        // Fetch coupons from db
+        const { data: cData } = await supabase.from("coupons").select("*").eq("is_active", true);
+        if (cData && cData.length > 0) {
+          setCoupons(
+            cData.map((c) => ({
+              code: c.code,
+              discount: c.discount_type === "percent" ? `خصم ${c.discount_value}%` : `خصم ${formatSAR(c.discount_value)}`,
+              desc: c.description || `قسيمة تخفيض بقيمة ${c.discount_value}${c.discount_type === "percent" ? "%" : " ر.س"}`,
+            }))
+          );
+        }
+      } catch (err) {
+        setDealProducts(ALL_PRODUCTS.filter((p) => p.originalPrice));
+      }
+    }
+    loadDeals();
   }, []);
 
   const handleCopyCode = (code: string) => {
@@ -41,15 +69,6 @@ export default function DealsHubPage() {
       setTimeout(() => setCopiedCode(null), 3000);
     }
   };
-
-  const coupons = [
-    { code: "SOUQ10", discount: "خصم 10%", desc: "خصم إضافي على أول طلب من كبار الموردين والمتاجر المعتمدة" },
-    { code: "TECH15", discount: "خصم 15%", desc: "خصم خاص على الإلكترونيات والسماعات اللاسلكية الأصلية" },
-    { code: "FREESHIP", discount: "شحن مجاني", desc: "توصيل سريع مجاني لكافة الطلبات فوق ١٥٠ ر.س" },
-  ];
-
-  // Pick the top items with discounts
-  const dealProducts = ALL_PRODUCTS.filter((p) => p.originalPrice);
 
   return (
     <div className="min-h-screen bg-[#f8fafc] text-slate-900 flex flex-col font-sans">

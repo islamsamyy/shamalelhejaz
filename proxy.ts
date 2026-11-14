@@ -1,8 +1,14 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { createServerClient } from "@supabase/ssr";
 
-const url =
-  process.env.NEXT_PUBLIC_SUPABASE_URL || "https://lazleotmwyxglqgqwyrq.supabase.co";
+const SUPABASE_PROJECT_REF = "lazleotmwyxglqgqwyrq";
+const DEFAULT_SUPABASE_URL = "https://lazleotmwyxglqgqwyrq.supabase.co";
+
+const rawUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
+const url = rawUrl.includes(SUPABASE_PROJECT_REF)
+  ? rawUrl
+  : DEFAULT_SUPABASE_URL;
+
 const rawKey =
   process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ||
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||

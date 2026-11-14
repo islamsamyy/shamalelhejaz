@@ -1,9 +1,10 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { supabase } from "@/lib/supabase";
 import {
   Dialog,
   DialogContent,
@@ -15,13 +16,10 @@ import {
   Tag,
   PlusCircle,
   Clock,
-  Sparkles,
   Copy,
   CheckCircle2,
-  Calendar,
-  Percent,
   Flame,
-  Layers,
+  Trash2,
 } from "lucide-react";
 import { formatSAR } from "@/lib/utils";
 import { toast } from "sonner";
@@ -39,94 +37,145 @@ interface PromoCoupon {
   active: boolean;
 }
 
-const initialCoupons: PromoCoupon[] = [
-  {
-    id: "CP-01",
-    code: "SOUQ2030",
-    description: "كوبون احتفالية الرؤية واليوم الوطني",
-    discountType: "percentage",
-    discountValue: 10,
-    minOrder: 1000,
-    usages: 842,
-    maxUsages: 2000,
-    expiryDate: "٣١ ديسمبر ٢٠٢٦",
-    active: true,
-  },
-  {
-    id: "CP-02",
-    code: "ROYAL_VIP",
-    description: "خصم حصري لحاملي عضوية السيادة VIP",
-    discountType: "percentage",
-    discountValue: 15,
-    minOrder: 10000,
-    usages: 129,
-    maxUsages: 500,
-    expiryDate: "٣٠ نوفمبر ٢٠٢٦",
-    active: true,
-  },
-  {
-    id: "CP-03",
-    code: "FOUNDING_DAY",
-    description: "مكافأة يوم التأسيس السعودي",
-    discountType: "fixed",
-    discountValue: 500,
-    minOrder: 5000,
-    usages: 1500,
-    maxUsages: 1500,
-    expiryDate: "١ نوفمبر ٢٠٢٦",
-    active: false,
-  },
-];
-
 export default function MarketingEnginePage() {
-  const [coupons, setCoupons] = useState<PromoCoupon[]>(initialCoupons);
-  
+  const [coupons, setCoupons] = useState<PromoCoupon[]>([]);
+  const [loading, setLoading] = useState(true);
+
   // Dialog state
   const [isAddCouponOpen, setIsAddCouponOpen] = useState(false);
   const [newCode, setNewCode] = useState("");
   const [newDesc, setNewDesc] = useState("");
+  const [newDiscountType, setNewDiscountType] = useState<"percentage" | "fixed">("percentage");
   const [newDiscount, setNewDiscount] = useState(10);
-  const [newMinOrder, setNewMinOrder] = useState(1000);
+  const [newMinOrder, setNewMinOrder] = useState(200);
+  const [newMaxUsages, setNewMaxUsages] = useState(1000);
 
-  // Flash Sale state
+  // Flash Sale state persisted in app_settings('flash_sale')
   const [flashSaleActive, setFlashSaleActive] = useState(true);
   const [flashSaleTitle, setFlashSaleTitle] = useState("خزائن صقور الجزيرة • إصدارات محدودة");
   const [flashSaleEnd, setFlashSaleEnd] = useState("٢٤ ساعة و ٠٤ دقائق متبقية");
+
+  const loadMarketing = useCallback(async () => {
+    setLoading(true);
+    try {
+      const [cpRes, fsRes] = await Promise.all([
+        supabase.from("coupons").select("*").order("created_at", { ascending: false }),
+        supabase.from("app_settings").select("value").eq("key", "flash_sale").maybeSingle(),
+      ]);
+
+      if (cpRes.data) {
+        setCoupons(
+          cpRes.data.map((c: any) => ({
+            id: c.id,
+            code: c.code,
+            description: c.description || "كوبون خصم معتمد",
+            discountType: c.discount_type === "fixed" ? "fixed" : "percentage",
+            discountValue: Number(c.discount_value || 0),
+            minOrder: Number(c.min_order_amount || 0),
+            usages: Number(c.used_count || 0),
+            maxUsages: Number(c.usage_limit || 1000),
+            expiryDate: c.expires_at
+              ? new Date(c.expires_at).toLocaleDateString("ar-SA")
+              : "مفتوح الصلاحية",
+            active: c.is_active !== false,
+          }))
+        );
+      }
+
+      if (fsRes.data?.value && typeof fsRes.data.value === "object") {
+        const val = fsRes.data.value as any;
+        setFlashSaleActive(val.active !== false);
+        if (val.title) setFlashSaleTitle(val.title);
+        if (val.end_label) setFlashSaleEnd(val.end_label);
+      }
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    loadMarketing();
+  }, [loadMarketing]);
 
   const handleCopyCode = (code: string) => {
     navigator.clipboard.writeText(code);
     toast.success(`تم نسخ الكوبون "${code}" إلى الحافظة!`);
   };
 
-  const handleToggleCoupon = (id: string, code: string) => {
+  const handleToggleCoupon = async (coupon: PromoCoupon) => {
+    const nextActive = !coupon.active;
+    const { error } = await supabase
+      .from("coupons")
+      .update({ is_active: nextActive })
+      .eq("id", coupon.id);
+
+    if (error) {
+      toast.error(`تعذر تحديث الكوبون: ${error.message}`);
+      return;
+    }
+
     setCoupons((prev) =>
-      prev.map((c) => (c.id === id ? { ...c, active: !c.active } : c))
+      prev.map((c) => (c.id === coupon.id ? { ...c, active: nextActive } : c))
     );
-    toast.info(`تم تحديث حالة تفعيل الكوبون "${code}".`);
+    toast.info(`تم تحديث حالة تفعيل الكوبون "${coupon.code}" في قاعدة البيانات.`);
   };
 
-  const handleCreateCoupon = () => {
+  const handleDeleteCoupon = async (coupon: PromoCoupon) => {
+    const { error } = await supabase.from("coupons").delete().eq("id", coupon.id);
+    if (error) {
+      toast.error(`تعذر حذف الكوبون: ${error.message}`);
+      return;
+    }
+    setCoupons((prev) => prev.filter((c) => c.id !== coupon.id));
+    toast.success(`تم حذف الكوبون "${coupon.code}".`);
+  };
+
+  const handleCreateCoupon = async () => {
     if (!newCode.trim()) {
       toast.error("يرجى إدخال رمز الكوبون");
       return;
     }
-    const coupon: PromoCoupon = {
-      id: `CP-${Date.now()}`,
-      code: newCode.toUpperCase().trim(),
-      description: newDesc || "كوبون ترويجي معتمد",
-      discountType: "percentage",
-      discountValue: Number(newDiscount),
-      minOrder: Number(newMinOrder),
-      usages: 0,
-      maxUsages: 1000,
-      expiryDate: "٣١ يناير ٢٠٢٧",
-      active: true,
-    };
-    setCoupons((prev) => [coupon, ...prev]);
-    toast.success(`تم إنشاء ونشر الكوبون "${coupon.code}" بنجاح!`);
+    const cleanCode = newCode.toUpperCase().trim();
+
+    const { error } = await supabase.from("coupons").insert([
+      {
+        code: cleanCode,
+        description: newDesc.trim() || "كوبون ترويجي معتمد",
+        discount_type: newDiscountType,
+        discount_value: Number(newDiscount),
+        min_order_amount: Number(newMinOrder),
+        usage_limit: Number(newMaxUsages),
+        used_count: 0,
+        is_active: true,
+      },
+    ]);
+
+    if (error) {
+      toast.error(`تعذر إنشاء الكوبون: ${error.message}`);
+      return;
+    }
+
+    toast.success(`تم إنشاء ونشر الكوبون "${cleanCode}" في قاعدة البيانات!`);
     setIsAddCouponOpen(false);
     setNewCode("");
     setNewDesc("");
+    loadMarketing();
+  };
+
+  const handleToggleFlashSale = async () => {
+    const nextActive = !flashSaleActive;
+    const { error } = await supabase.from("app_settings").upsert({
+      key: "flash_sale",
+      value: { active: nextActive, title: flashSaleTitle, end_label: flashSaleEnd },
+      updated_at: new Date().toISOString(),
+    });
+
+    if (error) {
+      toast.error(`تعذر تحديث حالة الحملة: ${error.message}`);
+      return;
+    }
+    setFlashSaleActive(nextActive);
+    toast.info(nextActive ? "تم استئناف حملة الخزينة السريعة" : "تم إيقاف الحملة مؤقتاً");
   };
 
   return (
@@ -139,7 +188,7 @@ export default function MarketingEnginePage() {
             محرك العروض والكوبونات والحملات الترويجية
           </h1>
           <p className="text-xs text-slate-500 mt-1">
-            إطلاق كوبونات الخصم السيادية، جدولة مزادات الخزائن الملكية، والتحكم في لافتات الصفحة الرئيسية.
+            إدارة كوبونات الخصم الفعالة في `public.coupons` والتي يتم التحقق منها تلقائياً عند الدفع (`create_order_secure`).
           </p>
         </div>
 
@@ -162,7 +211,9 @@ export default function MarketingEnginePage() {
               <Flame className="w-3 h-3 ml-1 fill-amber-400" />
               حملة الخزائن السريعة النشطة (Flash Sale)
             </Badge>
-            <span className="text-[11px] font-mono text-emerald-400 font-bold">مفعلة على الرئيسية</span>
+            <span className="text-[11px] font-mono text-emerald-400 font-bold">
+              {flashSaleActive ? "مفعلة في الإعدادات" : "موقوفة مؤقتاً"}
+            </span>
           </div>
           <h3 className="text-xl font-black text-white">{flashSaleTitle}</h3>
           <p className="text-xs text-slate-300 mt-1 flex items-center gap-2">
@@ -175,22 +226,10 @@ export default function MarketingEnginePage() {
           <Button
             variant="outline"
             size="sm"
-            onClick={() => {
-              setFlashSaleActive(!flashSaleActive);
-              toast.info(flashSaleActive ? "تم إيقاف مؤقت الخزينة السريعة" : "تم استئناف حملة الخزينة");
-            }}
+            onClick={handleToggleFlashSale}
             className="rounded-xl bg-slate-900/80 text-white border-slate-700 text-xs font-bold"
           >
             {flashSaleActive ? "إيقاف الحملة مؤقتاً" : "إعادة تفعيل"}
-          </Button>
-
-          <Button
-            variant="gold"
-            size="sm"
-            onClick={() => toast.success("تم تحديث إعدادات الحملة وخصومات القطع")}
-            className="rounded-xl text-xs font-bold"
-          >
-            تعديل خصم الحملة
           </Button>
         </div>
       </div>
@@ -199,7 +238,7 @@ export default function MarketingEnginePage() {
       <div className="bg-white rounded-3xl border border-slate-200/80 shadow-xs overflow-hidden">
         <div className="p-5 border-b border-slate-100 flex items-center justify-between">
           <h3 className="font-bold text-slate-900 text-sm">
-            كوبونات الخصم وقسائم الشراء المعتمدة
+            كوبونات الخصم وقسائم الشراء المعتمدة (`public.coupons`)
           </h3>
           <span className="text-xs text-slate-500 font-medium">
             تطبق مباشرة في شاشة الدفع السريع
@@ -244,9 +283,7 @@ export default function MarketingEnginePage() {
                     )}
                   </td>
 
-                  <td className="p-4 font-mono font-medium text-slate-700">
-                    {formatSAR(c.minOrder)}
-                  </td>
+                  <td className="p-4 font-mono font-medium text-slate-700">{formatSAR(c.minOrder)}</td>
 
                   <td className="p-4">
                     <div className="flex items-center gap-2">
@@ -257,14 +294,12 @@ export default function MarketingEnginePage() {
                     <div className="h-1.5 w-24 bg-slate-100 rounded-full overflow-hidden mt-1">
                       <div
                         className="h-full bg-[#006948] rounded-full"
-                        style={{ width: `${Math.min((c.usages / c.maxUsages) * 100, 100)}%` }}
-                      ></div>
+                        style={{ width: `${Math.min((c.usages / Math.max(1, c.maxUsages)) * 100, 100)}%` }}
+                      />
                     </div>
                   </td>
 
-                  <td className="p-4 text-slate-500 font-medium">
-                    {c.expiryDate}
-                  </td>
+                  <td className="p-4 text-slate-500 font-medium">{c.expiryDate}</td>
 
                   <td className="p-4">
                     {c.active ? (
@@ -274,23 +309,41 @@ export default function MarketingEnginePage() {
                       </Badge>
                     ) : (
                       <Badge variant="outline" className="bg-slate-100 text-slate-600 border-slate-300">
-                        منتهي أو معطل
+                        معطل
                       </Badge>
                     )}
                   </td>
 
                   <td className="p-4 text-center">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => handleToggleCoupon(c.id, c.code)}
-                      className="rounded-xl text-xs h-8"
-                    >
-                      {c.active ? "تعطيل" : "إعادة تفعيل"}
-                    </Button>
+                    <div className="flex items-center justify-center gap-1.5">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleToggleCoupon(c)}
+                        className="rounded-xl text-xs h-8"
+                      >
+                        {c.active ? "تعطيل" : "إعادة تفعيل"}
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleDeleteCoupon(c)}
+                        className="rounded-xl text-xs h-8 text-rose-600 border-slate-200 hover:bg-rose-50"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </Button>
+                    </div>
                   </td>
                 </tr>
               ))}
+
+              {!loading && coupons.length === 0 && (
+                <tr>
+                  <td colSpan={7} className="text-center py-12 text-slate-400">
+                    لا توجد كوبونات خصم حالياً. اضغط على &quot;توليد كود خصم جديد&quot; لإضافة أول كوبون.
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>
@@ -308,34 +361,40 @@ export default function MarketingEnginePage() {
 
           <div className="space-y-4 my-2 text-xs">
             <div>
-              <label className="text-xs font-bold text-slate-700 block mb-1">
-                رمز الكوبون (Promo Code):
-              </label>
+              <label className="text-xs font-bold text-slate-700 block mb-1">رمز الكوبون (Promo Code):</label>
               <Input
                 value={newCode}
                 onChange={(e) => setNewCode(e.target.value)}
-                placeholder="مثال: AL_YAMAMA_20"
+                placeholder="مثال: SOUQ2030"
+                dir="ltr"
                 className="rounded-xl font-mono uppercase text-xs font-bold"
               />
             </div>
 
             <div>
-              <label className="text-xs font-bold text-slate-700 block mb-1">
-                الوصف والمناسبة:
-              </label>
+              <label className="text-xs font-bold text-slate-700 block mb-1">الوصف والمناسبة:</label>
               <Input
                 value={newDesc}
                 onChange={(e) => setNewDesc(e.target.value)}
-                placeholder="مثال: خصم خاص لعملاء قصر اليمامة"
+                placeholder="مثال: خصم احتفالية اليوم الوطني"
                 className="rounded-xl text-xs"
               />
             </div>
 
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="text-xs font-bold text-slate-700 block mb-1">
-                  نسبة الخصم (%):
-                </label>
+                <label className="text-xs font-bold text-slate-700 block mb-1">نوع الخصم:</label>
+                <select
+                  value={newDiscountType}
+                  onChange={(e) => setNewDiscountType(e.target.value as "percentage" | "fixed")}
+                  className="w-full rounded-xl border border-slate-200 bg-slate-50 p-2 text-xs font-bold"
+                >
+                  <option value="percentage">نسبة مئوية (%)</option>
+                  <option value="fixed">مبلغ ثابت (ر.س)</option>
+                </select>
+              </div>
+              <div>
+                <label className="text-xs font-bold text-slate-700 block mb-1">قيمة الخصم:</label>
                 <Input
                   type="number"
                   value={newDiscount}
@@ -343,15 +402,24 @@ export default function MarketingEnginePage() {
                   className="rounded-xl text-xs font-bold font-mono"
                 />
               </div>
+            </div>
 
+            <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="text-xs font-bold text-slate-700 block mb-1">
-                  الحد الأدنى للطلب (ر.س):
-                </label>
+                <label className="text-xs font-bold text-slate-700 block mb-1">الحد الأدنى للطلب (ر.س):</label>
                 <Input
                   type="number"
                   value={newMinOrder}
                   onChange={(e) => setNewMinOrder(Number(e.target.value))}
+                  className="rounded-xl text-xs font-bold font-mono"
+                />
+              </div>
+              <div>
+                <label className="text-xs font-bold text-slate-700 block mb-1">الحد الأقصى للاستخدام:</label>
+                <Input
+                  type="number"
+                  value={newMaxUsages}
+                  onChange={(e) => setNewMaxUsages(Number(e.target.value))}
                   className="rounded-xl text-xs font-bold font-mono"
                 />
               </div>
@@ -381,4 +449,3 @@ export default function MarketingEnginePage() {
     </div>
   );
 }
-

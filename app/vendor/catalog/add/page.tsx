@@ -20,28 +20,94 @@ import {
 } from "lucide-react";
 import { formatSAR } from "@/lib/utils";
 import { toast } from "sonner";
+import { supabase } from "@/lib/supabase";
 
 export default function AddProductStudioPage() {
   const router = useRouter();
   const [title, setTitle] = useState("");
-  const [price, setPrice] = useState<number>(12000);
-  const [category, setCategory] = useState("أطياب ملكية");
-  const [region, setRegion] = useState("منطقة نجد • الرياض");
-  const [stock, setStock] = useState(5);
+  const [price, setPrice] = useState<number>(1200);
+  const [category, setCategory] = useState("الإلكترونيات والأجهزة الذكية");
+  const [region, setRegion] = useState("الرياض • المملكة العربية السعودية");
+  const [stock, setStock] = useState(15);
   const [description, setDescription] = useState("");
+  const [imageUrl, setImageUrl] = useState("https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const vat15 = Math.round(price * 0.15);
   const totalCustomerPrice = price + vat15;
   const netVendorPayout = Math.round(price * 0.92);
 
-  const handleSaveProduct = (e: React.FormEvent) => {
+  const handleSaveProduct = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!title.trim()) {
-      toast.error("يرجى إدخال مسمى القطعة الملكية.");
+      toast.error("يرجى إدخال مسمى المنتج.");
       return;
     }
-    toast.success(`تم إرسال القطعة "${title}" للاعتماد في الكتالوج السيادي!`);
-    router.push("/vendor");
+    setIsSubmitting(true);
+    try {
+      const { data: authData } = await supabase.auth.getUser();
+      const user = authData?.user;
+
+      let vendorId = "modern-tech";
+      let vendorName = "شركة آفاق التقنية للتجارة";
+
+      if (user) {
+        const { data: v } = await supabase
+          .from("vendors")
+          .select("id, name")
+          .eq("owner_id", user.id)
+          .maybeSingle();
+        if (v) {
+          vendorId = v.id;
+          vendorName = v.name;
+        }
+      }
+
+      const slug = title
+        .toLowerCase()
+        .replace(/[^a-z0-9\u0600-\u06FF]+/g, "-")
+        .slice(0, 40);
+      const newId = `prod-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 6)}`;
+      const sku = `SQ-${Date.now().toString().slice(-6)}`;
+
+      const { error } = await supabase.from("products").insert([
+        {
+          id: newId,
+          sku,
+          title: title.trim(),
+          price: Number(price),
+          image: imageUrl.trim() || "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800",
+          images: [imageUrl.trim() || "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800"],
+          vendor: vendorName,
+          vendor_id: vendorId,
+          category,
+          category_slug: category === "الإلكترونيات والأجهزة الذكية" ? "electronics" : "all",
+          stock_qty: Number(stock),
+          stock_status: Number(stock) > 2 ? "in_stock" : "low_stock",
+          description: description.trim(),
+          moderation_status: "pending",
+          is_active: false,
+          rating: 5.0,
+          reviews: 0,
+          sales_count: "جديد",
+          badge: "قيد تدقيق الإدارة",
+          delivery: "express",
+          delivery_label: "شحن سريع خلال ٢٤ ساعة",
+        },
+      ]);
+
+      if (error) {
+        toast.error("فشل حفظ المنتج: " + error.message);
+        return;
+      }
+
+      toast.success(`تم إرسال القطعة "${title}" للاعتماد في الكتالوج وحفظها في Supabase!`);
+      router.push("/vendor/catalog");
+    } catch (err: any) {
+      toast.error("حدث خطأ أثناء الحفظ: " + (err?.message || ""));
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (

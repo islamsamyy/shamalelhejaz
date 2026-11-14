@@ -22,6 +22,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import { toast } from "sonner";
+import { supabase } from "@/lib/supabase";
 
 export default function VendorKYBRegisterPage() {
   const router = useRouter();
@@ -101,15 +102,46 @@ export default function VendorKYBRegisterPage() {
     setStep((prev) => Math.max(1, prev - 1));
   };
 
-  const handleSubmitKYB = () => {
+  const handleSubmitKYB = async () => {
     setIsSubmitting(true);
-    toast.info("جاري التحقق التلقائي عبر منصة واثق الحكومية الموحدة...");
+    toast.info("جاري حفظ طلب توثيق المنشأة في قاعدة البيانات...");
 
-    setTimeout(() => {
-      setIsSubmitting(false);
+    try {
+      const { data: authData } = await supabase.auth.getUser();
+      const user = authData.user;
+      if (!user) {
+        toast.error("يرجى تسجيل الدخول بحسابك أولاً لتقديم طلب توثيق المنشأة KYB.");
+        router.push("/auth/login?redirect=/vendor/register");
+        return;
+      }
+
+      const slug = `vendor-${Date.now()}`;
+      const { error } = await supabase.from("vendors").insert([
+        {
+          id: slug,
+          name: kybData.companyName.trim(),
+          slug,
+          owner_name: kybData.repName.trim(),
+          cr_number: kybData.crNumber.trim(),
+          vat_number: kybData.vatNumber.trim(),
+          iban: kybData.iban.trim(),
+          location: kybData.warehouseCity.trim(),
+          owner_id: user.id,
+          verified: false,
+          status: "pending",
+        },
+      ]);
+
+      if (error) {
+        toast.error(`تعذر إرسال طلب التوثيق: ${error.message}`);
+        return;
+      }
+
       setIsComplete(true);
-      toast.success("تم توثيق المنشأة واعتماد الحساب البلاتيني بنجاح!");
-    }, 1500);
+      toast.success("تم إرسال طلب توثيق المنشأة إلى الإدارة للمراجعة والاعتماد!");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
