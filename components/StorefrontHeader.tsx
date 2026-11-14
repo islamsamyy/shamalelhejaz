@@ -37,6 +37,7 @@ import {
   Lock,
   Globe,
   X,
+  Check,
 } from "lucide-react";
 import { formatSAR } from "@/lib/utils";
 import { notify } from "@/lib/notify";
@@ -44,6 +45,7 @@ import { fetchClientRole, signOutClient, Role } from "@/lib/rbac";
 import { ALL_PRODUCTS, Product } from "@/lib/catalogData";
 import { matchesSearch } from "@/lib/search";
 import { fetchProductsFromSupabase } from "@/lib/supabase";
+import { useCurrency, SUPPORTED_CURRENCIES } from "@/context/CurrencyContext";
 
 export default function StorefrontHeader() {
   const pathname = usePathname();
@@ -56,7 +58,7 @@ export default function StorefrontHeader() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [currentRole, setCurrentRole] = useState<Role | null>(null);
   const [isScrolled, setIsScrolled] = useState(false);
-  const [currencyLabel, setCurrencyLabel] = useState("الريال السعودي (ر.س)");
+  const { currency, setCurrency, currentConfig } = useCurrency();
 
   useEffect(() => {
     fetchClientRole().then(setCurrentRole);
@@ -186,39 +188,28 @@ export default function StorefrontHeader() {
             <div className="h-3 w-px bg-slate-700 hidden lg:block"></div>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <button className="flex items-center gap-1.5 text-emerald-400 hover:text-emerald-300 font-semibold transition-colors cursor-pointer">
+                <button className="flex items-center gap-1.5 text-emerald-400 hover:text-emerald-300 font-semibold transition-colors cursor-pointer text-[11px]">
                   <Globe className="w-3.5 h-3.5" />
-                  <span>{currencyLabel}</span>
+                  <span>{currentConfig.flag} {currentConfig.label}</span>
                   <ChevronDown className="w-3 h-3 opacity-80" />
                 </button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-48 text-start">
-                <DropdownMenuLabel className="text-[11px]">العملة والمنطقة</DropdownMenuLabel>
+              <DropdownMenuContent align="end" className="w-56 text-start max-h-80 overflow-y-auto">
+                <DropdownMenuLabel className="text-[11px] font-bold">معاينة الأسعار بالعملات المختلفة</DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem
-                  onClick={() => {
-                    setCurrencyLabel("الريال السعودي (ر.س)");
-                    notify.success("تم اعتماد العملة المحلية: الريال السعودي (SAR)");
-                  }}
-                >
-                  🇸🇦 الريال السعودي (ر.س)
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  onClick={() => {
-                    setCurrencyLabel("الدرهم الإماراتي (د.إ)");
-                    notify.info("معاينة الأسعار بالدرهم الإماراتي (AED)");
-                  }}
-                >
-                  🇦🇪 الدرهم الإماراتي (د.إ)
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  onClick={() => {
-                    setCurrencyLabel("الدولار الأمريكي (USD)");
-                    notify.info("معاينة الأسعار بالدولار الأمريكي (USD)");
-                  }}
-                >
-                  🌐 الدولار الأمريكي (USD)
-                </DropdownMenuItem>
+                {SUPPORTED_CURRENCIES.map((curr) => (
+                  <DropdownMenuItem
+                    key={curr.code}
+                    onClick={() => setCurrency(curr.code)}
+                    className="flex items-center justify-between cursor-pointer py-2 text-xs"
+                  >
+                    <span className="flex items-center gap-2">
+                      <span className="text-sm">{curr.flag}</span>
+                      <span>{curr.label}</span>
+                    </span>
+                    {currency === curr.code && <Check className="w-3.5 h-3.5 text-[#006948]" />}
+                  </DropdownMenuItem>
+                ))}
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
@@ -317,6 +308,31 @@ export default function StorefrontHeader() {
                       >
                         عن المنصة ومزاياها
                       </Link>
+                    </div>
+
+                    {/* Mobile Currency Switcher */}
+                    <div className="pt-3 border-t border-slate-100">
+                      <p className="text-[10px] font-bold text-slate-400 px-1 mb-1.5">عملة معاينة الأسعار</p>
+                      <div className="grid grid-cols-2 gap-1.5">
+                        {SUPPORTED_CURRENCIES.slice(0, 4).map((c) => (
+                          <button
+                            key={c.code}
+                            type="button"
+                            onClick={() => {
+                              setCurrency(c.code);
+                              setMobileMenuOpen(false);
+                            }}
+                            className={`px-2.5 py-1.5 rounded-lg text-xs font-bold border flex items-center justify-between cursor-pointer ${
+                              currency === c.code
+                                ? "bg-emerald-50 text-[#006948] border-emerald-300"
+                                : "bg-slate-50 text-slate-700 border-slate-200"
+                            }`}
+                          >
+                            <span>{c.flag} {c.code}</span>
+                            {currency === c.code && <Check className="w-3 h-3 text-[#006948]" />}
+                          </button>
+                        ))}
+                      </div>
                     </div>
                   </nav>
                 </div>

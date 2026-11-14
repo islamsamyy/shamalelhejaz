@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { CartProvider } from "@/context/CartContext";
 import { LanguageProvider } from "@/context/LanguageContext";
+import { CurrencyProvider } from "@/context/CurrencyContext";
 import CartDrawer from "@/components/CartDrawer";
 import PlatformNavigator from "@/components/PlatformNavigator";
 import { Toaster } from "sonner";
@@ -154,19 +155,21 @@ export default function RootLayout({
         suppressHydrationWarning
       >
         <LanguageProvider>
-          <CartProvider>
-            {children}
-            <CartDrawer />
-            <PlatformNavigator />
-            <Toaster
-              position="top-center"
-              richColors
-              theme="light"
-              toastOptions={{
-                className: "font-sans text-xs rounded-2xl shadow-xl border border-slate-200",
-              }}
-            />
-          </CartProvider>
+          <CurrencyProvider>
+            <CartProvider>
+              {children}
+              <CartDrawer />
+              <PlatformNavigator />
+              <Toaster
+                position="top-center"
+                richColors
+                theme="light"
+                toastOptions={{
+                  className: "font-sans text-xs rounded-2xl shadow-xl border border-slate-200",
+                }}
+              />
+            </CartProvider>
+          </CurrencyProvider>
         </LanguageProvider>
       </body>
     </html>

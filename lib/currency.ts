@@ -67,7 +67,12 @@ export function formatPrice(
     return new Intl.NumberFormat(locale, {
       style: "currency",
       currency,
-      maximumFractionDigits: currency === "KWD" || currency === "BHD" || currency === "OMR" ? 3 : 2,
+      maximumFractionDigits:
+        currency === "SAR"
+          ? 0
+          : currency === "KWD" || currency === "BHD" || currency === "OMR"
+          ? 3
+          : 2,
     }).format(amount);
   } catch (err) {
     return `${amount} ${currency}`;

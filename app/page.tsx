@@ -28,6 +28,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { useCart } from "@/context/CartContext";
+import { useCurrency } from "@/context/CurrencyContext";
 import {
   Sparkles,
   ShoppingBag,
@@ -86,6 +87,7 @@ const categoryFilterPills = [
 
 export default function HomePage() {
   const { addToCart, toggleWishlist, isWishlisted } = useCart();
+  const { currency } = useCurrency();
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
 

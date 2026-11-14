@@ -3,6 +3,7 @@
 import React from "react";
 import Link from "next/link";
 import { useCart } from "@/context/CartContext";
+import { useCurrency } from "@/context/CurrencyContext";
 import {
   Sheet,
   SheetContent,
@@ -24,6 +25,7 @@ export default function CartDrawer() {
     isCartDrawerOpen,
     setIsCartDrawerOpen,
   } = useCart();
+  const { currency } = useCurrency();
 
   return (
     <Sheet open={isCartDrawerOpen} onOpenChange={setIsCartDrawerOpen}>

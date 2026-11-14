@@ -14,6 +14,7 @@ import { Card } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useCart } from "@/context/CartContext";
+import { useCurrency } from "@/context/CurrencyContext";
 import {
   ShoppingBag,
   Heart,
@@ -56,6 +57,7 @@ export default function ProductDetailPage({
   const productId = unwrappedParams.id;
 
   const { addToCart, toggleWishlist, isWishlisted } = useCart();
+  const { currency } = useCurrency();
   const [product, setProduct] = useState<Product | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);

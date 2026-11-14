@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { useCart } from "@/context/CartContext";
+import { useCurrency } from "@/context/CurrencyContext";
 import {
   ShoppingBag,
   Trash2,
@@ -27,6 +28,7 @@ import { formatSAR } from "@/lib/utils";
 import { toast } from "sonner";
 
 export default function CartPage() {
+  const { currency } = useCurrency();
   const {
     cart,
     cartCount,

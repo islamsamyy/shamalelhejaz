@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { useCart } from "@/context/CartContext";
+import { useCurrency } from "@/context/CurrencyContext";
 import {
   ShieldCheck,
   CheckCircle2,
@@ -34,6 +35,7 @@ export default function BrandStorePage({
   const unwrappedParams = use(params);
   const storeId = unwrappedParams.storeId || "modern-tech";
   const { addToCart, toggleWishlist, isWishlisted } = useCart();
+  const { currency } = useCurrency();
 
   const [store, setStore] = useState<any>({
     id: storeId,

@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { useCart } from "@/context/CartContext";
+import { useCurrency } from "@/context/CurrencyContext";
 import { Zap, Copy, Check, Clock, ShoppingBag, ArrowLeft, ChevronLeft, ShieldCheck, Store } from "lucide-react";
 import { formatSAR } from "@/lib/utils";
 import { toast } from "sonner";
@@ -16,6 +17,7 @@ import { supabase, mapDbProductToProduct } from "@/lib/supabase";
 
 export default function DealsHubPage() {
   const { addToCart } = useCart();
+  const { currency } = useCurrency();
   const [copiedCode, setCopiedCode] = useState<string | null>(null);
   const [dealProducts, setDealProducts] = useState<Product[]>([]);
   const [coupons, setCoupons] = useState([

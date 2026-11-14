@@ -12,6 +12,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/context/CartContext";
+import { useCurrency } from "@/context/CurrencyContext";
 import { notify } from "@/lib/notify";
 import { formatSAR } from "@/lib/utils";
 import { Product } from "@/lib/catalogData";
@@ -40,6 +41,7 @@ export default function ProductQuickViewModal({
   onClose,
 }: ProductQuickViewModalProps) {
   const { addToCart, toggleWishlist, isWishlisted } = useCart();
+  const { currency } = useCurrency();
   const [activeImgIdx, setActiveImgIdx] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [selectedColor, setSelectedColor] = useState<string>("");

@@ -20,6 +20,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useCart } from "@/context/CartContext";
+import { useCurrency } from "@/context/CurrencyContext";
 import {
   ShoppingBag,
   Heart,
@@ -42,6 +43,7 @@ function CatalogContent() {
   const initialQuery = searchParams.get("q") || "";
 
   const { addToCart, toggleWishlist, isWishlisted } = useCart();
+  const { currency } = useCurrency();
   const [products, setProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [selectedCategory, setSelectedCategory] = useState<string>(initialCat);

@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { useCart } from "@/context/CartContext";
+import { useCurrency } from "@/context/CurrencyContext";
 import {
   Search,
   ShoppingBag,
@@ -33,6 +34,7 @@ function SearchContent() {
   const [products, setProducts] = useState<Product[]>(ALL_PRODUCTS);
   const [isLoading, setIsLoading] = useState(false);
   const { addToCart, toggleWishlist, isWishlisted } = useCart();
+  const { currency } = useCurrency();
 
   useEffect(() => {
     setSearchTerm(queryParam);
