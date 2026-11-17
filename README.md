@@ -1,21 +1,42 @@
-﻿# Shamal El-Hejaz / Souq (`shamalelhejaz`) — Multi-Vendor E-Commerce Marketplace
+﻿# Shamal El-Hejaz / Souq (`shamalelhejaz`) — Multi-Vendor MENA E-Commerce Marketplace
 
-A full-stack Next.js 16 (`souq`), React 19, Prisma, and Supabase multi-vendor e-commerce marketplace featuring multi-gateway payment processing (**HyperPay**, **Moyasar**, **Tap**, and **Stripe**), dedicated Vendor and Admin portals, real-time order tracking, and Vitest test coverage.
+<p align="center">
+  <img src="./public/logo.png" alt="Shamal El-Hejaz Souq Logo" width="180" />
+</p>
+
+## Table of Contents
+- [Executive Summary & Business Utility](#executive-summary--business-utility)
+- [Visual Showcase (UI & Dashboards)](#visual-showcase-ui--dashboards)
+- [System Architecture & Layers](#system-architecture--layers)
+- [Data Model & Multi-Gateway Commerce](#data-model--multi-gateway-commerce)
+- [Database Schema, Migrations & Prisma](#database-schema-migrations--prisma)
+- [Application Modules & API Endpoints](#application-modules--api-endpoints)
+- [Getting Started & Scripts](#getting-started--scripts)
+- [Business Value, ROI & Growth Opportunities](#business-value-roi--growth-opportunities)
 
 ---
 
-## 1. Executive Summary & Purpose
-`shamalelhejaz` is a complete regional multi-vendor marketplace engineered for Saudi/MENA commerce. Shoppers browse curated catalogs, vendor storefronts (`/store/[storeId]`), deals (`/deals`), and an editorial magazine (`/magazine`), check out via local and international payment gateways, and track deliveries (`/orders/[id]/tracking`). Vendors manage their own catalogs, orders, and financials (`/vendor/*`), while marketplace operators oversee categories, vendors, finance, and marketing from `/admin/*`.
+## Executive Summary & Business Utility
+`shamalelhejaz` (`souq`) is a full-stack Next.js 16, React 19, Prisma, and Supabase **multi-vendor e-commerce marketplace** built for Saudi Arabia and the broader MENA market. It supports multi-merchant storefronts (`/store/[storeId]`), localized categories/products, loyalty wallets & referrals, real-time order tracking (`/orders/[id]/tracking`), dedicated **Vendor** (`/vendor/*`) and **Admin** (`/admin/*`) portals, and **4 integrated payment gateways**: **HyperPay**, **Moyasar**, **Tap**, and **Stripe**.
 
 ---
 
-## 2. System Architecture & Layers
+## Visual Showcase (UI & Dashboards)
+Brand identity assets in `public/` (plus UI screen specs in `stitch_screens/`):
+
+| Primary Logo | Brand Mark | Square App Icon |
+| :---: | :---: | :---: |
+| ![Logo](./public/logo.png) | ![Logo Mark](./public/logo-mark.png) | ![Square Logo](./public/logo-square.png) |
+
+---
+
+## System Architecture & Layers
 
 ```mermaid
 flowchart TB
-    subgraph L1["1. Storefront & Buyer Experience Layer"]
+    subgraph L1["1. Buyer Storefront & Engagement Layer"]
         Shop["/catalog • /categories • /deals • /search • /products/[id] • /store/[storeId] • /magazine"]
-        Cart["/cart • /checkout • /orders/[id]/confirmation • /orders/[id]/tracking • /returns"]
+        OrderUI["/cart • /checkout • /orders/[id]/confirmation • /orders/[id]/tracking • /returns"]
     end
 
     subgraph L2["2. Vendor Self-Service Portal (/vendor)"]
@@ -26,55 +47,72 @@ flowchart TB
         Admin["/admin/{products,categories,vendors,orders,customers,finance,marketing,settings}"]
     end
 
-    subgraph L4["4. Payments, Auth & Data Layer"]
-        Pay["/api/checkout & /api/payments/{hyperpay,moyasar,tap,stripe}"]
-        Data["Prisma (prisma/schema.prisma) + Supabase SSR (@supabase/ssr) + Zod"]
-        UI["Radix UI • @tanstack/react-table • Recharts • Framer Motion • Vitest"]
+    subgraph L4["4. Multi-Gateway Payment & Auth API Layer"]
+        Pay["/api/checkout • /api/payments/{hyperpay,moyasar,tap,stripe} • /auth/callback"]
     end
 
-    L1 --> Pay --> Data
-    L2 --> Data
-    L3 --> Data
+    subgraph L5["5. Dual ORM, Persistence & QA Layer"]
+        DB["Prisma (prisma/schema.prisma) + Supabase Postgres (4 SQL files) + RLS"]
+        QA["Vitest + Testing Library + TanStack Table + Recharts + Zod"]
+    end
+
+    L1 --> L4 --> L5
+    L2 --> L5
+    L3 --> L5
 ```
 
-| Layer | Responsibility | Key Modules |
+| Layer | Responsibility | Key Files |
 | :--- | :--- | :--- |
-| **Buyer Storefront Layer** | Product discovery, vendor stores, deals, cart, checkout, order tracking, returns, and policies | `app/{catalog,categories,deals,search,store,cart,checkout,orders,returns,magazine}/` |
-| **Vendor Portal Layer** | Multi-vendor onboarding, SKU catalog creation, order fulfillment, and payout financials | `app/vendor/{register,catalog,catalog/add,orders,financials,settings}/page.tsx` |
-| **Marketplace Admin Layer** | Platform-wide governance across vendors, customers, orders, finance, and marketing | `app/admin/{vendors,products,categories,orders,customers,finance,marketing,settings}/page.tsx` |
-| **Multi-Gateway Payment Layer** | Server-side checkout and regional MENA + global gateway adapters | `app/api/checkout/route.ts`, `app/api/payments/{hyperpay,moyasar,tap,stripe}/route.ts` |
-| **Data, ORM & QA Layer** | Prisma ORM schema + Supabase Auth/Postgres + React Hook Form/Zod + Vitest | `prisma/schema.prisma`, `supabase/`, `lib/`, `__tests__/` |
+| **Buyer Storefront Layer** | Catalog filtering, deals, vendor storefronts, cart, checkout, order tracking, returns, and policies | `app/{catalog,categories,deals,search,store,cart,checkout,orders,returns,magazine,portals}/` |
+| **Vendor Self-Service Layer** | Vendor onboarding, SKU publishing, order fulfillment, and payout reconciliation | `app/vendor/{register,catalog,catalog/add,orders,financials,settings}/page.tsx` |
+| **Marketplace Admin Layer** | Platform-wide management of vendors, categories, finance, marketing, and customers | `app/admin/{vendors,products,categories,orders,customers,finance,marketing,settings}/page.tsx` |
+| **Multi-Gateway Payment Layer** | Unified checkout endpoint + 4 payment gateway adapters for mada, Apple Pay, STC Pay, and cards | `app/api/checkout/route.ts`, `app/api/payments/{hyperpay,moyasar,tap,stripe}/route.ts` |
+| **ORM, Schema & QA Layer** | Prisma relational schema, Supabase production migrations, and Vitest test coverage | `prisma/schema.prisma`, `supabase/migrations/*.sql`, `__tests__/` |
 
 ---
 
-## 3. Core Functionality & Modules
-- **4-Gateway Payment Engine (`/api/payments/*`)**: Native routes for **Moyasar**, **HyperPay**, **Tap**, and **Stripe**—supporting mada, Apple Pay, STC Pay, and international cards.
-- **Multi-Vendor Operations (`/vendor/*`)**: Vendors self-register (`/vendor/register`), upload products (`/vendor/catalog/add`), fulfill orders (`/vendor/orders`), and reconcile earnings (`/vendor/financials`).
-- **Marketplace Governance (`/admin/*`)**: Manage vendor approvals (`/admin/vendors`), financial settlements (`/admin/finance`), promotional campaigns (`/admin/marketing`), and customer support.
-- **Post-Purchase Experience**: Dedicated `/orders/[id]/confirmation`, `/orders/[id]/tracking`, and `/returns` workflows plus `/policies/shipping-returns`.
-
----
-
-## 4. Project Structure
-```text
-├── app/
-│   ├── admin/            # Marketplace admin (vendors, products, finance, marketing, orders, settings)
-│   ├── api/
-│   │   ├── checkout/     # Order checkout API
-│   │   └── payments/     # hyperpay, moyasar, stripe, tap adapters
-│   ├── auth/             # login, register, callback
-│   ├── vendor/           # Vendor portal (catalog, orders, financials, register, settings)
-│   ├── orders/[id]/      # confirmation & tracking
-│   └── catalog/, categories/, deals/, store/[storeId]/, cart/, checkout/, magazine/, portals/
-├── components/, context/, lib/
-├── prisma/schema.prisma  # Relational data model
-├── supabase/             # Supabase config & policies
-└── __tests__/            # Vitest automated tests
+## Data Model & Multi-Gateway Commerce
+```mermaid
+erDiagram
+    USER ||--o| WALLET : owns
+    WALLET ||--o{ TRANSACTION : logs
+    CATEGORY ||--o{ CATEGORYTRANSLATION : localized_by
+    PRODUCT ||--o{ PRODUCTTRANSLATION : localized_by
+    ORDER ||--|{ ORDERITEM : contains
+    ORDER ||--o| SHIPPINGINFO : ships_via
+    ORDER ||--o| PAYMENTINFO : paid_via
+    REWARDPROGRAM ||--|{ REWARDRULE : defines
 ```
 
 ---
 
-## 5. Getting Started
+## Database Schema, Migrations & Prisma
+Combined Prisma (`prisma/schema.prisma`) and Supabase SQL (`supabase/schema.sql` + `supabase/migrations/20261110000001..000002*.sql`):
+
+| Domain | Tables / Models |
+| :--- | :--- |
+| **Identity & Vendors** | `User`, `public.profiles`, `public.vendors`, `public.addresses`, `Follow` |
+| **Localized Catalog & SEO** | `Category`, `CategoryTranslation`, `Product`, `ProductTranslation`, `Image`, `SEOData`, `Review`, `ReviewMedia` |
+| **Cart, Orders & Shipping** | `public.cart_items`, `public.wishlists`, `Order`, `OrderItem`, `public.order_items`, `ShippingInfo` |
+| **Payments, Wallets & Payouts** | `public.payment_gateways`, `public.payments`, `PaymentInfo`, `public.invoices`, `public.vendor_payouts`, `Wallet`, `Transaction`, `public.wallets`, `public.wallet_transactions` |
+| **Growth, Loyalty & Governance** | `RewardProgram`, `RewardRule`, `Referral`, `Coupon`, `Notification`, `public.app_settings`, `public.audit_log` |
+
+---
+
+## Application Modules & API Endpoints
+
+| Endpoint | Purpose |
+| :--- | :--- |
+| `/api/checkout` | Multi-vendor order creation & checkout orchestration |
+| `/api/payments/moyasar` | Moyasar payment processing (mada, Visa/MC, Apple Pay) |
+| `/api/payments/hyperpay` | HyperPay payment processing |
+| `/api/payments/tap` | Tap Payments gateway integration |
+| `/api/payments/stripe` | Stripe international card processing |
+| `/auth/callback` | Supabase auth callback handler |
+
+---
+
+## Getting Started & Scripts
 
 ```bash
 git clone https://github.com/islamsamyy/shamalelhejaz.git
@@ -83,17 +121,17 @@ npm install
 npm run dev
 ```
 
-| Script | Description |
-| :--- | :--- |
-| `npm run dev` | Start Next.js 16 dev server |
-| `npm run build` | Production build (`next build --webpack`) |
-| `npm run typecheck` | TypeScript check (`tsc --noEmit`) |
-| `npm run lint` | Run ESLint |
-| `npm test` | Run Vitest test suite |
+| Script | Command | Description |
+| :--- | :--- | :--- |
+| Dev | `npm run dev` | Start Next.js 16 dev server |
+| Build | `npm run build` | Production build (`next build --webpack`) |
+| Typecheck | `npm run typecheck` | Run `tsc --noEmit` |
+| Lint | `npm run lint` | Run ESLint 9 |
+| Test | `npm test` | Run Vitest suite |
 
 ---
 
-## 6. Business Value & Growth Opportunities
-- **MENA Multi-Vendor Commission Engine**: Built-in vendor financials + regional payment gateways (HyperPay/Moyasar/Tap) allow immediate marketplace monetization via transaction commissions and featured vendor placements (`/admin/marketing`).
-- **Logistics & Fulfillment Webhooks**: Connect `/orders/[id]/tracking` to Aramex, SMSA, or DHL APIs for automated shipping label generation and live courier status updates.
-- **B2B Wholesale Tiers**: Extend `/portals` and `/vendor` to support bulk MOQ pricing and VAT invoicing for Saudi B2B procurement.
+## Business Value, ROI & Growth Opportunities
+- **Zero Single-Gateway Risk**: Supporting HyperPay, Moyasar, Tap, and Stripe simultaneously lets operators route transactions to the lowest-fee or highest-converting regional acquirer.
+- **Built-In Retention Engine**: Wallets, reward rules, referral tracking, and coupons reduce reliance on paid ads.
+- **B2B / Vendor Subscription + Commission**: Monetize via per-order marketplace commissions (`vendor_payouts`) plus paid vendor marketing placements (`/admin/marketing`).
