@@ -1,102 +1,31 @@
-# منصة شمال الحجاز | Shamal Al-Hijaz (Souq Saudiya)
+﻿# Shamal El-Hejaz (shamalelhejaz)
 
-منصة تجارة إلكترونية متكاملة ومتطورة متعددة التجار (Multi-Vendor E-Commerce Marketplace) مصممة خصيصاً للمملكة العربية السعودية، تجمع بين الفخامة والسرعة الفائقة والذكاء الاصطناعي مع دعم ثنائي اللغة (العربية والإنجليزية) وتوافق 100% مع الاتجاهين (RTL / LTR).
+A full-stack web application built with Next.js App Router, Prisma, and Supabase, featuring Stitch-designed UI screens and automated tests.
 
----
+## Executive Summary & Purpose
+shamalelhejaz powers the Shamal El-Hejaz digital platform, combining a modern React/Next.js frontend with Prisma ORM and Supabase backend services.
 
-## 🌟 مميزات المنصة الرئيسية
+## Architecture & Tech Stack
+- **Framework**: Next.js (App Router) & TypeScript
+- **Database & ORM**: Prisma (prisma/) & Supabase (supabase/)
+- **Testing**: __tests__/
 
-### 1. واجهة المتجر للعملاء (Customer Storefront - B2C)
-- **تجربة تسوق متطورة وسريعة:** تدعم الوضع الليلي والنهاري وتوافق كامل للأجهزة المحمولة.
-- **تصفح الكتالوج وفئات المنتجات:** بحث ذكي مع فلترة متقدمة حسب الفئة، السعر، العلامة التجارية، والتقييم.
-- **عربة تسوق متطورة ومصنفة:** تجميع المنتجات حسب التاجر مع حساب فوري للضريبة وتطبيق كوبونات الخصم.
-- **بوابة إتمام الشراء (Checkout):** 5 خطوات تدعم العنوان الوطني (SPL)، وخيارات الدفع (مدى، بطاقات الائتمان، Apple Pay، تابي، تمارا، والدفع عند الاستلام).
-- **تتبع الطلبات والفواتير:** جدول زمني مباشر لحالة الشحنة مع إصدار فاتورة ضريبية متوافقة مع هيئة الزكاة والضريبة والجمارك (ZATCA Phase-2).
-- **قائمة الرغبات ومركز المرتجعات:** إدارة سهلة للمنتجات المفضلة وتقديم طلبات الإرجاع آلياً.
+## Project Structure
+``text
+├── app/              # Next.js App Router pages & API routes
+├── components/       # Reusable UI components
+├── context/          # React context providers
+├── lib/              # Shared utilities & database clients
+├── prisma/           # Prisma schema & migrations
+├── supabase/         # Supabase configuration
+├── stitch_screens/   # UI screen designs
+└── __tests__/        # Automated test suite
+``
 
-### 2. بوابة التجار (Vendor Portal - B2B)
-- **لوحة تحكم شاملة للتاجر:** إحصائيات المبيعات، الطلبات المعلقة، وتقييمات العملاء.
-- **إدارة كتالوج المنتجات:** إضافة وتعديل المنتجات مع الصور، المتغيرات (الألوان والمقاسات)، والمخزون.
-- **إدارة الطلبات والشحن:** متابعة دورة حياة الطلبات وطباعة بوالص الشحن.
-- **التقارير المالية والمستحقات:** تفصيل العمولات، الأرصدة القابلة للسحب، وسجل التحويلات البنكية.
-
-### 3. مركز الإدارة والتحكم (Enterprise Admin Command Center)
-- **إشراف شامل على المنصة:** مراقبة الأداء اليومي والمبيعات ونشاط التجار والعملاء.
-- **إدارة الكتالوج والتصنيفات:** اعتماد المنتجات الجديدة وتحديث شجرة التصنيفات.
-- **التوافق المالي:** إدارة المعاملات، الضرائب، وتسوية حسابات التجار.
-- **التحكم بالصلاحيات (RBAC):** حماية كاملة للمسارات ومستويات الوصول (Admin / Vendor / Customer).
-
----
-
-## 🛠 التكنولوجيا المستخدمة (Tech Stack)
-
-- **Framework:** [Next.js 16](https://nextjs.org) (App Router, Turbopack / Webpack)
-- **Library:** React 19, TypeScript
-- **Styling:** Tailwind CSS v4 باستخدام **CSS Logical Properties** حصرياً (`ms-*`, `me-*`, `ps-*`, `pe-*`, `start-*`, `end-*`) لضمان التبديل المثالي بين العربية والإنجليزية.
-- **UI & Components:** Radix UI Primitives, `shadcn/ui`, Lucide Icons
-- **Animation & Notifications:** Framer Motion, Sonner Toasts, Canvas-Confetti
-- **Database & Auth:** [Supabase](https://supabase.com) (PostgreSQL), Prisma ORM
-- **Testing:** Vitest, React Testing Library, Jest DOM
-
----
-
-## 📁 هيكل المشروع (Project Structure)
-
-```
-d:\SOUQ\
-├── app/                  # مسارات صفحات Next.js (App Router - 39 مساراً)
-│   ├── (storefront)     # المتجر، الكتالوج، السلة، الدفع، الطلبات، الحساب
-│   ├── admin/           # لوحة تحكم الإدارة العامة
-│   ├── vendor/          # بوابة التجار
-│   └── auth/            # المصادقة (تسجيل الدخول والتسجيل)
-├── components/          # مكونات واجهة المستخدم وعناصر التصميم
-├── context/             # سياقات الحالة (السلة، اللغة، الأدوار)
-├── database/            # تعريفات قاعدة البيانات ومخططات SQL
-├── lib/                 # مكتبات الخدمات (Supabase، RBAC، العملات، الأدوات)
-├── public/              # الأصول العامة والصور
-├── scripts/             # برامج الترحيل وتغذية البيانات (Seeding)
-├── supabase/            # مخططات Supabase الرسمية (schema.sql)
-└── __tests__/           # اختبارات الوحدة والتكامل (42 اختباراً ناجحاً)
-```
-
----
-
-## 🚀 التشغيل والتطوير (Getting Started)
-
-### المتطلبات المسبقة
-- Node.js 18+ أو أعلى
-- npm أو pnpm أو yarn
-
-### التثبيت
-```bash
-# تثبيت التبعيات
+## Getting Started
+``bash
+git clone https://github.com/islamsamyy/shamalelhejaz.git
+cd shamalelhejaz
 npm install
-```
-
-### تشغيل خادم التطوير
-```bash
 npm run dev
-```
-افتح المتصفح على [http://localhost:3000](http://localhost:3000)
-
-### تشغيل الاختبارات
-```bash
-npm test
-```
-
-### بناء نسخة الإنتاج
-```bash
-npm run build
-```
-
----
-
-## 🔒 الأمان والمصادقة
-
-- مفاتيح البيئة الحساسة محفوظة في `.env.local` وهي مستثناة ومحمية عبر `.gitignore`.
-- نموذج بيانات الصلاحيات (RBAC) يضمن عزل بيانات التجار ولوحة الإدارة مع تأمين المسارات عبر الـ Middleware وحمايتها على مستوى العميل والخادم.
-
----
-
-## 📄 الترخيص
-حقوق النشر والتطوير محفوظة © لمنصة **شمال الحجاز** (Shamal Al-Hijaz).
+``
