@@ -297,4 +297,20 @@
 * **تدشين الحملة واستقبال أول دفعة من التجار!**
 
 ---
+
+## 📸 ملحق الصور الحية للنظام (Live System Visual Appendix)
+
+| واجهة المتجر الرئيسية | كتالوج المنتجات | تفاصيل المنتج |
+| :---: | :---: | :---: |
+| ![Home](./screenshots/01-storefront-home.png) | ![Catalog](./screenshots/02-catalog.png) | ![PDP](./screenshots/03-product-detail.png) |
+
+| سلة المشتريات | بوابة الدفع (5 خطوات) | حساب العميل |
+| :---: | :---: | :---: |
+| ![Cart](./screenshots/04-cart.png) | ![Checkout](./screenshots/05-checkout.png) | ![Account](./screenshots/08-customer-account.png) |
+
+| لوحة التاجر (B2B) | مالية التاجر (Escrow) | مركز الإدارة (Admin) |
+| :---: | :---: | :---: |
+| ![Vendor Hub](./screenshots/09-vendor-hub.png) | ![Vendor Financials](./screenshots/12-vendor-financials.png) | ![Admin Dashboard](./screenshots/13-admin-dashboard.png) |
+
+---
 *تم إعداد هذا العرض الفني والتجاري الشامل بواسطة فريق تطوير منصة سوق السعودية (Shamal Al-Hijaz Ecosystem).*

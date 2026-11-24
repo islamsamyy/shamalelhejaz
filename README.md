@@ -4,6 +4,12 @@
   <img src="./public/logo.png" alt="Shamal El-Hejaz Souq Logo" width="180" />
 </p>
 
+<p align="center">
+  <a href="./docs/COMMERCIAL_PROPOSAL.md"><strong>📄 البربوزال التجاري (Commercial Proposal)</strong></a> •
+  <a href="./docs/SYSTEM_DOCUMENTATION.md"><strong>📘 التوثيق التقني الشامل (System Documentation)</strong></a> •
+  <a href="./docs/SOUQ_CLIENT_PRESENTATION.md"><strong>📊 العرض التقديمي التنفيذي (Client Presentation)</strong></a>
+</p>
+
 ## Table of Contents
 - [Executive Summary & Business Utility](#executive-summary--business-utility)
 - [Visual Showcase (UI & Dashboards)](#visual-showcase-ui--dashboards)
@@ -22,11 +28,43 @@
 ---
 
 ## Visual Showcase (UI & Dashboards)
-Brand identity assets in `public/` (plus UI screen specs in `stitch_screens/`):
+Live system screenshots captured from the running Next.js application across all three portals (`B2C Storefront`, `B2B Vendor Portal`, and `Enterprise Admin Command Center`):
 
-| Primary Logo | Brand Mark | Square App Icon |
-| :---: | :---: | :---: |
-| ![Logo](./public/logo.png) | ![Logo Mark](./public/logo-mark.png) | ![Square Logo](./public/logo-square.png) |
+### 1. Customer Storefront (B2C)
+| Storefront Home (Bento & Flash Deals) | Product Catalog & Smart Filters |
+| :---: | :---: |
+| ![Storefront Home](./docs/screenshots/01-storefront-home.png) | ![Product Catalog](./docs/screenshots/02-catalog.png) |
+
+| Product Detail Page (PDP) | Multi-Vendor Shopping Cart |
+| :---: | :---: |
+| ![Product Detail](./docs/screenshots/03-product-detail.png) | ![Shopping Cart](./docs/screenshots/04-cart.png) |
+
+| 5-Step SPL Checkout | Customer Account Center |
+| :---: | :---: |
+| ![Checkout](./docs/screenshots/05-checkout.png) | ![Customer Account](./docs/screenshots/08-customer-account.png) |
+
+### 2. Ecosystem Portals & Unified Authentication
+| Ecosystem Portals Hub | Unified Role-Aware Login |
+| :---: | :---: |
+| ![Portals Hub](./docs/screenshots/06-portals.png) | ![Auth Login](./docs/screenshots/07-auth-login.png) |
+
+### 3. Vendor Operations Portal (B2B)
+| 8-Step KYB Registration Wizard | Vendor Hub & KPIs |
+| :---: | :---: |
+| ![KYB Wizard](./docs/screenshots/16-vendor-register.png) | ![Vendor Hub](./docs/screenshots/09-vendor-hub.png) |
+
+| Vendor Catalog Studio | Vendor Financials & SAMA Escrow |
+| :---: | :---: |
+| ![Vendor Catalog](./docs/screenshots/10-vendor-catalog.png) | ![Vendor Financials](./docs/screenshots/12-vendor-financials.png) |
+
+### 4. Enterprise Admin Command Center
+| Admin Executive Dashboard (GMV) | Admin KYB Vendors Vault |
+| :---: | :---: |
+| ![Admin Dashboard](./docs/screenshots/13-admin-dashboard.png) | ![Admin Vendors](./docs/screenshots/14-admin-vendors.png) |
+
+| Admin Finance & ZATCA Settlements |
+| :---: |
+| ![Admin Finance](./docs/screenshots/15-admin-finance.png) |
 
 ---
 
